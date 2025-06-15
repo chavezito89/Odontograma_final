@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
@@ -219,8 +220,6 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       'bg-purple-500': '#a855f7',
       'bg-purple-600': '#9333ea',
       'bg-gray-500': '#6b7280',
-      'bg-green-500': '#22c55e',
-      'bg-orange-500': '#f97316',
       'bg-orange-400': '#fb923c',
       'bg-yellow-400': '#facc15',
       'bg-yellow-600': '#ca8a04',
