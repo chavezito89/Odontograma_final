@@ -1,4 +1,3 @@
-
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental
@@ -63,8 +62,14 @@ export const TOOTH_NUMBERS = {
     upperLeft: [61, 62, 63, 64, 65],
     lowerLeft: [71, 72, 73, 74, 75],
     lowerRight: [85, 84, 83, 82, 81]
+  },
+  mixed: {
+    upperRight: [18, 17, 16, 55, 54, 53, 52, 51],
+    upperLeft: [61, 62, 63, 64, 65, 26, 27, 28],
+    lowerLeft: [71, 72, 73, 74, 75, 36, 37, 38],
+    lowerRight: [48, 47, 46, 85, 84, 83, 82, 81]
   }
-};
+} as const;
 
 // Conversión FDI a Universal
 export const FDI_TO_UNIVERSAL: Record<number, string | number> = {

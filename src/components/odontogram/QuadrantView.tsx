@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ToothComponent from './ToothComponent';
 import { TOOTH_NUMBERS } from '@/utils/toothUtils';
@@ -13,8 +12,14 @@ interface QuadrantViewProps {
 const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
   const { dentitionType } = useOdontoStore();
   
-  // Add safety check to prevent undefined access
-  const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant] || [];
+  console.log('QuadrantView render:', { dentitionType, quadrant });
+  console.log('TOOTH_NUMBERS:', TOOTH_NUMBERS);
+  console.log('Available dentition types:', Object.keys(TOOTH_NUMBERS));
+  
+  // Add safety check and fallback to permanent if undefined
+  const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant] || TOOTH_NUMBERS.permanent[quadrant] || [];
+  
+  console.log('Teeth for quadrant:', teeth);
   
   const getQuadrantLabel = (quad: string): string => {
     switch (quad) {
@@ -49,13 +54,17 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
           "flex gap-2 justify-center items-end pb-8",
           getFlexDirection(quadrant)
         )}>
-          {teeth.map((toothNumber) => (
-            <ToothComponent
-              key={toothNumber}
-              toothNumber={toothNumber}
-              className="flex-shrink-0"
-            />
-          ))}
+          {teeth.length > 0 ? (
+            teeth.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          ) : (
+            <div className="text-gray-500 text-sm">No hay dientes para mostrar</div>
+          )}
         </div>
       </div>
     </div>
