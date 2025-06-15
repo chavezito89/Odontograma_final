@@ -2,6 +2,7 @@ import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
+import { useSidebar } from '@/components/ui/sidebar';
 
 interface ToothComponentProps {
   toothNumber: number;
@@ -18,6 +19,9 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     updateToothState,
     updateToothFace 
   } = useOdontoStore();
+
+  const { state: sidebarState } = useSidebar();
+  const isCollapsed = sidebarState === 'collapsed';
   
   const odontogram = getCurrentOdontogram();
   const toothData = odontogram[toothNumber];
@@ -25,6 +29,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const displayNumber = getDisplayNumber(toothNumber, numberingSystem);
   const isFullToothStateSelected = isFullToothState(selectedState);
   const hasSymbol = toothData?.symbolState !== undefined;
+  
+  // Tamaño dinámico basado en el estado del sidebar
+  const toothSize = isCollapsed ? 'w-14 h-14' : 'w-10 h-10';
+  const centerSize = isCollapsed ? 'w-6 h-6' : 'w-4 h-4';
   
   // Determinar si el diente es superior o inferior
   const isUpperTooth = (): boolean => {
@@ -77,16 +85,16 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return colorMap[symbolConfig.bg] || '#3b82f6'; // Default a azul si no se encuentra
   };
   
-  // Obtener el tamaño del símbolo según el tipo
+  // Obtener el tamaño del símbolo según el tipo y estado del sidebar
   const getSymbolSize = (): string => {
-    if (!hasSymbol || !toothData?.symbolState) return 'text-2xl';
+    if (!hasSymbol || !toothData?.symbolState) return isCollapsed ? 'text-3xl' : 'text-2xl';
     
     // El símbolo de movilidad necesita ser más grande
     if (toothData.symbolState === 'movilidad') {
-      return 'text-3xl';
+      return isCollapsed ? 'text-4xl' : 'text-3xl';
     }
     
-    return 'text-2xl';
+    return isCollapsed ? 'text-3xl' : 'text-2xl';
   };
   
   // Manejar click en el diente completo
@@ -154,7 +162,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       {/* Diente con forma cuadrada dividida en 5 secciones */}
       <div
         className={cn(
-          "relative w-10 h-10 cursor-pointer transition-all duration-200",
+          "relative cursor-pointer transition-all duration-200",
+          toothSize,
           "hover:scale-105"
         )}
         onClick={handleToothClick}
@@ -227,11 +236,12 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title={areFacesInteractive ? `Cara ${isUpperTooth() ? 'Palatina' : 'Lingual'}` : undefined}
           />
           
-          {/* Cara Oclusal (centro) - sin número */}
+          {/* Cara Oclusal (centro) - tamaño dinámico */}
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-              "w-4 h-4 transition-colors duration-200",
+              centerSize,
+              "transition-colors duration-200",
               "border border-gray-700 rounded-sm bg-white z-10",
               areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
             )}
