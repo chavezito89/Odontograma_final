@@ -4,7 +4,6 @@ import { useOdontoStore } from '@/store/odontoStore';
 import OdontogramGrid from '@/components/odontogram/OdontogramGrid';
 import StateSelector from '@/components/odontogram/StateSelector';
 import ControlPanel from '@/components/odontogram/ControlPanel';
-import { TOOTH_STATE_COLORS } from '@/utils/toothUtils';
 import { Stethoscope, Calendar, Activity } from 'lucide-react';
 
 const Index = () => {
@@ -52,7 +51,6 @@ const Index = () => {
           {/* Panel de Control - Sidebar izquierdo */}
           <div className="xl:col-span-1 space-y-6">
             <ControlPanel />
-            <StateSelector />
           </div>
 
           {/* Odontograma Principal */}
@@ -71,22 +69,8 @@ const Index = () => {
               {/* Odontograma */}
               <OdontogramGrid />
 
-              {/* Estados Dentales Disponibles */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="font-semibold text-blue-800 mb-3">Estados Dentales Disponibles:</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {Object.entries(TOOTH_STATE_COLORS).map(([state, config]) => (
-                    <div key={state} className="flex items-center space-x-2">
-                      <div
-                        className={`w-4 h-4 rounded-full border ${config.bg} ${config.border}`}
-                      />
-                      <span className="text-sm text-blue-700 font-medium">
-                        {config.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {/* StateSelector movido aquí */}
+              <StateSelector />
             </div>
           </div>
         </div>
