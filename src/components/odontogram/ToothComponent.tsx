@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
@@ -433,7 +431,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                         title={config.label}
                       >
                         <IconComponent
-                          size={isCollapsed ? 20 : 16}
+                          size={isCollapsed ? 22 : 18}
                           color={iconColor}
                           strokeWidth={
                             symbolState === 'corona' || symbolState === 'puente' 

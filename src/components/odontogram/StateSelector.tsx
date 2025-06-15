@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { useOdontoStore, ToothState } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
@@ -77,7 +75,7 @@ const StateSelector: React.FC = () => {
 
               return IconComponent ? (
                 <IconComponent
-                  size={12}
+                  size={14}
                   color={iconColor}
                   strokeWidth={
                     state === 'corona' || state === 'puente' 
