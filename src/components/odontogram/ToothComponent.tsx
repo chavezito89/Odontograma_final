@@ -256,7 +256,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos superpuestos - ACTUALIZADO con tamaños más grandes */}
+          {/* Símbolos superpuestos - ACTUALIZADO con mapeo de colores que incluye "extracción" */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
@@ -266,7 +266,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                 const symbol = getStateSymbol(symbolState);
                 const config = TOOTH_STATE_COLORS[symbolState];
                 
-                // Mapear colores de Tailwind a valores CSS
+                // Mapear colores de Tailwind a valores CSS - ACTUALIZADO con "extracción"
                 const colorMap: Record<string, string> = {
                   'bg-red-500': '#ef4444',
                   'bg-yellow-500': '#eab308',
