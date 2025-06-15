@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -175,30 +176,39 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   return (
     <>
       <div className={cn("relative group flex flex-col items-center", className)}>
-        {/* Líneas continuas del puente - MEJORADAS */}
+        {/* Líneas continuas del puente - POSICIÓN AJUSTADA */}
         {(isBridgeIntermediate || isBridgePilar) && (
           <>
             {/* Línea hacia la izquierda */}
             {hasAdjacentBridgeTooth('left') && (
               <div 
-                className="absolute top-1/2 -left-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
-                style={{ transform: 'translateY(-50%)' }}
+                className="absolute -left-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
+                style={{ 
+                  top: 'calc(50% - 6px)',
+                  transform: 'translateY(-50%)' 
+                }}
               />
             )}
             
             {/* Línea hacia la derecha */}
             {hasAdjacentBridgeTooth('right') && (
               <div 
-                className="absolute top-1/2 -right-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
-                style={{ transform: 'translateY(-50%)' }}
+                className="absolute -right-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
+                style={{ 
+                  top: 'calc(50% - 6px)',
+                  transform: 'translateY(-50%)' 
+                }}
               />
             )}
             
             {/* Línea central para dientes intermedios */}
             {isBridgeIntermediate && (
               <div 
-                className="absolute top-1/2 left-1/2 w-full h-1 bg-purple-600 z-20 rounded-full shadow-sm"
-                style={{ transform: 'translate(-50%, -50%)' }}
+                className="absolute left-1/2 w-full h-1 bg-purple-600 z-20 rounded-full shadow-sm"
+                style={{ 
+                  top: 'calc(50% - 6px)',
+                  transform: 'translate(-50%, -50%)' 
+                }}
               />
             )}
           </>
