@@ -211,18 +211,19 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           </div>
         </div>
         
-        {/* Símbolo superpuesto CENTRADO SIN FONDO */}
+        {/* Símbolo superpuesto CENTRADO CON CONTORNO NEGRO */}
         {hasSymbol && toothData?.symbolState && (
           <div 
             className={cn(
               "absolute inset-0",
               "flex items-center justify-center",
               getSymbolSize(),
-              "font-bold drop-shadow-lg pointer-events-none z-20"
+              "font-bold pointer-events-none z-20"
             )}
             title={TOOTH_STATE_COLORS[toothData.symbolState].label}
             style={{
-              color: getSymbolColor()
+              color: getSymbolColor(),
+              textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
             }}
           >
             {getStateSymbol(toothData.symbolState)}
