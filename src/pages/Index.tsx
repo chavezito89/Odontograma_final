@@ -29,9 +29,9 @@ const MainContent = () => {
 
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className={`grid gap-8 ${isCollapsed ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-4'}`}>
-          {/* Odontograma Principal - Más espacio cuando sidebar está colapsado */}
-          <div className={isCollapsed ? 'xl:col-span-4' : 'lg:col-span-3'}>
+        <div className={`grid gap-8 ${isCollapsed ? 'grid-cols-1 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-3'}`}>
+          {/* Odontograma Principal */}
+          <div className={isCollapsed ? 'xl:col-span-3' : 'lg:col-span-2'}>
             <div className="space-y-6">
               {/* Título de sección */}
               <div className="text-center">
