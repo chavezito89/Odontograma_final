@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
@@ -92,7 +93,7 @@ const DiagnosisSummary: React.FC = () => {
     return faceNames[face];
   };
 
-  // Renderizar entrada de resumen para un diente - ACTUALIZADO para mostrar notas
+  // Renderizar entrada de resumen para un diente - ACTUALIZADO para no mostrar "Otro:"
   const renderToothSummary = (summary: ToothSummary) => {
     const { displayNumber, states, notes } = summary;
     const entries: string[] = [];
@@ -105,7 +106,8 @@ const DiagnosisSummary: React.FC = () => {
     // Agregar estado símbolo
     if (states.symbolState) {
       if (states.symbolState === 'otro' && notes) {
-        entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}: ${notes}`);
+        // Para "otro", solo mostrar las notas sin el prefijo "Otro:"
+        entries.push(notes);
       } else {
         entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}`);
       }
