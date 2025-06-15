@@ -228,11 +228,29 @@ export const getCombinedStateClasses = (primaryState: ToothState, secondaryState
 // Obtener estilo de gradiente para estados combinados
 export const getCombinedStateGradient = (primaryState: ToothState, secondaryState?: ToothState): string => {
   if (!hasCombinedStates(primaryState, secondaryState)) {
-    return TOOTH_STATE_COLORS[primaryState].bg.replace('bg-', '');
+    const primaryConfig = TOOTH_STATE_COLORS[primaryState];
+    if (!primaryConfig) {
+      console.warn(`Color configuration not found for state: ${primaryState}`);
+      return 'white';
+    }
+    return primaryConfig.bg.replace('bg-', '');
   }
   
-  const primaryColor = TOOTH_STATE_COLORS[primaryState].bg.replace('bg-', '');
-  const secondaryColor = TOOTH_STATE_COLORS[secondaryState!].bg.replace('bg-', '');
+  const primaryConfig = TOOTH_STATE_COLORS[primaryState];
+  const secondaryConfig = secondaryState ? TOOTH_STATE_COLORS[secondaryState] : null;
+  
+  if (!primaryConfig) {
+    console.warn(`Color configuration not found for primary state: ${primaryState}`);
+    return 'white';
+  }
+  
+  if (!secondaryConfig) {
+    console.warn(`Color configuration not found for secondary state: ${secondaryState}`);
+    return primaryConfig.bg.replace('bg-', '');
+  }
+  
+  const primaryColor = primaryConfig.bg.replace('bg-', '');
+  const secondaryColor = secondaryConfig.bg.replace('bg-', '');
   
   // Mapear colores de Tailwind a valores CSS
   const colorMap: Record<string, string> = {
@@ -244,7 +262,16 @@ export const getCombinedStateGradient = (primaryState: ToothState, secondaryStat
     'gray-500': '#6b7280',
     'green-500': '#22c55e',
     'orange-500': '#f97316',
-    'gray-300': '#d1d5db'
+    'gray-300': '#d1d5db',
+    'red-300': '#fca5a5',
+    'blue-300': '#93c5fd',
+    'yellow-300': '#fde047',
+    'yellow-400': '#facc15',
+    'yellow-600': '#ca8a04',
+    'blue-600': '#2563eb',
+    'amber-600': '#d97706',
+    'purple-400': '#c084fc',
+    'orange-400': '#fb923c'
   };
   
   const primaryColorValue = colorMap[primaryColor] || primaryColor;
