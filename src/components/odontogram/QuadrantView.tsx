@@ -35,7 +35,7 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
 
   // Render mixed dentition with two rows
   const renderMixedDentition = () => {
-    const mixedData = TOOTH_NUMBERS.mixed[quadrant] as { permanent: number[], deciduous: number[] };
+    const mixedData = TOOTH_NUMBERS.mixed[quadrant];
     
     return (
       <div className="space-y-2">
@@ -72,15 +72,18 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
 
   // Render single row for permanent or deciduous
   const renderSingleRow = () => {
-    const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant] || TOOTH_NUMBERS.permanent[quadrant] || [];
+    const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant];
+    
+    // Handle the case where teeth might be an object (mixed type) or array
+    const teethArray = Array.isArray(teeth) ? teeth : [];
     
     return (
       <div className={cn(
         "flex gap-1 justify-center items-end",
         getFlexDirection(quadrant)
       )}>
-        {teeth.length > 0 ? (
-          teeth.map((toothNumber) => (
+        {teethArray.length > 0 ? (
+          teethArray.map((toothNumber) => (
             <ToothComponent
               key={toothNumber}
               toothNumber={toothNumber}
