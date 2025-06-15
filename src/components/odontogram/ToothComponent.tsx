@@ -32,9 +32,9 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const isFullToothStateSelected = isFullToothState(selectedState);
   const hasSymbol = toothData?.symbolState !== undefined;
   
-  // Tamaño más pequeño - reducido de w-16/w-14 a w-12/w-10
-  const toothSize = isCollapsed ? 'w-12 h-12' : 'w-10 h-10';
-  const centerSize = isCollapsed ? 'w-4 h-4' : 'w-3 h-3';
+  // Tamaño dinámico basado en el estado del sidebar - aumentado para aprovechar el espacio
+  const toothSize = isCollapsed ? 'w-16 h-16' : 'w-14 h-14';
+  const centerSize = isCollapsed ? 'w-6 h-6' : 'w-5 h-5';
   
   // Determinar si el diente es superior o inferior
   const isUpperTooth = (): boolean => {
@@ -87,16 +87,16 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return colorMap[symbolConfig.bg] || '#3b82f6'; // Default a azul si no se encuentra
   };
   
-  // Obtener el tamaño del símbolo según el tipo y estado del sidebar - reducido
+  // Obtener el tamaño del símbolo según el tipo y estado del sidebar
   const getSymbolSize = (): string => {
-    if (!hasSymbol || !toothData?.symbolState) return isCollapsed ? 'text-2xl' : 'text-xl';
+    if (!hasSymbol || !toothData?.symbolState) return isCollapsed ? 'text-3xl' : 'text-2xl';
     
     // El símbolo de movilidad necesita ser más grande
     if (toothData.symbolState === 'movilidad') {
-      return isCollapsed ? 'text-3xl' : 'text-2xl';
+      return isCollapsed ? 'text-4xl' : 'text-3xl';
     }
     
-    return isCollapsed ? 'text-2xl' : 'text-xl';
+    return isCollapsed ? 'text-3xl' : 'text-2xl';
   };
   
   // Manejar click en el diente completo - ACTUALIZADO para "otro"
@@ -301,7 +301,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         />
       </div>
       
-      {/* Número del diente debajo de la casilla - texto más pequeño */}
+      {/* Número del diente debajo de la casilla */}
       <div className="mt-1 text-xs font-bold text-gray-700">
         {displayNumber}
       </div>
