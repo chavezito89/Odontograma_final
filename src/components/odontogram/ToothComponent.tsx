@@ -42,6 +42,18 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return colorMap[symbolConfig.bg] || '#000000';
   };
   
+  // Obtener el tamaño del símbolo según el tipo
+  const getSymbolSize = (): string => {
+    if (!hasSymbol || !toothData?.symbolState) return 'text-3xl';
+    
+    // El símbolo de movilidad necesita ser más grande
+    if (toothData.symbolState === 'movilidad') {
+      return 'text-4xl';
+    }
+    
+    return 'text-3xl';
+  };
+  
   // Manejar click en el diente completo
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -205,7 +217,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             className={cn(
               "absolute inset-0",
               "flex items-center justify-center",
-              "text-2xl font-bold drop-shadow-lg pointer-events-none z-20"
+              getSymbolSize(),
+              "font-bold drop-shadow-lg pointer-events-none z-20"
             )}
             title={TOOTH_STATE_COLORS[toothData.symbolState].label}
             style={{
