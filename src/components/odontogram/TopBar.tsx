@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Sparkle } from 'lucide-react';
+import { Sparkle, Calendar } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
 const TopBar: React.FC = () => {
@@ -19,8 +20,12 @@ const TopBar: React.FC = () => {
             </div>
           </div>
 
-          {/* Información del sistema */}
-          <div className="hidden lg:flex items-center space-x-4 text-sm text-gray-600">
+          {/* Información del sistema y fecha */}
+          <div className="hidden lg:flex items-center space-x-6 text-sm text-gray-600">
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-4 h-4" />
+              <span>{new Date().toLocaleDateString('es-ES')}</span>
+            </div>
             <span>DOTTOO SOLUTIONS</span>
           </div>
         </div>
