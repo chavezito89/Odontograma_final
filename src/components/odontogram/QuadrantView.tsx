@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ToothComponent from './ToothComponent';
 import { TOOTH_NUMBERS } from '@/utils/toothUtils';
@@ -33,52 +32,106 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     }
   };
 
-  // Obtener dientes para el cuadrante, siempre como array
-  const getTeethArray = (): number[] => {
-    const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant];
+  // Render mixed dentition with two rows
+  const renderMixedDentition = () => {
+    const mixedData = TOOTH_NUMBERS.mixed[quadrant];
+    const isUpperQuadrant = quadrant === 'upperRight' || quadrant === 'upperLeft';
     
-    // Si es dentición mixta, usar solo los permanentes para mantener estructura simple
-    if (dentitionType === 'mixed' && teeth && typeof teeth === 'object' && !Array.isArray(teeth)) {
-      return teeth.permanent || [];
-    }
-    
-    // Si es array, devolverlo directamente
-    if (Array.isArray(teeth)) {
-      return teeth;
-    }
-    
-    return [];
+    return (
+      <div className="space-y-2 w-full">
+        {/* Primera fila */}
+        <div className={cn(
+          "flex gap-1 justify-center items-end flex-wrap",
+          getFlexDirection(quadrant)
+        )}>
+          {isUpperQuadrant ? (
+            // Cuadrantes superiores: permanentes arriba
+            mixedData.permanent.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          ) : (
+            // Cuadrantes inferiores: temporales arriba
+            mixedData.deciduous.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          )}
+        </div>
+        
+        {/* Segunda fila */}
+        <div className={cn(
+          "flex gap-1 justify-center items-end flex-wrap",
+          getFlexDirection(quadrant)
+        )}>
+          {isUpperQuadrant ? (
+            // Cuadrantes superiores: temporales abajo
+            mixedData.deciduous.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          ) : (
+            // Cuadrantes inferiores: permanentes abajo
+            mixedData.permanent.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          )}
+        </div>
+      </div>
+    );
   };
 
-  const teethArray = getTeethArray();
+  // Render single row for permanent or deciduous
+  const renderSingleRow = () => {
+    const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant];
+    
+    // Handle the case where teeth might be an object (mixed type) or array
+    const teethArray = Array.isArray(teeth) ? teeth : [];
+    
+    return (
+      <div className={cn(
+        "flex gap-1 justify-center items-end flex-wrap",
+        getFlexDirection(quadrant)
+      )}>
+        {teethArray.length > 0 ? (
+          teethArray.map((toothNumber) => (
+            <ToothComponent
+              key={toothNumber}
+              toothNumber={toothNumber}
+              className="flex-shrink-0"
+            />
+          ))
+        ) : (
+          <div className="text-gray-500 text-sm">No hay dientes para mostrar</div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn("w-full overflow-hidden", className)}>
       {/* Etiqueta del cuadrante */}
       <div className="text-center mb-3">
         <h3 className="text-xs font-semibold text-gray-700 mb-2">
           {getQuadrantLabel(quadrant)}
         </h3>
         
-        {/* Contenedor de dientes - una sola fila siempre */}
-        <div className="w-full overflow-x-auto">
-          <div className={cn(
-            "flex gap-1 justify-center items-end",
-            getFlexDirection(quadrant),
-            "min-w-max" // Asegurar que no se envuelvan los dientes
-          )}>
-            {teethArray.length > 0 ? (
-              teethArray.map((toothNumber) => (
-                <ToothComponent
-                  key={toothNumber}
-                  toothNumber={toothNumber}
-                  className="flex-shrink-0"
-                />
-              ))
-            ) : (
-              <div className="text-gray-500 text-sm">No hay dientes para mostrar</div>
-            )}
-          </div>
+        {/* Contenedor de dientes */}
+        <div className="w-full">
+          {dentitionType === 'mixed' ? renderMixedDentition() : renderSingleRow()}
         </div>
       </div>
     </div>
