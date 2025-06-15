@@ -23,13 +23,13 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   macrodontia: {
     bg: 'bg-red-500',
     border: 'border-red-600',
-    label: 'Macrodontia',
+    label: 'Macrodoncia',
     symbol: '🔺'
   },
   microdontia: {
     bg: 'bg-red-500',
     border: 'border-red-600',
-    label: 'Microdontia',
+    label: 'Microdoncia',
     symbol: '🔻'
   },
   corona: {
