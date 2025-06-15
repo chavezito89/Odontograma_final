@@ -45,10 +45,10 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     symbol: '◼'
   },
   puente: {
-    bg: 'bg-blue-500',
-    border: 'border-blue-600',
+    bg: 'bg-purple-500',
+    border: 'border-purple-600',
     label: 'Puente',
-    symbol: '═'
+    symbol: '🟣'
   },
   endodoncia: {
     bg: 'bg-red-500',
@@ -120,7 +120,7 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   }
 };
 
-// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO
+// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO sin puente
 export const FULL_TOOTH_STATES: ToothState[] = [
   'ausente',
   'extraccion',
@@ -128,7 +128,6 @@ export const FULL_TOOTH_STATES: ToothState[] = [
   'macrodontia',
   'microdontia',
   'corona',
-  'puente',
   'endodoncia',
   'tornillo',
   'temporal',
@@ -312,6 +311,7 @@ export const getCombinedStateGradient = (primaryState: ToothState, secondaryStat
     'blue-500': '#3b82f6',
     'yellow-500': '#eab308',
     'purple-500': '#a855f7',
+    'purple-600': '#9333ea',
     'gray-500': '#6b7280',
     'green-500': '#22c55e',
     'orange-500': '#f97316',

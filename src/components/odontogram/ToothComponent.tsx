@@ -16,6 +16,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     selectedTooth, 
     selectedState,
     numberingSystem,
+    bridgeSelection,
     setSelectedTooth,
     updateToothState,
     updateToothFace 
@@ -31,8 +32,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const displayNumber = getDisplayNumber(toothNumber, numberingSystem);
   const isFullToothStateSelected = isFullToothState(selectedState);
   const hasSymbols = toothData?.symbolStates && toothData.symbolStates.length > 0;
+  const isBridgeMode = selectedState === 'puente' && bridgeSelection.isActive;
+  const isFirstPilarSelected = bridgeSelection.firstPilar === toothNumber;
+  const isBridgeIntermediate = toothData?.bridgeInfo?.isIntermediate;
   
-  // Tamaño dinámico basado en el estado del sidebar - aumentado para aprovechar el espacio
+  // Tamaño dinámico basado en el estado del sidebar
   const toothSize = isCollapsed ? 'w-16 h-16' : 'w-14 h-14';
   const centerSize = isCollapsed ? 'w-6 h-6' : 'w-5 h-5';
   
@@ -67,11 +71,16 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       : "polygon(100% 0%, 100% 100%, 50% 50%)"; // derecha
   };
   
-  // Manejar click en el diente completo - ACTUALIZADO para manejar múltiples símbolos
+  // Manejar click en el diente completo - ACTUALIZADO para manejar puentes
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    // Si el estado seleccionado es "otro", abrir el diálogo de notas
+    // Manejo especial para el modo puente
+    if (isBridgeMode) {
+      updateToothState(toothNumber, 'puente');
+      return;
+    }
+    
     if (selectedState === 'otro') {
       updateToothState(toothNumber, selectedState);
       setIsNotesDialogOpen(true);
@@ -79,16 +88,12 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     }
     
     if (isFullToothStateSelected || selectedState === 'healthy') {
-      // Para estados que abarcan todo el diente o estado sano, aplicar directamente
       updateToothState(toothNumber, selectedState);
     } else {
-      // Para estados por caras, solo seleccionar el diente
       if (isSelected) {
-        // Si el diente ya tiene el estado seleccionado, lo eliminamos (volver a healthy)
         if (toothData?.state === selectedState) {
           updateToothState(toothNumber, 'healthy');
         } else {
-          // Si no tiene el estado seleccionado, lo aplicamos
           updateToothState(toothNumber, selectedState);
         }
       } else {
@@ -101,50 +106,47 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const handleFaceClick = (face: ToothFace, e: React.MouseEvent) => {
     e.stopPropagation();
     
-    // No permitir selección de caras para estados que abarcan todo el diente
     if (isFullToothStateSelected) {
       return;
     }
     
     const currentFaceState = toothData?.faces[face] || 'healthy';
     
-    // Si la cara ya tiene el estado seleccionado, la volvemos a healthy
     if (currentFaceState === selectedState) {
       updateToothFace(toothNumber, face, 'healthy');
     } else {
-      // Si no tiene el estado seleccionado, lo aplicamos
       updateToothFace(toothNumber, face, selectedState);
     }
   };
   
   // Obtener color de la cara
   const getFaceColor = (face: ToothFace): string => {
-    // Si el diente tiene un estado completo, mostrar ese color en todas las caras
     if (toothData?.state && isFullToothState(toothData.state)) {
       return TOOTH_STATE_COLORS[toothData.state].bg;
     }
     
-    // Si no, mostrar el color específico de cada cara
     const faceState = toothData?.faces[face] || 'healthy';
     return TOOTH_STATE_COLORS[faceState].bg;
   };
 
-  // Verificar si las caras deben ser interactivas
+  // Verificar si las caras deben ser interactivas - ACTUALIZADO
   const areFacesInteractive = !isFullToothStateSelected && 
     !(toothData?.state && isFullToothState(toothData.state)) && 
-    !hasSymbols;
+    !hasSymbols &&
+    !isBridgeIntermediate &&
+    !isBridgeMode;
 
   // Obtener el color CSS de la cara oclusal
   const getOclusalBackgroundColor = (): string => {
     const faceColor = getFaceColor('oclusal');
     if (faceColor === 'bg-white') return '#ffffff';
     
-    // Mapear colores de Tailwind a valores CSS - ACTUALIZADO con nuevos colores
     const colorMap: Record<string, string> = {
       'bg-red-500': '#ef4444',
       'bg-blue-500': '#3b82f6',
       'bg-yellow-500': '#eab308',
       'bg-purple-500': '#a855f7',
+      'bg-purple-600': '#9333ea',
       'bg-gray-500': '#6b7280',
       'bg-green-500': '#22c55e',
       'bg-orange-500': '#f97316',
@@ -167,7 +169,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           className={cn(
             "relative cursor-pointer transition-all duration-200",
             toothSize,
-            "hover:scale-105"
+            "hover:scale-105",
+            // Resaltado especial para modo puente
+            isBridgeMode && isFirstPilarSelected && "ring-2 ring-purple-500 ring-opacity-75",
+            isBridgeMode && !isFirstPilarSelected && "opacity-80"
           )}
           onClick={handleToothClick}
         >
@@ -256,6 +261,27 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
+          {/* Línea de puente para dientes intermedios */}
+          {isBridgeIntermediate && (
+            <div 
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+              style={{ lineHeight: '1' }}
+            >
+              <span
+                className={cn(
+                  "font-bold text-purple-600",
+                  isCollapsed ? 'text-2xl' : 'text-xl'
+                )}
+                style={{
+                  textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff'
+                }}
+                title="Diente intermedio del puente"
+              >
+                ➖
+              </span>
+            </div>
+          )}
+          
           {/* Símbolos superpuestos - ACTUALIZADO con mapeo de colores ampliado */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
@@ -266,19 +292,18 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                 const symbol = getStateSymbol(symbolState);
                 const config = TOOTH_STATE_COLORS[symbolState];
                 
-                // Mapear colores de Tailwind a valores CSS - ACTUALIZADO con nuevos estados
                 const colorMap: Record<string, string> = {
                   'bg-red-500': '#ef4444',
                   'bg-yellow-500': '#eab308',
                   'bg-blue-500': '#3b82f6',
                   'bg-green-500': '#22c55e',
                   'bg-orange-500': '#f97316',
+                  'bg-purple-500': '#a855f7',
                   'bg-purple-600': '#9333ea'
                 };
                 
                 const symbolColor = colorMap[config.bg] || '#3b82f6';
                 
-                // Posiciones mejoradas para múltiples símbolos con mejor espaciado
                 const getSymbolPosition = (index: number, total: number) => {
                   if (total === 1) return { transform: 'translate(-50%, -50%)' };
                   if (total === 2) {
@@ -291,7 +316,6 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                     if (index === 1) return { transform: 'translate(-100%, 0%)' };
                     return { transform: 'translate(0%, 0%)' };
                   }
-                  // Para más de 3 símbolos, usar una cuadrícula 2x2 con más espacio
                   const row = Math.floor(index / 2);
                   const col = index % 2;
                   return {
@@ -320,11 +344,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             </div>
           )}
           
-          {/* Indicador visual para estados completos o símbolos */}
-          {((toothData?.state && isFullToothState(toothData.state)) || hasSymbols) && (
+          {/* Indicador visual para estados completos, símbolos o puentes */}
+          {(((toothData?.state && isFullToothState(toothData.state)) || hasSymbols || isBridgeIntermediate) && (
             <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-500 rounded-full border border-white shadow-sm" 
-                 title={hasSymbols ? "Estado con símbolos" : "Estado completo del diente"} />
-          )}
+                 title={isBridgeIntermediate ? "Diente intermedio del puente" : hasSymbols ? "Estado con símbolos" : "Estado completo del diente"} />
+          ))}
         </div>
         
         {/* Diálogo de notas para estado "otro" */}

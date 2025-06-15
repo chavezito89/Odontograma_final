@@ -27,16 +27,30 @@ export type ToothState =
 // Caras del diente - ACTUALIZADO para soportar palatina y lingual
 export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'palatina' | 'oclusal';
 
-// Estado de un diente individual - ACTUALIZADO para soportar múltiples símbolos
+// Información de puente
+export interface BridgeInfo {
+  bridgeId: string;
+  isPilar: boolean;
+  isIntermediate: boolean;
+}
+
+// Estado de un diente individual - ACTUALIZADO para soportar múltiples símbolos y puentes
 export interface ToothData {
   number: number;
   quadrant: number;
   state: ToothState;
-  secondaryState?: ToothState; // Mantenido para compatibilidad
-  symbolStates: ToothState[]; // NUEVO: array de estados especiales que se pueden combinar
+  secondaryState?: ToothState;
+  symbolStates: ToothState[];
   faces: Record<ToothFace, ToothState>;
+  bridgeInfo?: BridgeInfo;
   notes?: string;
   lastModified: Date;
+}
+
+// Selección de puente en progreso
+export interface BridgeSelection {
+  firstPilar?: number;
+  isActive: boolean;
 }
 
 // Tipos de pestañas
@@ -65,6 +79,7 @@ interface OdontoState {
   // Estado UI
   selectedTooth: number | null;
   selectedState: ToothState;
+  bridgeSelection: BridgeSelection;
   
   // Acciones
   setCurrentTab: (tab: TabType) => void;
@@ -80,6 +95,11 @@ interface OdontoState {
   updateToothNotes: (toothNumber: number, notes: string) => void;
   resetOdontogram: () => void;
   
+  // Operaciones con puentes
+  setBridgeSelection: (selection: BridgeSelection) => void;
+  completeBridge: (firstPilar: number, secondPilar: number) => void;
+  cancelBridgeSelection: () => void;
+  
   // Utilidades
   getCurrentOdontogram: () => Record<number, ToothData>;
   initializePatient: (patientId: string) => void;
@@ -91,7 +111,7 @@ const createInitialTooth = (number: number): ToothData => ({
   quadrant: Math.ceil(number / 10),
   state: 'healthy',
   secondaryState: undefined,
-  symbolStates: [], // NUEVO: inicializar como array vacío
+  symbolStates: [],
   faces: {
     mesial: 'healthy',
     distal: 'healthy',
@@ -102,6 +122,56 @@ const createInitialTooth = (number: number): ToothData => ({
   },
   lastModified: new Date()
 });
+
+// Función para calcular dientes intermedios entre dos pilares
+const getIntermediateTeeth = (pilar1: number, pilar2: number): number[] => {
+  // Verificar que están en la misma arcada
+  const quadrant1 = Math.floor(pilar1 / 10);
+  const quadrant2 = Math.floor(pilar2 / 10);
+  
+  // Deben estar en cuadrantes adyacentes de la misma arcada
+  const sameUpperArcade = (quadrant1 === 1 && quadrant2 === 2) || (quadrant1 === 2 && quadrant2 === 1);
+  const sameLowerArcade = (quadrant1 === 3 && quadrant2 === 4) || (quadrant1 === 4 && quadrant2 === 3);
+  const sameQuadrant = quadrant1 === quadrant2;
+  
+  if (!sameUpperArcade && !sameLowerArcade && !sameQuadrant) {
+    return [];
+  }
+  
+  const min = Math.min(pilar1, pilar2);
+  const max = Math.max(pilar1, pilar2);
+  const intermediates: number[] = [];
+  
+  if (sameQuadrant) {
+    // Mismo cuadrante
+    for (let i = min + 1; i < max; i++) {
+      intermediates.push(i);
+    }
+  } else {
+    // Cuadrantes adyacentes
+    if (sameUpperArcade) {
+      // Arcada superior: del menor al 18, luego del 21 al mayor
+      if (quadrant1 === 1 && quadrant2 === 2) {
+        for (let i = min + 1; i <= 18; i++) intermediates.push(i);
+        for (let i = 21; i < max; i++) intermediates.push(i);
+      } else {
+        for (let i = min + 1; i <= 28; i++) intermediates.push(i);
+        for (let i = 11; i < max; i++) intermediates.push(i);
+      }
+    } else {
+      // Arcada inferior: del menor al 38, luego del 41 al mayor
+      if (quadrant1 === 3 && quadrant2 === 4) {
+        for (let i = min + 1; i <= 38; i++) intermediates.push(i);
+        for (let i = 41; i < max; i++) intermediates.push(i);
+      } else {
+        for (let i = min + 1; i <= 48; i++) intermediates.push(i);
+        for (let i = 31; i < max; i++) intermediates.push(i);
+      }
+    }
+  }
+  
+  return intermediates;
+};
 
 // Store principal
 export const useOdontoStore = create<OdontoState>()(
@@ -115,6 +185,7 @@ export const useOdontoStore = create<OdontoState>()(
       patientData: {},
       selectedTooth: null,
       selectedState: 'healthy',
+      bridgeSelection: { isActive: false },
       
       // Acciones de configuración
       setCurrentTab: (tab) => set({ currentTab: tab }),
@@ -125,12 +196,92 @@ export const useOdontoStore = create<OdontoState>()(
         get().initializePatient(id);
       },
       setSelectedTooth: (tooth) => set({ selectedTooth: tooth }),
-      setSelectedState: (state) => set({ selectedState: state }),
+      setSelectedState: (state) => {
+        // Si cambiamos de estado puente, cancelar selección activa
+        if (state !== 'puente') {
+          set({ selectedState: state, bridgeSelection: { isActive: false } });
+        } else {
+          set({ selectedState: state, bridgeSelection: { isActive: true } });
+        }
+      },
       
-      // Operaciones con dientes - ACTUALIZADO para manejar múltiples símbolos especiales incluyendo nuevos estados
-      updateToothState: (toothNumber, state) => {
+      // Operaciones con puentes
+      setBridgeSelection: (selection) => set({ bridgeSelection: selection }),
+      
+      completeBridge: (firstPilar, secondPilar) => {
         const { selectedPatientId, currentTab } = get();
         if (!selectedPatientId) return;
+        
+        const bridgeId = `bridge-${Date.now()}`;
+        const intermediateTeeth = getIntermediateTeeth(firstPilar, secondPilar);
+        
+        set((prev) => {
+          const newPatientData = { ...prev.patientData };
+          const currentData = newPatientData[selectedPatientId]?.[currentTab] || {};
+          
+          // Configurar primer pilar
+          const firstPilarTooth = currentData[firstPilar] || createInitialTooth(firstPilar);
+          currentData[firstPilar] = {
+            ...firstPilarTooth,
+            symbolStates: [...(firstPilarTooth.symbolStates || []), 'puente'],
+            bridgeInfo: { bridgeId, isPilar: true, isIntermediate: false },
+            lastModified: new Date()
+          };
+          
+          // Configurar segundo pilar
+          const secondPilarTooth = currentData[secondPilar] || createInitialTooth(secondPilar);
+          currentData[secondPilar] = {
+            ...secondPilarTooth,
+            symbolStates: [...(secondPilarTooth.symbolStates || []), 'puente'],
+            bridgeInfo: { bridgeId, isPilar: true, isIntermediate: false },
+            lastModified: new Date()
+          };
+          
+          // Configurar dientes intermedios
+          intermediateTeeth.forEach(toothNumber => {
+            const intermediateTooth = currentData[toothNumber] || createInitialTooth(toothNumber);
+            currentData[toothNumber] = {
+              ...intermediateTooth,
+              bridgeInfo: { bridgeId, isPilar: false, isIntermediate: true },
+              lastModified: new Date()
+            };
+          });
+          
+          newPatientData[selectedPatientId] = {
+            ...newPatientData[selectedPatientId],
+            [currentTab]: currentData
+          };
+          
+          return {
+            patientData: newPatientData,
+            bridgeSelection: { isActive: false },
+            selectedState: 'healthy'
+          };
+        });
+      },
+      
+      cancelBridgeSelection: () => set({ 
+        bridgeSelection: { isActive: false },
+        selectedState: 'healthy'
+      }),
+      
+      // Operaciones con dientes
+      updateToothState: (toothNumber, state) => {
+        const { selectedPatientId, currentTab, bridgeSelection } = get();
+        if (!selectedPatientId) return;
+        
+        // Manejo especial para el estado puente
+        if (state === 'puente' && bridgeSelection.isActive) {
+          if (!bridgeSelection.firstPilar) {
+            // Seleccionar primer pilar
+            set({ bridgeSelection: { isActive: true, firstPilar: toothNumber } });
+            return;
+          } else if (bridgeSelection.firstPilar !== toothNumber) {
+            // Completar puente con segundo pilar
+            get().completeBridge(bridgeSelection.firstPilar, toothNumber);
+            return;
+          }
+        }
         
         set((prev) => {
           const currentTooth = prev.patientData[selectedPatientId]?.[currentTab]?.[toothNumber] || createInitialTooth(toothNumber);
@@ -148,7 +299,8 @@ export const useOdontoStore = create<OdontoState>()(
                       ...currentTooth,
                       state: 'healthy',
                       secondaryState: undefined,
-                      symbolStates: [], // Limpiar todos los estados especiales
+                      symbolStates: [],
+                      bridgeInfo: undefined,
                       notes: undefined,
                       faces: {
                         mesial: 'healthy',
@@ -166,14 +318,12 @@ export const useOdontoStore = create<OdontoState>()(
             };
           }
           
-          // Verificar si es un estado con símbolo - ACTUALIZADO con nuevos estados especiales
-          const isSymbol = ['ausente', 'extraccion', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'carilla', 'fractura', 'furcacion', 'otro'].includes(state);
+          // Verificar si es un estado con símbolo (excluyendo puente que tiene manejo especial)
+          const isSymbol = ['ausente', 'extraccion', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'endodoncia', 'tornillo', 'temporal', 'carilla', 'fractura', 'furcacion', 'otro'].includes(state);
           
           if (isSymbol) {
-            // Obtener los estados especiales actuales
             const currentSymbolStates = currentTooth.symbolStates || [];
             
-            // Si ya tiene este símbolo, lo removemos
             if (currentSymbolStates.includes(state)) {
               const newSymbolStates = currentSymbolStates.filter(s => s !== state);
               
@@ -196,7 +346,6 @@ export const useOdontoStore = create<OdontoState>()(
               };
             }
             
-            // Agregar el nuevo símbolo al array
             const newSymbolStates = [...currentSymbolStates, state];
             
             return {
@@ -218,7 +367,6 @@ export const useOdontoStore = create<OdontoState>()(
           }
           
           // Para estados no-símbolos, usar la lógica anterior
-          // Si el diente ya tiene este estado como primario, lo removemos
           if (currentTooth.state === state) {
             return {
               patientData: {
@@ -247,7 +395,6 @@ export const useOdontoStore = create<OdontoState>()(
             };
           }
           
-          // Si el diente está sano, aplicar como estado primario
           if (currentTooth.state === 'healthy') {
             return {
               patientData: {
@@ -267,7 +414,6 @@ export const useOdontoStore = create<OdontoState>()(
             };
           }
           
-          // Si el diente ya tiene un estado primario diferente, aplicar como secundario
           return {
             patientData: {
               ...prev.patientData,
@@ -365,7 +511,6 @@ export const useOdontoStore = create<OdontoState>()(
         }));
       },
       
-      // Utilidades
       getCurrentOdontogram: () => {
         const { selectedPatientId, currentTab, patientData } = get();
         if (!selectedPatientId) return {};

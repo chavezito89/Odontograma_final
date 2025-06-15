@@ -7,7 +7,9 @@ import { cn } from '@/lib/utils';
 const StateSelector: React.FC = () => {
   const {
     selectedState,
-    setSelectedState
+    setSelectedState,
+    bridgeSelection,
+    cancelBridgeSelection
   } = useOdontoStore();
 
   // Estados organizados por categorías - ACTUALIZADO con nuevos estados especiales
@@ -22,7 +24,9 @@ const StateSelector: React.FC = () => {
       'bg-yellow-500': '#eab308',
       'bg-blue-500': '#3b82f6',
       'bg-green-500': '#22c55e',
-      'bg-orange-500': '#f97316'
+      'bg-orange-500': '#f97316',
+      'bg-purple-500': '#a855f7',
+      'bg-purple-600': '#9333ea'
     };
     return colorMap[config.bg] || '#000000';
   };
@@ -72,6 +76,32 @@ const StateSelector: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
       <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Estados Dentales</h3>
+      
+      {/* Modo puente activo */}
+      {bridgeSelection.isActive && (
+        <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-purple-800">Modo Puente Activo</h4>
+            <button
+              onClick={cancelBridgeSelection}
+              className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+            >
+              Cancelar
+            </button>
+          </div>
+          <p className="text-xs text-purple-700">
+            {!bridgeSelection.firstPilar 
+              ? "1. Selecciona el primer diente pilar 🟣" 
+              : "2. Selecciona el segundo diente pilar 🟣"
+            }
+          </p>
+          {bridgeSelection.firstPilar && (
+            <p className="text-xs text-purple-600 mt-1">
+              Primer pilar: {bridgeSelection.firstPilar}
+            </p>
+          )}
+        </div>
+      )}
       
       {/* Estado sano */}
       <div className="mb-4">
