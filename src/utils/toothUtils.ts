@@ -97,8 +97,8 @@ export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
   55: 'E', 54: 'D', 53: 'C', 52: 'B', 51: 'A',
   // Deciduos superiores - cuadrante 6 (superior izquierdo) - F, G, H, I, J
   61: 'F', 62: 'G', 63: 'H', 64: 'I', 65: 'J',
-  // Deciduos inferiores - cuadrante 8 (inferior derecho) - T, S, R, Q, P
-  85: 'T', 84: 'S', 83: 'R', 82: 'Q', 81: 'P',
+  // Deciduos inferiores - cuadrante 8 (inferior derecho) - P, Q, R, S, T (de izquierda a derecha)
+  85: 'P', 84: 'Q', 83: 'R', 82: 'S', 81: 'T',
   // Deciduos inferiores - cuadrante 7 (inferior izquierdo) - O, N, M, L, K
   71: 'O', 72: 'N', 73: 'M', 74: 'L', 75: 'K'
 };
