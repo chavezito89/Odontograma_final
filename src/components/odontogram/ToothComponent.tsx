@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -115,7 +116,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     !hasSymbol;
 
   return (
-    <div className={cn("relative group", className)}>
+    <div className={cn("relative group flex flex-col items-center", className)}>
       {/* Diente con forma cuadrada dividida en 5 secciones */}
       <div
         className={cn(
@@ -192,12 +193,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title={areFacesInteractive ? "Cara Lingual" : undefined}
           />
           
-          {/* Cara Oclusal (centro) - SIEMPRE VISIBLE */}
+          {/* Cara Oclusal (centro) - sin número */}
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
               "w-6 h-6 transition-colors duration-200",
-              "flex items-center justify-center text-xs font-bold text-gray-800",
               "border-2 border-gray-700 rounded-sm bg-white z-10",
               areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
             )}
@@ -206,9 +206,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             style={{
               backgroundColor: !hasSymbol ? getFaceColor('oclusal').replace('bg-', '') === 'white' ? '#ffffff' : getFaceColor('oclusal') : '#ffffff'
             }}
-          >
-            {displayNumber}
-          </div>
+          />
         </div>
         
         {/* Símbolo superpuesto PERFECTAMENTE CENTRADO */}
@@ -233,13 +231,18 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             {getStateSymbol(toothData.symbolState)}
           </div>
         )}
+        
+        {/* Indicador visual para estados completos o símbolos */}
+        {((toothData?.state && isFullToothState(toothData.state)) || hasSymbol) && (
+          <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-orange-500 rounded-full border border-white shadow-sm" 
+               title={hasSymbol ? "Estado con símbolo" : "Estado completo del diente"} />
+        )}
       </div>
       
-      {/* Indicador visual para estados completos o símbolos */}
-      {((toothData?.state && isFullToothState(toothData.state)) || hasSymbol) && (
-        <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-orange-500 rounded-full border border-white shadow-sm" 
-             title={hasSymbol ? "Estado con símbolo" : "Estado completo del diente"} />
-      )}
+      {/* Número del diente debajo de la casilla */}
+      <div className="mt-1 text-xs font-bold text-gray-700">
+        {displayNumber}
+      </div>
     </div>
   );
 };
