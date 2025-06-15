@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -23,8 +22,8 @@ export type ToothState =
   | 'resina'
   | 'carilla';
 
-// Caras del diente
-export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'oclusal';
+// Caras del diente - ACTUALIZADO para soportar palatina y lingual
+export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'palatina' | 'oclusal';
 
 // Estado de un diente individual - ACTUALIZADO para soportar símbolos
 export interface ToothData {
@@ -83,7 +82,7 @@ interface OdontoState {
   initializePatient: (patientId: string) => void;
 }
 
-// Estado inicial de un diente
+// Estado inicial de un diente - ACTUALIZADO para incluir palatina
 const createInitialTooth = (number: number): ToothData => ({
   number,
   quadrant: Math.ceil(number / 10),
@@ -95,6 +94,7 @@ const createInitialTooth = (number: number): ToothData => ({
     distal: 'healthy',
     vestibular: 'healthy',
     lingual: 'healthy',
+    palatina: 'healthy',
     oclusal: 'healthy'
   },
   lastModified: new Date()
@@ -151,6 +151,7 @@ export const useOdontoStore = create<OdontoState>()(
                         distal: 'healthy',
                         vestibular: 'healthy',
                         lingual: 'healthy',
+                        palatina: 'healthy',
                         oclusal: 'healthy'
                       },
                       lastModified: new Date()
@@ -223,6 +224,7 @@ export const useOdontoStore = create<OdontoState>()(
                         distal: 'healthy',
                         vestibular: 'healthy',
                         lingual: 'healthy',
+                        palatina: 'healthy',
                         oclusal: 'healthy'
                       },
                       lastModified: new Date()
@@ -269,6 +271,7 @@ export const useOdontoStore = create<OdontoState>()(
                       distal: 'healthy',
                       vestibular: 'healthy',
                       lingual: 'healthy',
+                      palatina: 'healthy',
                       oclusal: 'healthy'
                     },
                     lastModified: new Date()

@@ -26,6 +26,17 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const isFullToothStateSelected = isFullToothState(selectedState);
   const hasSymbol = toothData?.symbolState !== undefined;
   
+  // Determinar si el diente es superior o inferior
+  const isUpperTooth = (): boolean => {
+    const quadrant = Math.floor(toothNumber / 10);
+    return quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6;
+  };
+  
+  // Obtener la cara lingual/palatina correcta según el cuadrante
+  const getLingopalatineFace = (): ToothFace => {
+    return isUpperTooth() ? 'palatina' : 'lingual';
+  };
+  
   // Obtener el color del símbolo basado en el estado
   const getSymbolColor = (): string => {
     if (!hasSymbol || !toothData?.symbolState) return '';
@@ -136,7 +147,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             `
           }}
         >
-          {/* Cara Mesial (superior) */}
+          {/* Cara Mesial (derecha) */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
@@ -144,13 +155,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               getFaceColor('mesial')
             )}
             style={{
-              clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)"
+              clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)"
             }}
             onClick={areFacesInteractive ? (e) => handleFaceClick('mesial', e) : undefined}
             title={areFacesInteractive ? "Cara Mesial" : undefined}
           />
           
-          {/* Cara Distal (inferior) */}
+          {/* Cara Distal (izquierda) */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
@@ -158,13 +169,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               getFaceColor('distal')
             )}
             style={{
-              clipPath: "polygon(0% 100%, 50% 50%, 100% 100%)"
+              clipPath: "polygon(0% 0%, 50% 50%, 0% 100%)"
             }}
             onClick={areFacesInteractive ? (e) => handleFaceClick('distal', e) : undefined}
             title={areFacesInteractive ? "Cara Distal" : undefined}
           />
           
-          {/* Cara Vestibular (izquierda) */}
+          {/* Cara Vestibular - posición según cuadrante */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
@@ -172,24 +183,24 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               getFaceColor('vestibular')
             )}
             style={{
-              clipPath: "polygon(0% 0%, 50% 50%, 0% 100%)"
+              clipPath: isUpperTooth() ? "polygon(0% 0%, 100% 0%, 50% 50%)" : "polygon(0% 100%, 50% 50%, 100% 100%)"
             }}
             onClick={areFacesInteractive ? (e) => handleFaceClick('vestibular', e) : undefined}
             title={areFacesInteractive ? "Cara Vestibular" : undefined}
           />
           
-          {/* Cara Lingual (derecha) */}
+          {/* Cara Lingual/Palatina - posición según cuadrante */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
               areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('lingual')
+              getFaceColor(getLingopalatineFace())
             )}
             style={{
-              clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)"
+              clipPath: isUpperTooth() ? "polygon(0% 100%, 50% 50%, 100% 100%)" : "polygon(0% 0%, 100% 0%, 50% 50%)"
             }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('lingual', e) : undefined}
-            title={areFacesInteractive ? "Cara Lingual" : undefined}
+            onClick={areFacesInteractive ? (e) => handleFaceClick(getLingopalatineFace(), e) : undefined}
+            title={areFacesInteractive ? `Cara ${isUpperTooth() ? 'Palatina' : 'Lingual'}` : undefined}
           />
           
           {/* Cara Oclusal (centro) - sin número */}

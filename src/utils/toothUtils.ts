@@ -118,7 +118,7 @@ export const FULL_TOOTH_STATES: ToothState[] = [
   'temporal'
 ];
 
-// Estados que permiten selección por caras individuales
+// Estados que permiten selección por caras individuales - ACTUALIZADO con palatina
 export const FACE_SELECTABLE_STATES: ToothState[] = [
   'healthy',
   'caries',
