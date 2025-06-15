@@ -52,7 +52,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       {/* Diente con forma cuadrada dividida en 5 secciones */}
       <div
         className={cn(
-          "relative w-12 h-12 cursor-pointer transition-all duration-200",
+          "relative w-16 h-16 cursor-pointer transition-all duration-200",
           "hover:scale-105",
           isSelected ? "ring-2 ring-blue-500 ring-offset-1" : ""
         )}
@@ -120,18 +120,15 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title="Cara Lingual"
           />
           
-          {/* Cara Oclusal (centro) */}
+          {/* Cara Oclusal (centro) - más grande y con borde definido */}
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-              "w-6 h-6 cursor-pointer transition-colors duration-200 hover:brightness-90",
-              "flex items-center justify-center text-xs font-bold text-gray-800",
-              "border border-gray-600",
+              "w-8 h-8 cursor-pointer transition-colors duration-200 hover:brightness-90",
+              "flex items-center justify-center text-sm font-bold text-gray-800",
+              "border-2 border-gray-700 rounded-sm",
               getFaceColor('oclusal')
             )}
-            style={{
-              clipPath: "polygon(25% 25%, 75% 25%, 75% 75%, 25% 75%)"
-            }}
             onClick={(e) => handleFaceClick('oclusal', e)}
             title="Cara Oclusal"
           >
