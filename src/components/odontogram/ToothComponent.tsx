@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -200,13 +199,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           </div>
         </div>
         
-        {/* Símbolo superpuesto SIN FONDO */}
+        {/* Símbolo superpuesto CENTRADO SIN FONDO */}
         {hasSymbol && toothData?.symbolState && (
           <div 
             className={cn(
-              "absolute top-1 right-1",
+              "absolute inset-0",
               "flex items-center justify-center",
-              "text-lg font-bold drop-shadow-lg pointer-events-none z-20"
+              "text-2xl font-bold drop-shadow-lg pointer-events-none z-20"
             )}
             title={TOOTH_STATE_COLORS[toothData.symbolState].label}
             style={{
