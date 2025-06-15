@@ -4,6 +4,7 @@ import { useOdontoStore } from '@/store/odontoStore';
 import OdontogramGrid from '@/components/odontogram/OdontogramGrid';
 import StateSelector from '@/components/odontogram/StateSelector';
 import ControlPanel from '@/components/odontogram/ControlPanel';
+import { TOOTH_STATE_COLORS } from '@/utils/toothUtils';
 import { Stethoscope, Calendar, Activity } from 'lucide-react';
 
 const Index = () => {
@@ -70,16 +71,21 @@ const Index = () => {
               {/* Odontograma */}
               <OdontogramGrid />
 
-              {/* Instrucciones */}
+              {/* Estados Dentales Disponibles */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="font-semibold text-blue-800 mb-2">Instrucciones de uso:</h3>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• Selecciona un estado dental del panel lateral</li>
-                  <li>• Haz clic en un diente completo para aplicar el estado a todo el diente</li>
-                  <li>• Haz clic en las caras individuales (oclusal, vestibular, lingual, mesial, distal) para tratamientos específicos</li>
-                  <li>• Cambia entre modo Diagnóstico y Tratamiento usando las pestañas</li>
-                  <li>• Los datos se guardan automáticamente por paciente</li>
-                </ul>
+                <h3 className="font-semibold text-blue-800 mb-3">Estados Dentales Disponibles:</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {Object.entries(TOOTH_STATE_COLORS).map(([state, config]) => (
+                    <div key={state} className="flex items-center space-x-2">
+                      <div
+                        className={`w-4 h-4 rounded-full border ${config.bg} ${config.border}`}
+                      />
+                      <span className="text-sm text-blue-700 font-medium">
+                        {config.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
