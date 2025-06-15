@@ -67,7 +67,7 @@ export const TOOTH_NUMBERS = {
 };
 
 // Conversión FDI a Universal
-export const FDI_TO_UNIVERSAL: Record<number, number> = {
+export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
   // Permanentes superiores
   18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
@@ -108,4 +108,12 @@ export const isPosteriorTooth = (toothNumber: number): boolean => {
 export const getStateClasses = (state: ToothState): string => {
   const config = TOOTH_STATE_COLORS[state];
   return `${config.bg} ${config.border}`;
+};
+
+// Obtener número de display según el sistema de numeración
+export const getDisplayNumber = (toothNumber: number, system: 'fdi' | 'universal'): string | number => {
+  if (system === 'universal') {
+    return FDI_TO_UNIVERSAL[toothNumber] || toothNumber;
+  }
+  return toothNumber;
 };
