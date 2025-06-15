@@ -6,7 +6,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 const TopBar: React.FC = () => {
   return (
     <header className="bg-white shadow-sm border-b border-blue-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Trigger del Sidebar y Logo */}
           <div className="flex items-center space-x-4">
@@ -23,7 +23,7 @@ const TopBar: React.FC = () => {
           {/* Información del sistema y fecha */}
           <div className="hidden lg:flex items-center space-x-6 text-sm text-gray-600">
             <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-4 w-4" />
               <span>{new Date().toLocaleDateString('es-ES')}</span>
             </div>
             <span>DOTTOO SOLUTIONS</span>
