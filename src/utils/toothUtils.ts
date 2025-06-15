@@ -1,7 +1,7 @@
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental - ACTUALIZADA con nuevos estados especiales
-export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string; symbol?: string }> = {
+export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string; symbol?: string; icon?: string; iconColor?: string }> = {
   healthy: {
     bg: 'bg-white',
     border: 'border-slate-300',
@@ -24,7 +24,8 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     bg: 'bg-yellow-500',
     border: 'border-yellow-600',
     label: 'Movilidad',
-    symbol: '↔'
+    icon: 'trending-up',
+    iconColor: '#eab308'
   },
   macrodontia: {
     bg: 'bg-red-500',
@@ -42,25 +43,29 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     bg: 'bg-blue-500',
     border: 'border-blue-600',
     label: 'Corona',
-    symbol: '◼'
+    icon: 'circle',
+    iconColor: '#3b82f6'
   },
   puente: {
     bg: 'bg-purple-500',
     border: 'border-purple-600',
     label: 'Puente',
-    symbol: '🟣'
+    icon: 'circle',
+    iconColor: '#a855f7'
   },
   endodoncia: {
     bg: 'bg-red-500',
     border: 'border-red-600',
     label: 'Endodoncia',
-    symbol: '≡'
+    icon: 'audio-waveform',
+    iconColor: '#f97316'
   },
   tornillo: {
     bg: 'bg-green-500',
     border: 'border-green-600',
     label: 'Implante',
-    symbol: '⊙'
+    icon: 'blinds',
+    iconColor: '#22c55e'
   },
   temporal: {
     bg: 'bg-yellow-500',
@@ -72,19 +77,22 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     bg: 'bg-orange-500',
     border: 'border-orange-600',
     label: 'Carilla',
-    symbol: '🟠'
+    icon: 'square',
+    iconColor: '#f97316'
   },
   fractura: {
     bg: 'bg-red-500',
     border: 'border-red-600',
     label: 'Fractura',
-    symbol: '⭕'
+    icon: 'circle',
+    iconColor: '#ef4444'
   },
   furcacion: {
     bg: 'bg-yellow-500',
     border: 'border-yellow-600',
     label: 'Furcación',
-    symbol: '🔶'
+    icon: 'diamond',
+    iconColor: '#ec4899'
   },
   otro: {
     bg: 'bg-purple-600',
@@ -180,9 +188,24 @@ export const isSymbolState = (state: ToothState): boolean => {
   return SYMBOL_STATES.includes(state);
 };
 
+// Verificar si un estado usa ícono SVG
+export const isIconState = (state: ToothState): boolean => {
+  return Boolean(TOOTH_STATE_COLORS[state].icon);
+};
+
 // Obtener el símbolo de un estado
 export const getStateSymbol = (state: ToothState): string | undefined => {
   return TOOTH_STATE_COLORS[state].symbol;
+};
+
+// Obtener el ícono de un estado
+export const getStateIcon = (state: ToothState): string | undefined => {
+  return TOOTH_STATE_COLORS[state].icon;
+};
+
+// Obtener el color del ícono de un estado
+export const getStateIconColor = (state: ToothState): string | undefined => {
+  return TOOTH_STATE_COLORS[state].iconColor;
 };
 
 // Números de dientes por cuadrante (FDI)

@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { useOdontoStore, ToothState } from '@/store/odontoStore';
-import { TOOTH_STATE_COLORS, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
+import { TOOTH_STATE_COLORS, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
+import { TrendingUp, Circle, AudioWaveform, Blinds, Square, Diamond } from 'lucide-react';
 
 const StateSelector: React.FC = () => {
   const {
@@ -35,7 +36,10 @@ const StateSelector: React.FC = () => {
     const config = TOOTH_STATE_COLORS[state];
     const isSelected = selectedState === state;
     const hasSymbol = isSymbolState(state);
+    const hasIcon = isIconState(state);
     const symbol = getStateSymbol(state);
+    const icon = getStateIcon(state);
+    const iconColor = getStateIconColor(state);
 
     return (
       <button
@@ -49,17 +53,40 @@ const StateSelector: React.FC = () => {
             : "border-gray-200 hover:border-gray-300"
         )}
       >
-        {/* Indicador de color o símbolo */}
+        {/* Indicador de color, símbolo o ícono */}
         <div 
           className={cn(
             "w-5 h-5 rounded border flex items-center justify-center text-sm font-bold flex-shrink-0",
-            hasSymbol 
+            (hasSymbol || hasIcon)
               ? "border-gray-300 bg-white" 
               : `${config.bg} ${config.border}`
           )}
-          style={hasSymbol ? { color: getSymbolColor(state) } : {}}
+          style={(hasSymbol || hasIcon) ? {} : {}}
         >
-          {hasSymbol && symbol}
+          {hasIcon && icon && iconColor ? (
+            (() => {
+              const IconComponent = {
+                'trending-up': TrendingUp,
+                'circle': Circle,
+                'audio-waveform': AudioWaveform,
+                'blinds': Blinds,
+                'square': Square,
+                'diamond': Diamond
+              }[icon];
+
+              return IconComponent ? (
+                <IconComponent
+                  size={12}
+                  color={iconColor}
+                  style={{
+                    transform: state === 'endodoncia' ? 'rotate(90deg)' : undefined
+                  }}
+                />
+              ) : null;
+            })()
+          ) : hasSymbol && symbol ? (
+            <span style={{ color: getSymbolColor(state) }}>{symbol}</span>
+          ) : null}
         </div>
         
         {/* Etiqueta */}

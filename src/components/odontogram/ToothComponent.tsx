@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
-import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
+import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/components/ui/sidebar';
 import ToothNotesDialog from './ToothNotesDialog';
+import { TrendingUp, Circle, AudioWaveform, Blinds, Square, Diamond } from 'lucide-react';
 
 interface ToothComponentProps {
   toothNumber: number;
@@ -367,7 +368,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos superpuestos - ACTUALIZADO para no mostrar línea en intermedios */}
+          {/* Símbolos e íconos superpuestos - ACTUALIZADO para incluir íconos SVG */}
           {hasSymbols && toothData?.symbolStates && !isBridgeIntermediate && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
@@ -375,6 +376,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             >
               {toothData.symbolStates.map((symbolState, index) => {
                 const symbol = getStateSymbol(symbolState);
+                const icon = getStateIcon(symbolState);
+                const iconColor = getStateIconColor(symbolState);
                 const config = TOOTH_STATE_COLORS[symbolState];
                 
                 const colorMap: Record<string, string> = {
@@ -407,7 +410,40 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                     transform: `translate(${col === 0 ? '-100%' : '0%'}, ${row === 0 ? '-100%' : '0%'})`
                   };
                 };
+
+                // Renderizar ícono SVG o símbolo texto
+                if (icon && iconColor) {
+                  const IconComponent = {
+                    'trending-up': TrendingUp,
+                    'circle': Circle,
+                    'audio-waveform': AudioWaveform,
+                    'blinds': Blinds,
+                    'square': Square,
+                    'diamond': Diamond
+                  }[icon];
+
+                  if (IconComponent) {
+                    return (
+                      <div
+                        key={`${symbolState}-${index}`}
+                        className="absolute"
+                        style={getSymbolPosition(index, toothData.symbolStates.length)}
+                        title={config.label}
+                      >
+                        <IconComponent
+                          size={isCollapsed ? 20 : 16}
+                          color={iconColor}
+                          style={{
+                            filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.8))',
+                            transform: symbolState === 'endodoncia' ? 'rotate(90deg)' : undefined
+                          }}
+                        />
+                      </div>
+                    );
+                  }
+                }
                 
+                // Fallback para símbolos de texto
                 return (
                   <span
                     key={`${symbolState}-${index}`}
