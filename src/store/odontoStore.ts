@@ -1,18 +1,26 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Tipos de estados dentales
+// Tipos de estados dentales - ACTUALIZADO con todos los nuevos estados
 export type ToothState = 
   | 'healthy' 
-  | 'caries' 
-  | 'restoration' 
-  | 'crown' 
-  | 'endodontics' 
-  | 'extraction' 
-  | 'implant' 
-  | 'fissure'
-  | 'missing';
+  | 'ausente'
+  | 'movilidad'
+  | 'macrodontia'
+  | 'microdontia'
+  | 'corona'
+  | 'puente'
+  | 'endodoncia'
+  | 'tornillo'
+  | 'temporal'
+  | 'caries'
+  | 'fisura'
+  | 'desgaste'
+  | 'furcacion'
+  | 'fracturado'
+  | 'amalgama'
+  | 'resina'
+  | 'carilla';
 
 // Caras del diente
 export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'oclusal';

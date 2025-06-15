@@ -1,69 +1,125 @@
 import { ToothState } from '@/store/odontoStore';
 
-// Configuración de colores por estado dental
+// Configuración de colores por estado dental - ACTUALIZADA con todos los nuevos estados
 export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string }> = {
   healthy: {
     bg: 'bg-white',
     border: 'border-slate-300',
     label: 'Sano'
   },
-  caries: {
-    bg: 'bg-red-500',
-    border: 'border-red-600',
-    label: 'Caries'
+  // Estados que abarcan TODO el diente
+  ausente: {
+    bg: 'bg-gray-300',
+    border: 'border-gray-400',
+    label: 'Ausente'
   },
-  restoration: {
-    bg: 'bg-blue-500',
-    border: 'border-blue-600',
-    label: 'Restauración'
+  movilidad: {
+    bg: 'bg-yellow-300',
+    border: 'border-yellow-400',
+    label: 'Movilidad'
   },
-  crown: {
+  macrodontia: {
+    bg: 'bg-red-300',
+    border: 'border-red-400',
+    label: 'Macrodontia'
+  },
+  microdontia: {
+    bg: 'bg-blue-300',
+    border: 'border-blue-400',
+    label: 'Microdontia'
+  },
+  corona: {
     bg: 'bg-yellow-500',
     border: 'border-yellow-600',
     label: 'Corona'
   },
-  endodontics: {
-    bg: 'bg-purple-500',
-    border: 'border-purple-600',
+  puente: {
+    bg: 'bg-blue-500',
+    border: 'border-blue-600',
+    label: 'Puente'
+  },
+  endodoncia: {
+    bg: 'bg-red-500',
+    border: 'border-red-600',
     label: 'Endodoncia'
   },
-  extraction: {
+  tornillo: {
     bg: 'bg-gray-500',
     border: 'border-gray-600',
-    label: 'Extracción'
+    label: 'Tornillo'
   },
-  implant: {
+  temporal: {
     bg: 'bg-green-500',
     border: 'border-green-600',
-    label: 'Implante'
+    label: 'Temporal'
   },
-  fissure: {
+  // Estados que se aplican a UNA CARA del diente
+  caries: {
     bg: 'bg-orange-500',
     border: 'border-orange-600',
+    label: 'Caries'
+  },
+  fisura: {
+    bg: 'bg-blue-600',
+    border: 'border-blue-700',
     label: 'Fisura'
   },
-  missing: {
-    bg: 'bg-gray-300',
-    border: 'border-gray-400',
-    label: 'Ausente'
+  desgaste: {
+    bg: 'bg-amber-600',
+    border: 'border-amber-700',
+    label: 'Desgaste/Erosión'
+  },
+  furcacion: {
+    bg: 'bg-yellow-600',
+    border: 'border-yellow-700',
+    label: 'Furcación'
+  },
+  fracturado: {
+    bg: 'bg-purple-500',
+    border: 'border-purple-600',
+    label: 'Fracturado'
+  },
+  amalgama: {
+    bg: 'bg-yellow-400',
+    border: 'border-yellow-500',
+    label: 'Amalgama'
+  },
+  resina: {
+    bg: 'bg-purple-400',
+    border: 'border-purple-500',
+    label: 'Resina'
+  },
+  carilla: {
+    bg: 'bg-orange-400',
+    border: 'border-orange-500',
+    label: 'Carilla'
   }
 };
 
-// Estados que abarcan todo el diente (no permiten selección por caras)
+// Estados que abarcan todo el diente (no permiten selección por caras) - ACTUALIZADO
 export const FULL_TOOTH_STATES: ToothState[] = [
-  'crown',
-  'extraction', 
-  'implant',
-  'missing',
-  'endodontics'
+  'ausente',
+  'movilidad',
+  'macrodontia',
+  'microdontia',
+  'corona',
+  'puente',
+  'endodoncia',
+  'tornillo',
+  'temporal'
 ];
 
-// Estados que permiten selección por caras individuales
+// Estados que permiten selección por caras individuales - ACTUALIZADO
 export const FACE_SELECTABLE_STATES: ToothState[] = [
   'healthy',
   'caries',
-  'restoration',
-  'fissure'
+  'fisura',
+  'desgaste',
+  'furcacion',
+  'fracturado',
+  'amalgama',
+  'resina',
+  'carilla'
 ];
 
 // Verificar si un estado abarca todo el diente
