@@ -29,7 +29,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isSelected) {
-      updateToothState(toothNumber, selectedState);
+      // Si el diente ya tiene el estado seleccionado, lo eliminamos (volver a healthy)
+      if (toothData?.state === selectedState) {
+        updateToothState(toothNumber, 'healthy');
+      } else {
+        // Si no tiene el estado seleccionado, lo aplicamos
+        updateToothState(toothNumber, selectedState);
+      }
     } else {
       setSelectedTooth(toothNumber);
     }
@@ -38,7 +44,15 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   // Manejar click en una cara específica
   const handleFaceClick = (face: ToothFace, e: React.MouseEvent) => {
     e.stopPropagation();
-    updateToothFace(toothNumber, face, selectedState);
+    const currentFaceState = toothData?.faces[face] || 'healthy';
+    
+    // Si la cara ya tiene el estado seleccionado, la volvemos a healthy
+    if (currentFaceState === selectedState) {
+      updateToothFace(toothNumber, face, 'healthy');
+    } else {
+      // Si no tiene el estado seleccionado, lo aplicamos
+      updateToothFace(toothNumber, face, selectedState);
+    }
   };
   
   // Obtener color de la cara
