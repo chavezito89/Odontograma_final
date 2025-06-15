@@ -13,7 +13,8 @@ interface QuadrantViewProps {
 const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
   const { dentitionType } = useOdontoStore();
   
-  const teeth = TOOTH_NUMBERS[dentitionType][quadrant];
+  // Add safety check to prevent undefined access
+  const teeth = TOOTH_NUMBERS[dentitionType]?.[quadrant] || [];
   
   const getQuadrantLabel = (quad: string): string => {
     switch (quad) {
