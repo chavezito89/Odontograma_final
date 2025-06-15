@@ -99,8 +99,8 @@ export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
   61: 'F', 62: 'G', 63: 'H', 64: 'I', 65: 'J',
   // Deciduos inferiores - cuadrante 7 (inferior izquierdo)
   71: 'K', 72: 'L', 73: 'M', 74: 'N', 75: 'O',
-  // Deciduos inferiores - cuadrante 8 (inferior derecho) - REVERTIDO AL ORDEN ORIGINAL
-  81: 'T', 82: 'S', 83: 'R', 84: 'Q', 85: 'P'
+  // Deciduos inferiores - cuadrante 8 (inferior derecho) - CORREGIDO SEGÚN IMAGEN
+  85: 'P', 84: 'Q', 83: 'R', 82: 'S', 81: 'T'
 };
 
 // Obtener el nombre del cuadrante
