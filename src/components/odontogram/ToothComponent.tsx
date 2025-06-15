@@ -94,7 +94,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         return null;
       } else {
         // Hacia afuera (número mayor)
-        const maxPosition = (quadrant === 5 || quadrant === 6 || quadrant === 7 || quadrant === 8) ? 5 : 8;
+        const maxPosition = (quadrant === 5 || quadrant === 8) ? 5 : 8;
         if (position < maxPosition) {
           return toothNumber + 1;
         }
