@@ -91,8 +91,8 @@ export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
   // Inferior Izquierdo (31-38): van del 24 al 17 en Universal
   31: 24, 32: 23, 33: 22, 34: 21, 35: 20, 36: 19, 37: 18, 38: 17,
-  // Inferior Derecho (41-48): van del 32 al 25 en Universal (41=32, 42=31, etc.)
-  41: 32, 42: 31, 43: 30, 44: 29, 45: 28, 46: 27, 47: 26, 48: 25,
+  // Inferior Derecho (41-48): van del 25 al 32 en Universal (41=25, 42=26, etc.)
+  41: 25, 42: 26, 43: 27, 44: 28, 45: 29, 46: 30, 47: 31, 48: 32,
   // Deciduos superiores - cuadrante 5 (superior derecho)
   55: 'A', 54: 'B', 53: 'C', 52: 'D', 51: 'E',
   // Deciduos superiores - cuadrante 6 (superior izquierdo)
