@@ -175,13 +175,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   return (
     <>
       <div className={cn("relative group flex flex-col items-center", className)}>
-        {/* Líneas continuas del puente */}
+        {/* Líneas continuas del puente - MEJORADAS */}
         {(isBridgeIntermediate || isBridgePilar) && (
           <>
             {/* Línea hacia la izquierda */}
             {hasAdjacentBridgeTooth('left') && (
               <div 
-                className="absolute top-1/2 -left-2 w-4 h-0.5 bg-purple-600 z-30"
+                className="absolute top-1/2 -left-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
                 style={{ transform: 'translateY(-50%)' }}
               />
             )}
@@ -189,8 +189,16 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             {/* Línea hacia la derecha */}
             {hasAdjacentBridgeTooth('right') && (
               <div 
-                className="absolute top-1/2 -right-2 w-4 h-0.5 bg-purple-600 z-30"
+                className="absolute top-1/2 -right-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
                 style={{ transform: 'translateY(-50%)' }}
+              />
+            )}
+            
+            {/* Línea central para dientes intermedios */}
+            {isBridgeIntermediate && (
+              <div 
+                className="absolute top-1/2 left-1/2 w-full h-1 bg-purple-600 z-20 rounded-full shadow-sm"
+                style={{ transform: 'translate(-50%, -50%)' }}
               />
             )}
           </>
@@ -293,29 +301,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Línea de puente para dientes intermedios */}
-          {isBridgeIntermediate && (
-            <div 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
-              style={{ lineHeight: '1' }}
-            >
-              <span
-                className={cn(
-                  "font-bold text-purple-600",
-                  isCollapsed ? 'text-2xl' : 'text-xl'
-                )}
-                style={{
-                  textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff'
-                }}
-                title="Diente intermedio del puente"
-              >
-                ➖
-              </span>
-            </div>
-          )}
-          
-          {/* Símbolos superpuestos - ACTUALIZADO sin línea individual para puentes intermedios */}
-          {hasSymbols && toothData?.symbolStates && (
+          {/* Símbolos superpuestos - ACTUALIZADO para no mostrar línea en intermedios */}
+          {hasSymbols && toothData?.symbolStates && !isBridgeIntermediate && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
               style={{ lineHeight: '1' }}
