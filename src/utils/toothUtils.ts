@@ -1,3 +1,4 @@
+
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental - ACTUALIZADA con nuevos estados especiales
@@ -114,7 +115,7 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   desgaste: {
     bg: 'bg-amber-600',
     border: 'border-amber-700',
-    label: 'Desgaste/Erosión'
+    label: 'Desgaste'
   },
   amalgama: {
     bg: 'bg-yellow-400',
