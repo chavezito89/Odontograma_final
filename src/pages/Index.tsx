@@ -33,7 +33,7 @@ const Index = () => {
 
           {/* Main Content */}
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               {/* Odontograma Principal - Ocupa 3 columnas */}
               <div className="lg:col-span-3">
                 <div className="space-y-6">
@@ -50,8 +50,8 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Estados Dentales - Sidebar derecho en 2 columnas */}
-              <div className="lg:col-span-2">
+              {/* Estados Dentales - Sidebar derecho */}
+              <div className="lg:col-span-1">
                 <StateSelector />
               </div>
             </div>
