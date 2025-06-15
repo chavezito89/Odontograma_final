@@ -285,9 +285,59 @@ export const useOdontoStore = create<OdontoState>()(
         
         set((prev) => {
           const currentTooth = prev.patientData[selectedPatientId]?.[currentTab]?.[toothNumber] || createInitialTooth(toothNumber);
+          const currentOdontogram = prev.patientData[selectedPatientId]?.[currentTab] || {};
           
-          // Si seleccionamos "healthy", siempre limpiar el diente
+          // Si seleccionamos "healthy", verificar si el diente es parte de un puente
           if (state === 'healthy') {
+            // Si el diente tiene bridgeInfo, eliminar todo el puente
+            if (currentTooth.bridgeInfo?.bridgeId) {
+              const bridgeId = currentTooth.bridgeInfo.bridgeId;
+              const newOdontogram = { ...currentOdontogram };
+              
+              // Encontrar todos los dientes que pertenecen a este puente y limpiarlos
+              Object.entries(newOdontogram).forEach(([toothNumberStr, toothData]) => {
+                if (toothData.bridgeInfo?.bridgeId === bridgeId) {
+                  const toothNum = parseInt(toothNumberStr);
+                  newOdontogram[toothNum] = {
+                    ...toothData,
+                    symbolStates: toothData.symbolStates.filter(s => s !== 'puente'),
+                    bridgeInfo: undefined,
+                    lastModified: new Date()
+                  };
+                  
+                  // Si no hay otros estados símbolo, limpiar completamente
+                  if (newOdontogram[toothNum].symbolStates.length === 0 && 
+                      newOdontogram[toothNum].state === 'healthy') {
+                    newOdontogram[toothNum] = {
+                      ...newOdontogram[toothNum],
+                      state: 'healthy',
+                      secondaryState: undefined,
+                      notes: undefined,
+                      faces: {
+                        mesial: 'healthy',
+                        distal: 'healthy',
+                        vestibular: 'healthy',
+                        lingual: 'healthy',
+                        palatina: 'healthy',
+                        oclusal: 'healthy'
+                      }
+                    };
+                  }
+                }
+              });
+              
+              return {
+                patientData: {
+                  ...prev.patientData,
+                  [selectedPatientId]: {
+                    ...prev.patientData[selectedPatientId],
+                    [currentTab]: newOdontogram
+                  }
+                }
+              };
+            }
+            
+            // Si no es parte de un puente, limpiar normalmente
             return {
               patientData: {
                 ...prev.patientData,
