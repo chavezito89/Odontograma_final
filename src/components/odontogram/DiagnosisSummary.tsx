@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
@@ -12,6 +11,7 @@ interface ToothSummary {
     symbolState?: ToothState;
     faceStates: { face: ToothFace; state: ToothState }[];
   };
+  notes?: string;
 }
 
 const DiagnosisSummary: React.FC = () => {
@@ -23,7 +23,7 @@ const DiagnosisSummary: React.FC = () => {
 
   const odontogram = getCurrentOdontogram();
 
-  // Procesar y filtrar dientes con estados activos
+  // Procesar y filtrar dientes con estados activos - ACTUALIZADO para incluir notas
   const getToothSummaries = (): ToothSummary[] => {
     const summaries: ToothSummary[] = [];
 
@@ -52,7 +52,8 @@ const DiagnosisSummary: React.FC = () => {
             mainState,
             symbolState,
             faceStates
-          }
+          },
+          notes: toothData.notes
         });
       }
     });
@@ -91,9 +92,9 @@ const DiagnosisSummary: React.FC = () => {
     return faceNames[face];
   };
 
-  // Renderizar entrada de resumen para un diente
+  // Renderizar entrada de resumen para un diente - ACTUALIZADO para mostrar notas
   const renderToothSummary = (summary: ToothSummary) => {
-    const { displayNumber, states } = summary;
+    const { displayNumber, states, notes } = summary;
     const entries: string[] = [];
 
     // Agregar estado principal (no símbolo)
@@ -103,7 +104,11 @@ const DiagnosisSummary: React.FC = () => {
 
     // Agregar estado símbolo
     if (states.symbolState) {
-      entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}`);
+      if (states.symbolState === 'otro' && notes) {
+        entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}: ${notes}`);
+      } else {
+        entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}`);
+      }
     }
 
     // Agregar estados por caras agrupados

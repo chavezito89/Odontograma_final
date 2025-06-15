@@ -1,6 +1,6 @@
 import { ToothState } from '@/store/odontoStore';
 
-// Configuración de colores por estado dental - ACTUALIZADA con símbolos
+// Configuración de colores por estado dental - ACTUALIZADA con "otro"
 export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string; symbol?: string }> = {
   healthy: {
     bg: 'bg-white',
@@ -62,6 +62,12 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     label: 'Temporal',
     symbol: 'T'
   },
+  otro: {
+    bg: 'bg-purple-600',
+    border: 'border-purple-700',
+    label: 'Otro',
+    symbol: '?'
+  },
   // Estados que se aplican a UNA CARA del diente (sin símbolos)
   caries: {
     bg: 'bg-orange-500',
@@ -105,7 +111,7 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   }
 };
 
-// Estados que abarcan todo el diente (con símbolos)
+// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO con "otro"
 export const FULL_TOOTH_STATES: ToothState[] = [
   'ausente',
   'movilidad',
@@ -115,7 +121,8 @@ export const FULL_TOOTH_STATES: ToothState[] = [
   'puente',
   'endodoncia',
   'tornillo',
-  'temporal'
+  'temporal',
+  'otro'
 ];
 
 // Estados que permiten selección por caras individuales - ACTUALIZADO con palatina
@@ -131,7 +138,7 @@ export const FACE_SELECTABLE_STATES: ToothState[] = [
   'carilla'
 ];
 
-// Estados que usan símbolos
+// Estados que usan símbolos - ACTUALIZADO con "otro"
 export const SYMBOL_STATES: ToothState[] = [
   'ausente',
   'movilidad',
@@ -141,7 +148,8 @@ export const SYMBOL_STATES: ToothState[] = [
   'puente',
   'endodoncia',
   'tornillo',
-  'temporal'
+  'temporal',
+  'otro'
 ];
 
 // Verificar si un estado abarca todo el diente

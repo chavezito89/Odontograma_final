@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/components/ui/sidebar';
+import ToothNotesDialog from './ToothNotesDialog';
 
 interface ToothComponentProps {
   toothNumber: number;
@@ -22,6 +23,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
 
   const { state: sidebarState } = useSidebar();
   const isCollapsed = sidebarState === 'collapsed';
+  const [isNotesDialogOpen, setIsNotesDialogOpen] = useState(false);
   
   const odontogram = getCurrentOdontogram();
   const toothData = odontogram[toothNumber];
@@ -97,9 +99,16 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return isCollapsed ? 'text-3xl' : 'text-2xl';
   };
   
-  // Manejar click en el diente completo
+  // Manejar click en el diente completo - ACTUALIZADO para "otro"
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Si el estado seleccionado es "otro", abrir el diálogo de notas
+    if (selectedState === 'otro') {
+      updateToothState(toothNumber, selectedState);
+      setIsNotesDialogOpen(true);
+      return;
+    }
     
     if (isFullToothStateSelected || selectedState === 'healthy') {
       // Para estados que abarcan todo el diente o estado sano, aplicar directamente
@@ -158,136 +167,145 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     !hasSymbol;
 
   return (
-    <div className={cn("relative group flex flex-col items-center", className)}>
-      {/* Diente con forma cuadrada dividida en 5 secciones */}
-      <div
-        className={cn(
-          "relative cursor-pointer transition-all duration-200",
-          toothSize,
-          "hover:scale-105"
-        )}
-        onClick={handleToothClick}
-      >
-        {/* Contenedor principal con bordes diagonales */}
-        <div 
+    <>
+      <div className={cn("relative group flex flex-col items-center", className)}>
+        {/* Diente con forma cuadrada dividida en 5 secciones */}
+        <div
           className={cn(
-            "relative w-full h-full border-2 border-gray-800 bg-white"
+            "relative cursor-pointer transition-all duration-200",
+            toothSize,
+            "hover:scale-105"
           )}
-          style={{
-            background: `
-              linear-gradient(to bottom left, transparent 0 calc(50% - 1px), #1f2937, transparent calc(50% + 1px)) no-repeat,
-              linear-gradient(to bottom right, transparent 0 calc(50% - 1px), #1f2937, transparent calc(50% + 1px)) no-repeat
-            `
-          }}
+          onClick={handleToothClick}
         >
-          {/* Cara Mesial - posición dinámica según cuadrante */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('mesial')
-            )}
-            style={{
-              clipPath: getMesialClipPath()
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('mesial', e) : undefined}
-            title={areFacesInteractive ? "Cara Mesial" : undefined}
-          />
-          
-          {/* Cara Distal - posición dinámica según cuadrante */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('distal')
-            )}
-            style={{
-              clipPath: getDistalClipPath()
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('distal', e) : undefined}
-            title={areFacesInteractive ? "Cara Distal" : undefined}
-          />
-          
-          {/* Cara Vestibular - posición según si es superior o inferior */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('vestibular')
-            )}
-            style={{
-              clipPath: isUpperTooth() ? "polygon(0% 0%, 100% 0%, 50% 50%)" : "polygon(0% 100%, 50% 50%, 100% 100%)"
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('vestibular', e) : undefined}
-            title={areFacesInteractive ? "Cara Vestibular" : undefined}
-          />
-          
-          {/* Cara Lingual/Palatina - posición según si es superior o inferior */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor(getLingopalatineFace())
-            )}
-            style={{
-              clipPath: isUpperTooth() ? "polygon(0% 100%, 50% 50%, 100% 100%)" : "polygon(0% 0%, 100% 0%, 50% 50%)"
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick(getLingopalatineFace(), e) : undefined}
-            title={areFacesInteractive ? `Cara ${isUpperTooth() ? 'Palatina' : 'Lingual'}` : undefined}
-          />
-          
-          {/* Cara Oclusal (centro) - tamaño dinámico */}
-          <div
-            className={cn(
-              "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-              centerSize,
-              "transition-colors duration-200",
-              "border border-gray-700 rounded-sm bg-white z-10",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
-            )}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('oclusal', e) : undefined}
-            title={areFacesInteractive ? "Cara Oclusal" : undefined}
-            style={{
-              backgroundColor: !hasSymbol ? getFaceColor('oclusal').replace('bg-', '') === 'white' ? '#ffffff' : getFaceColor('oclusal') : '#ffffff'
-            }}
-          />
-        </div>
-        
-        {/* Símbolo superpuesto */}
-        {hasSymbol && toothData?.symbolState && (
+          {/* Contenedor principal con bordes diagonales */}
           <div 
             className={cn(
-              "absolute",
-              "flex items-center justify-center",
-              getSymbolSize(),
-              "font-bold pointer-events-none z-20"
+              "relative w-full h-full border-2 border-gray-800 bg-white"
             )}
             style={{
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              color: getSymbolColor(),
-              textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
-              lineHeight: '1'
+              background: `
+                linear-gradient(to bottom left, transparent 0 calc(50% - 1px), #1f2937, transparent calc(50% + 1px)) no-repeat,
+                linear-gradient(to bottom right, transparent 0 calc(50% - 1px), #1f2937, transparent calc(50% + 1px)) no-repeat
+              `
             }}
-            title={TOOTH_STATE_COLORS[toothData.symbolState].label}
           >
-            {getStateSymbol(toothData.symbolState)}
+            {/* Cara Mesial - posición dinámica según cuadrante */}
+            <div
+              className={cn(
+                "absolute inset-0 transition-colors duration-200",
+                areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                getFaceColor('mesial')
+              )}
+              style={{
+                clipPath: getMesialClipPath()
+              }}
+              onClick={areFacesInteractive ? (e) => handleFaceClick('mesial', e) : undefined}
+              title={areFacesInteractive ? "Cara Mesial" : undefined}
+            />
+            
+            {/* Cara Distal - posición dinámica según cuadrante */}
+            <div
+              className={cn(
+                "absolute inset-0 transition-colors duration-200",
+                areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                getFaceColor('distal')
+              )}
+              style={{
+                clipPath: getDistalClipPath()
+              }}
+              onClick={areFacesInteractive ? (e) => handleFaceClick('distal', e) : undefined}
+              title={areFacesInteractive ? "Cara Distal" : undefined}
+            />
+            
+            {/* Cara Vestibular - posición según si es superior o inferior */}
+            <div
+              className={cn(
+                "absolute inset-0 transition-colors duration-200",
+                areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                getFaceColor('vestibular')
+              )}
+              style={{
+                clipPath: isUpperTooth() ? "polygon(0% 0%, 100% 0%, 50% 50%)" : "polygon(0% 100%, 50% 50%, 100% 100%)"
+              }}
+              onClick={areFacesInteractive ? (e) => handleFaceClick('vestibular', e) : undefined}
+              title={areFacesInteractive ? "Cara Vestibular" : undefined}
+            />
+            
+            {/* Cara Lingual/Palatina - posición según si es superior o inferior */}
+            <div
+              className={cn(
+                "absolute inset-0 transition-colors duration-200",
+                areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                getFaceColor(getLingopalatineFace())
+              )}
+              style={{
+                clipPath: isUpperTooth() ? "polygon(0% 100%, 50% 50%, 100% 100%)" : "polygon(0% 0%, 100% 0%, 50% 50%)"
+              }}
+              onClick={areFacesInteractive ? (e) => handleFaceClick(getLingopalatineFace(), e) : undefined}
+              title={areFacesInteractive ? `Cara ${isUpperTooth() ? 'Palatina' : 'Lingual'}` : undefined}
+            />
+            
+            {/* Cara Oclusal (centro) - tamaño dinámico */}
+            <div
+              className={cn(
+                "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+                centerSize,
+                "transition-colors duration-200",
+                "border border-gray-700 rounded-sm bg-white z-10",
+                areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
+              )}
+              onClick={areFacesInteractive ? (e) => handleFaceClick('oclusal', e) : undefined}
+              title={areFacesInteractive ? "Cara Oclusal" : undefined}
+              style={{
+                backgroundColor: !hasSymbol ? getFaceColor('oclusal').replace('bg-', '') === 'white' ? '#ffffff' : getFaceColor('oclusal') : '#ffffff'
+              }}
+            />
           </div>
-        )}
+          
+          {/* Símbolo superpuesto */}
+          {hasSymbol && toothData?.symbolState && (
+            <div 
+              className={cn(
+                "absolute",
+                "flex items-center justify-center",
+                getSymbolSize(),
+                "font-bold pointer-events-none z-20"
+              )}
+              style={{
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                color: getSymbolColor(),
+                textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
+                lineHeight: '1'
+              }}
+              title={TOOTH_STATE_COLORS[toothData.symbolState].label}
+            >
+              {getStateSymbol(toothData.symbolState)}
+            </div>
+          )}
+          
+          {/* Indicador visual para estados completos o símbolos */}
+          {((toothData?.state && isFullToothState(toothData.state)) || hasSymbol) && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-500 rounded-full border border-white shadow-sm" 
+                 title={hasSymbol ? "Estado con símbolo" : "Estado completo del diente"} />
+          )}
+        </div>
         
-        {/* Indicador visual para estados completos o símbolos */}
-        {((toothData?.state && isFullToothState(toothData.state)) || hasSymbol) && (
-          <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-500 rounded-full border border-white shadow-sm" 
-               title={hasSymbol ? "Estado con símbolo" : "Estado completo del diente"} />
-        )}
+        {/* Diálogo de notas para estado "otro" */}
+        <ToothNotesDialog
+          isOpen={isNotesDialogOpen}
+          onClose={() => setIsNotesDialogOpen(false)}
+          toothNumber={toothNumber}
+        />
       </div>
       
       {/* Número del diente debajo de la casilla */}
       <div className="mt-1 text-xs font-bold text-gray-700">
         {displayNumber}
       </div>
-    </div>
+    </>
   );
 };
 

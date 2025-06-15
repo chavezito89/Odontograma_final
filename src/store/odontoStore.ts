@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Tipos de estados dentales - ACTUALIZADO con todos los nuevos estados
+// Tipos de estados dentales - ACTUALIZADO con "otro"
 export type ToothState = 
   | 'healthy' 
   | 'ausente'
@@ -20,7 +20,8 @@ export type ToothState =
   | 'fracturado'
   | 'amalgama'
   | 'resina'
-  | 'carilla';
+  | 'carilla'
+  | 'otro';
 
 // Caras del diente - ACTUALIZADO para soportar palatina y lingual
 export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'palatina' | 'oclusal';
@@ -75,6 +76,7 @@ interface OdontoState {
   // Operaciones con dientes
   updateToothState: (toothNumber: number, state: ToothState) => void;
   updateToothFace: (toothNumber: number, face: ToothFace, state: ToothState) => void;
+  updateToothNotes: (toothNumber: number, notes: string) => void;
   resetOdontogram: () => void;
   
   // Utilidades
@@ -124,7 +126,7 @@ export const useOdontoStore = create<OdontoState>()(
       setSelectedTooth: (tooth) => set({ selectedTooth: tooth }),
       setSelectedState: (state) => set({ selectedState: state }),
       
-      // Operaciones con dientes - ACTUALIZADO para manejar símbolos
+      // Operaciones con dientes - ACTUALIZADO para manejar símbolos y "otro"
       updateToothState: (toothNumber, state) => {
         const { selectedPatientId, currentTab } = get();
         if (!selectedPatientId) return;
@@ -146,6 +148,7 @@ export const useOdontoStore = create<OdontoState>()(
                       state: 'healthy',
                       secondaryState: undefined,
                       symbolState: undefined,
+                      notes: undefined,
                       faces: {
                         mesial: 'healthy',
                         distal: 'healthy',
@@ -162,8 +165,8 @@ export const useOdontoStore = create<OdontoState>()(
             };
           }
           
-          // Verificar si es un estado con símbolo
-          const isSymbol = ['ausente', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal'].includes(state);
+          // Verificar si es un estado con símbolo (incluyendo "otro")
+          const isSymbol = ['ausente', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'otro'].includes(state);
           
           if (isSymbol) {
             // Si ya tiene este símbolo, lo removemos
@@ -178,6 +181,7 @@ export const useOdontoStore = create<OdontoState>()(
                       [toothNumber]: {
                         ...currentTooth,
                         symbolState: undefined,
+                        notes: state === 'otro' ? undefined : currentTooth.notes,
                         lastModified: new Date()
                       }
                     }
@@ -303,6 +307,32 @@ export const useOdontoStore = create<OdontoState>()(
                       ...currentTooth.faces,
                       [face]: state
                     },
+                    lastModified: new Date()
+                  }
+                }
+              }
+            }
+          };
+        });
+      },
+      
+      updateToothNotes: (toothNumber, notes) => {
+        const { selectedPatientId, currentTab } = get();
+        if (!selectedPatientId) return;
+        
+        set((prev) => {
+          const currentTooth = prev.patientData[selectedPatientId]?.[currentTab]?.[toothNumber] || createInitialTooth(toothNumber);
+          
+          return {
+            patientData: {
+              ...prev.patientData,
+              [selectedPatientId]: {
+                ...prev.patientData[selectedPatientId],
+                [currentTab]: {
+                  ...prev.patientData[selectedPatientId]?.[currentTab],
+                  [toothNumber]: {
+                    ...currentTooth,
+                    notes,
                     lastModified: new Date()
                   }
                 }

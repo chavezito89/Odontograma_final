@@ -10,8 +10,8 @@ const StateSelector: React.FC = () => {
     setSelectedState
   } = useOdontoStore();
 
-  // Estados organizados por categorías
-  const symbolStates: ToothState[] = ['ausente', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal'];
+  // Estados organizados por categorías - ACTUALIZADO con "otro"
+  const symbolStates: ToothState[] = ['ausente', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'otro'];
   const faceStates: ToothState[] = ['caries', 'fisura', 'desgaste', 'furcacion', 'fracturado', 'amalgama', 'resina', 'carilla'];
 
   // Obtener color del símbolo
