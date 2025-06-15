@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
@@ -6,7 +7,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface ToothSummary {
+interface BridgeEntry {
+  type: 'bridge';
+  bridgeId: string;
+  range: string;
+  displayRange: string;
+}
+
+interface ToothEntry {
+  type: 'tooth';
   toothNumber: number;
   displayNumber: string | number;
   states: {
@@ -16,6 +25,8 @@ interface ToothSummary {
   };
   notes?: string;
 }
+
+type SummaryEntry = BridgeEntry | ToothEntry;
 
 const DiagnosisSummary: React.FC = () => {
   const { 
@@ -30,17 +41,50 @@ const DiagnosisSummary: React.FC = () => {
 
   const odontogram = getCurrentOdontogram();
 
-  // Procesar y filtrar dientes con estados activos - ACTUALIZADO para incluir notas
-  const getToothSummaries = (): ToothSummary[] => {
-    const summaries: ToothSummary[] = [];
+  // Procesar puentes del odontograma
+  const processBridges = (): BridgeEntry[] => {
+    const bridgeGroups: Record<string, number[]> = {};
+    
+    // Agrupar dientes por bridgeId
+    Object.entries(odontogram).forEach(([toothNumberStr, toothData]) => {
+      if (toothData.bridgeInfo?.bridgeId) {
+        const bridgeId = toothData.bridgeInfo.bridgeId;
+        if (!bridgeGroups[bridgeId]) {
+          bridgeGroups[bridgeId] = [];
+        }
+        bridgeGroups[bridgeId].push(parseInt(toothNumberStr));
+      }
+    });
+
+    // Crear entradas de puente
+    return Object.entries(bridgeGroups).map(([bridgeId, toothNumbers]) => {
+      const sortedNumbers = toothNumbers.sort((a, b) => a - b);
+      const minTooth = sortedNumbers[0];
+      const maxTooth = sortedNumbers[sortedNumbers.length - 1];
+      
+      const minDisplay = getDisplayNumber(minTooth, numberingSystem);
+      const maxDisplay = getDisplayNumber(maxTooth, numberingSystem);
+      
+      return {
+        type: 'bridge' as const,
+        bridgeId,
+        range: `${minTooth}-${maxTooth}`,
+        displayRange: `${minDisplay}-${maxDisplay}`
+      };
+    });
+  };
+
+  // Procesar dientes individuales (excluyendo puentes simples)
+  const processIndividualTeeth = (bridgeTeeth: Set<number>): ToothEntry[] => {
+    const entries: ToothEntry[] = [];
 
     Object.entries(odontogram).forEach(([toothNumberStr, toothData]) => {
       const toothNumber = parseInt(toothNumberStr);
       const displayNumber = getDisplayNumber(toothNumber, numberingSystem);
       
-      // Recopilar estados del diente
+      // Recopilar estados del diente (excluyendo puente si es el único estado)
       const mainState = toothData.state !== 'healthy' ? toothData.state : undefined;
-      const symbolStates = toothData.symbolStates || [];
+      const symbolStates = (toothData.symbolStates || []).filter(state => state !== 'puente');
       
       // Recopilar estados por caras (solo caras no sanas)
       const faceStates: { face: ToothFace; state: ToothState }[] = [];
@@ -50,38 +94,74 @@ const DiagnosisSummary: React.FC = () => {
         }
       });
 
-      // Si el diente tiene algún estado activo, agregarlo al resumen
-      if (mainState || symbolStates.length > 0 || faceStates.length > 0) {
-        summaries.push({
-          toothNumber,
-          displayNumber,
-          states: {
-            mainState,
-            symbolStates,
-            faceStates
-          },
-          notes: toothData.notes
-        });
+      // Determinar si el diente tiene otros tratamientos además del puente
+      const hasOtherTreatments = mainState || symbolStates.length > 0 || faceStates.length > 0;
+      
+      // Solo agregar si:
+      // 1. No es parte de un puente, O
+      // 2. Es parte de un puente PERO tiene otros tratamientos
+      if (!bridgeTeeth.has(toothNumber) || (bridgeTeeth.has(toothNumber) && hasOtherTreatments)) {
+        if (hasOtherTreatments) {
+          entries.push({
+            type: 'tooth',
+            toothNumber,
+            displayNumber,
+            states: {
+              mainState,
+              symbolStates,
+              faceStates
+            },
+            notes: toothData.notes
+          });
+        }
       }
     });
 
-    // Ordenar por número de diente (numérico para permanentes, alfabético para deciduos)
-    return summaries.sort((a, b) => {
-      // Si ambos son strings (deciduos), ordenar alfabéticamente
-      if (typeof a.displayNumber === 'string' && typeof b.displayNumber === 'string') {
-        return a.displayNumber.localeCompare(b.displayNumber);
+    return entries;
+  };
+
+  // Obtener todas las entradas del resumen
+  const getSummaryEntries = (): SummaryEntry[] => {
+    const bridgeEntries = processBridges();
+    
+    // Crear set de dientes que son parte de puentes
+    const bridgeTeeth = new Set<number>();
+    Object.entries(odontogram).forEach(([toothNumberStr, toothData]) => {
+      if (toothData.bridgeInfo?.bridgeId) {
+        bridgeTeeth.add(parseInt(toothNumberStr));
       }
-      // Si ambos son números (permanentes), ordenar numéricamente
-      if (typeof a.displayNumber === 'number' && typeof b.displayNumber === 'number') {
-        return a.displayNumber - b.displayNumber;
+    });
+    
+    const toothEntries = processIndividualTeeth(bridgeTeeth);
+    
+    // Combinar y ordenar entradas
+    const allEntries: SummaryEntry[] = [...bridgeEntries, ...toothEntries];
+    
+    return allEntries.sort((a, b) => {
+      // Puentes primero, luego dientes individuales
+      if (a.type === 'bridge' && b.type === 'tooth') return -1;
+      if (a.type === 'tooth' && b.type === 'bridge') return 1;
+      
+      if (a.type === 'bridge' && b.type === 'bridge') {
+        return a.range.localeCompare(b.range);
       }
-      // Deciduos después de permanentes
-      if (typeof a.displayNumber === 'number' && typeof b.displayNumber === 'string') {
-        return -1;
+      
+      if (a.type === 'tooth' && b.type === 'tooth') {
+        // Ordenar dientes por número de display
+        if (typeof a.displayNumber === 'string' && typeof b.displayNumber === 'string') {
+          return a.displayNumber.localeCompare(b.displayNumber);
+        }
+        if (typeof a.displayNumber === 'number' && typeof b.displayNumber === 'number') {
+          return a.displayNumber - b.displayNumber;
+        }
+        if (typeof a.displayNumber === 'number' && typeof b.displayNumber === 'string') {
+          return -1;
+        }
+        if (typeof a.displayNumber === 'string' && typeof b.displayNumber === 'number') {
+          return 1;
+        }
       }
-      if (typeof a.displayNumber === 'string' && typeof b.displayNumber === 'number') {
-        return 1;
-      }
+      
       return 0;
     });
   };
@@ -118,9 +198,23 @@ const DiagnosisSummary: React.FC = () => {
     setEditText('');
   };
 
-  // Renderizar entrada de resumen para un diente - ACTUALIZADO para manejar múltiples símbolos y botón de edición
-  const renderToothSummary = (summary: ToothSummary) => {
-    const { displayNumber, states, notes, toothNumber } = summary;
+  // Renderizar entrada de puente
+  const renderBridgeEntry = (entry: BridgeEntry) => {
+    return (
+      <div key={entry.bridgeId} className="mb-2">
+        <span className="font-semibold text-gray-800">
+          Dientes {entry.displayRange}:
+        </span>
+        <span className="ml-2 text-gray-700">
+          {TOOTH_STATE_COLORS.puente.label}
+        </span>
+      </div>
+    );
+  };
+
+  // Renderizar entrada de diente individual
+  const renderToothEntry = (entry: ToothEntry) => {
+    const { displayNumber, states, notes, toothNumber } = entry;
     const entries: string[] = [];
 
     // Agregar estado principal (no símbolo)
@@ -132,7 +226,6 @@ const DiagnosisSummary: React.FC = () => {
     if (states.symbolStates.length > 0) {
       states.symbolStates.forEach(symbolState => {
         if (symbolState === 'otro' && notes) {
-          // Para "otro", solo mostrar las notas sin el prefijo "Otro:"
           entries.push(notes);
         } else {
           entries.push(`${TOOTH_STATE_COLORS[symbolState].label}`);
@@ -142,7 +235,6 @@ const DiagnosisSummary: React.FC = () => {
 
     // Agregar estados por caras agrupados
     if (states.faceStates.length > 0) {
-      // Agrupar por estado
       const stateGroups: Partial<Record<ToothState, ToothFace[]>> = {};
       states.faceStates.forEach(({ face, state }) => {
         if (!stateGroups[state]) {
@@ -151,7 +243,6 @@ const DiagnosisSummary: React.FC = () => {
         stateGroups[state]!.push(face);
       });
 
-      // Crear entradas para cada grupo de estado
       Object.entries(stateGroups).forEach(([state, faces]) => {
         if (faces) {
           const faceNames = faces.map(formatFaceName).join(', ');
@@ -164,7 +255,7 @@ const DiagnosisSummary: React.FC = () => {
     const customNotes = toothData?.notes && !states.symbolStates.includes('otro') ? toothData.notes : '';
 
     return (
-      <div key={summary.toothNumber} className="mb-2 flex items-center justify-between">
+      <div key={toothNumber} className="mb-2 flex items-center justify-between">
         <div className="flex-1">
           <span className="font-semibold text-gray-800">
             Diente {displayNumber}:
@@ -223,7 +314,16 @@ const DiagnosisSummary: React.FC = () => {
     );
   };
 
-  const summaries = getToothSummaries();
+  // Renderizar entrada del resumen
+  const renderSummaryEntry = (entry: SummaryEntry) => {
+    if (entry.type === 'bridge') {
+      return renderBridgeEntry(entry);
+    } else {
+      return renderToothEntry(entry);
+    }
+  };
+
+  const summaryEntries = getSummaryEntries();
   const tabTitle = currentTab === 'diagnosis' ? 'Diagnóstico' : 'Tratamiento';
 
   return (
@@ -232,7 +332,7 @@ const DiagnosisSummary: React.FC = () => {
         Resumen del {tabTitle}
       </h3>
       
-      {summaries.length === 0 ? (
+      {summaryEntries.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500 text-lg">
             No hay estados dentales registrados en {tabTitle.toLowerCase()}
@@ -240,7 +340,7 @@ const DiagnosisSummary: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-1">
-          {summaries.map(renderToothSummary)}
+          {summaryEntries.map(renderSummaryEntry)}
         </div>
       )}
     </div>
