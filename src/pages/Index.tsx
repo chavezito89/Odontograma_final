@@ -30,28 +30,50 @@ const MainContent = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className={`grid gap-8 ${isCollapsed ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-4'}`}>
-          {/* Odontograma Principal */}
-          <div className={isCollapsed ? 'xl:col-span-4' : 'lg:col-span-3'}>
-            <div className="space-y-6">
-              {/* Título de sección */}
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Odontograma</h2>
-                <p className="text-gray-600">
-                  Selecciona un estado dental y haz clic en los dientes o caras específicas para aplicar el tratamiento
-                </p>
-              </div>
+        {isCollapsed ? (
+          /* Layout cuando el sidebar está colapsado - odontograma usa todo el ancho */
+          <div className="space-y-6">
+            {/* Título de sección */}
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">Odontograma</h2>
+              <p className="text-gray-600">
+                Selecciona un estado dental y haz clic en los dientes o caras específicas para aplicar el tratamiento
+              </p>
+            </div>
 
-              {/* Odontograma */}
-              <OdontogramGrid />
+            {/* Odontograma ocupando todo el ancho */}
+            <OdontogramGrid />
+            
+            {/* StateSelector en la parte inferior cuando está colapsado */}
+            <div className="max-w-md mx-auto">
+              <StateSelector />
             </div>
           </div>
+        ) : (
+          /* Layout normal cuando el sidebar está expandido */
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Odontograma Principal - Ocupa 3 columnas */}
+            <div className="lg:col-span-3">
+              <div className="space-y-6">
+                {/* Título de sección */}
+                <div className="text-center">
+                  <h2 className="text-3xl font-bold text-gray-800 mb-2">Odontograma</h2>
+                  <p className="text-gray-600">
+                    Selecciona un estado dental y haz clic en los dientes o caras específicas para aplicar el tratamiento
+                  </p>
+                </div>
 
-          {/* Estados Dentales - Sidebar derecho */}
-          <div className={isCollapsed ? 'xl:col-span-1' : 'lg:col-span-1'}>
-            <StateSelector />
+                {/* Odontograma */}
+                <OdontogramGrid />
+              </div>
+            </div>
+
+            {/* Estados Dentales - Sidebar derecho */}
+            <div className="lg:col-span-1">
+              <StateSelector />
+            </div>
           </div>
-        </div>
+        )}
       </main>
 
       {/* Footer */}
