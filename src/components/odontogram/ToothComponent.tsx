@@ -49,11 +49,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
 
   return (
     <div className={cn("relative group", className)}>
-      {/* Diente con forma cuadrada dividida en 5 secciones */}
+      {/* Diente con forma cuadrada dividida en 5 secciones - tamaño reducido */}
       <div
         className={cn(
-          "relative w-16 h-16 cursor-pointer transition-all duration-200",
-          "hover:scale-105",
+          "relative w-12 h-12 cursor-pointer transition-all duration-200",
+          "hover:scale-102",
           isSelected ? "ring-2 ring-blue-500 ring-offset-1" : ""
         )}
         onClick={handleToothClick}
@@ -120,12 +120,12 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title="Cara Lingual"
           />
           
-          {/* Cara Oclusal (centro) - más grande y con borde definido */}
+          {/* Cara Oclusal (centro) - reducida proporcionalmente */}
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-              "w-8 h-8 cursor-pointer transition-colors duration-200 hover:brightness-90",
-              "flex items-center justify-center text-sm font-bold text-gray-800",
+              "w-6 h-6 cursor-pointer transition-colors duration-200 hover:brightness-90",
+              "flex items-center justify-center text-xs font-bold text-gray-800",
               "border-2 border-gray-700 rounded-sm",
               getFaceColor('oclusal')
             )}
@@ -137,8 +137,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         </div>
       </div>
       
-      {/* Número del diente debajo */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-600">
+      {/* Número del diente debajo - ajustado para el nuevo tamaño */}
+      <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-600">
         {toothNumber}
       </div>
       
