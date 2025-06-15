@@ -109,18 +109,20 @@ const DiagnosisSummary: React.FC = () => {
     // Agregar estados por caras agrupados
     if (states.faceStates.length > 0) {
       // Agrupar por estado
-      const stateGroups: Record<ToothState, ToothFace[]> = {};
+      const stateGroups: Partial<Record<ToothState, ToothFace[]>> = {};
       states.faceStates.forEach(({ face, state }) => {
         if (!stateGroups[state]) {
           stateGroups[state] = [];
         }
-        stateGroups[state].push(face);
+        stateGroups[state]!.push(face);
       });
 
       // Crear entradas para cada grupo de estado
       Object.entries(stateGroups).forEach(([state, faces]) => {
-        const faceNames = faces.map(formatFaceName).join(', ');
-        entries.push(`${TOOTH_STATE_COLORS[state as ToothState].label} en ${faceNames}`);
+        if (faces) {
+          const faceNames = faces.map(formatFaceName).join(', ');
+          entries.push(`${TOOTH_STATE_COLORS[state as ToothState].label} en ${faceNames}`);
+        }
       });
     }
 
