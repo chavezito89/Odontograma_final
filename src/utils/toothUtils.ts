@@ -1,3 +1,4 @@
+
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental - ACTUALIZADA con todos los nuevos estados
@@ -46,7 +47,7 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   tornillo: {
     bg: 'bg-gray-500',
     border: 'border-gray-600',
-    label: 'Tornillo'
+    label: 'Implante'
   },
   temporal: {
     bg: 'bg-green-500',
