@@ -47,7 +47,7 @@ const StateSelector: React.FC = () => {
       
       {/* Estado sano */}
       <div className="mb-4">
-        <h4 className="text-sm font-medium text-gray-600 mb-2">Estado Base</h4>
+        
         <div className="grid grid-cols-1 gap-2">
           {renderStateButton('healthy')}
         </div>
