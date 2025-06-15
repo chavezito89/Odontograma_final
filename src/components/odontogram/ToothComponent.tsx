@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -167,6 +166,31 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     !(toothData?.state && isFullToothState(toothData.state)) && 
     !hasSymbol;
 
+  // Obtener el color CSS de la cara oclusal
+  const getOclusalBackgroundColor = (): string => {
+    const faceColor = getFaceColor('oclusal');
+    if (faceColor === 'bg-white') return '#ffffff';
+    
+    // Mapear colores de Tailwind a valores CSS
+    const colorMap: Record<string, string> = {
+      'bg-red-500': '#ef4444',
+      'bg-blue-500': '#3b82f6',
+      'bg-yellow-500': '#eab308',
+      'bg-purple-500': '#a855f7',
+      'bg-gray-500': '#6b7280',
+      'bg-green-500': '#22c55e',
+      'bg-orange-500': '#f97316',
+      'bg-orange-400': '#fb923c',
+      'bg-yellow-400': '#facc15',
+      'bg-yellow-600': '#ca8a04',
+      'bg-blue-600': '#2563eb',
+      'bg-amber-600': '#d97706',
+      'bg-purple-400': '#c084fc'
+    };
+    
+    return colorMap[faceColor] || '#ffffff';
+  };
+
   return (
     <>
       <div className={cn("relative group flex flex-col items-center", className)}>
@@ -253,13 +277,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                 "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
                 centerSize,
                 "transition-colors duration-200",
-                "border border-gray-700 rounded-sm bg-white z-10",
+                "border border-gray-700 rounded-sm z-10",
                 areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
               )}
               onClick={areFacesInteractive ? (e) => handleFaceClick('oclusal', e) : undefined}
               title={areFacesInteractive ? "Cara Oclusal" : undefined}
               style={{
-                backgroundColor: !hasSymbol ? getFaceColor('oclusal').replace('bg-', '') === 'white' ? '#ffffff' : getFaceColor('oclusal') : '#ffffff'
+                backgroundColor: getOclusalBackgroundColor()
               }}
             />
           </div>
