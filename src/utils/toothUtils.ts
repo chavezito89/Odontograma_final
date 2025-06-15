@@ -49,6 +49,33 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   }
 };
 
+// Estados que abarcan todo el diente (no permiten selección por caras)
+export const FULL_TOOTH_STATES: ToothState[] = [
+  'crown',
+  'extraction', 
+  'implant',
+  'missing',
+  'endodontics'
+];
+
+// Estados que permiten selección por caras individuales
+export const FACE_SELECTABLE_STATES: ToothState[] = [
+  'healthy',
+  'caries',
+  'restoration',
+  'fissure'
+];
+
+// Verificar si un estado abarca todo el diente
+export const isFullToothState = (state: ToothState): boolean => {
+  return FULL_TOOTH_STATES.includes(state);
+};
+
+// Verificar si un estado permite selección por caras
+export const isFaceSelectableState = (state: ToothState): boolean => {
+  return FACE_SELECTABLE_STATES.includes(state);
+};
+
 // Números de dientes por cuadrante (FDI)
 export const TOOTH_NUMBERS = {
   permanent: {
