@@ -1,3 +1,4 @@
+
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental
@@ -83,15 +84,15 @@ export const TOOTH_NUMBERS = {
   }
 } as const;
 
-// Conversión FDI a Universal - Corregido según imagen exacta
+// Conversión FDI a Universal - Según imagen exacta
 export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
-  // Superior Derecho (UR): del 18 al 11 = del 1 al 8
+  // Superior Derecho: 8, 7, 6, 5, 4, 3, 2, 1
   18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
-  // Superior Izquierdo (UL): del 21 al 28 = del 9 al 16  
+  // Superior Izquierdo: 9, 10, 11, 12, 13, 14, 15, 16
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
-  // Inferior Izquierdo (LL): del 31 al 38 = del 17 al 24
+  // Inferior Izquierdo: 17, 18, 19, 20, 21, 22, 23, 24
   31: 17, 32: 18, 33: 19, 34: 20, 35: 21, 36: 22, 37: 23, 38: 24,
-  // Inferior Derecho (LR): del 48 al 41 = del 25 al 32
+  // Inferior Derecho: 32, 31, 30, 29, 28, 27, 26, 25
   48: 25, 47: 26, 46: 27, 45: 28, 44: 29, 43: 30, 42: 31, 41: 32,
   // Deciduos superiores - cuadrante 5 (superior derecho) - A, B, C, D, E
   55: 'A', 54: 'B', 53: 'C', 52: 'D', 51: 'E',
