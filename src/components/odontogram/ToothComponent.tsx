@@ -140,7 +140,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return adjacentTooth?.bridgeInfo?.bridgeId === toothData.bridgeInfo.bridgeId;
   };
   
-  // Manejar click en el diente completo - ACTUALIZADO para manejar puentes
+  // Manejar click en el diente completo - ACTUALIZADO para manejar cancelación de "otro"
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
@@ -151,7 +151,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     }
     
     if (selectedState === 'otro') {
-      updateToothState(toothNumber, selectedState);
+      // Para el estado "otro", solo abrir el diálogo sin aplicar el estado todavía
       setIsNotesDialogOpen(true);
       return;
     }
@@ -169,6 +169,18 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         setSelectedTooth(toothNumber);
       }
     }
+  };
+
+  // Manejar la confirmación del diálogo de notas para "otro"
+  const handleNotesDialogConfirm = () => {
+    updateToothState(toothNumber, 'otro');
+    setIsNotesDialogOpen(false);
+  };
+
+  // Manejar la cancelación del diálogo de notas para "otro"
+  const handleNotesDialogCancel = () => {
+    setIsNotesDialogOpen(false);
+    // No aplicar el estado si se cancela
   };
   
   // Manejar click en una cara específica
@@ -479,10 +491,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           ))}
         </div>
         
-        {/* Diálogo de notas para estado "otro" */}
+        {/* Diálogo de notas para estado "otro" - ACTUALIZADO con handlers específicos */}
         <ToothNotesDialog
           isOpen={isNotesDialogOpen}
-          onClose={() => setIsNotesDialogOpen(false)}
+          onClose={handleNotesDialogCancel}
+          onConfirm={handleNotesDialogConfirm}
           toothNumber={toothNumber}
         />
         

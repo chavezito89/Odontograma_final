@@ -15,12 +15,14 @@ import { Textarea } from '@/components/ui/textarea';
 interface ToothNotesDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  onConfirm?: () => void;
   toothNumber: number;
 }
 
 const ToothNotesDialog: React.FC<ToothNotesDialogProps> = ({
   isOpen,
   onClose,
+  onConfirm,
   toothNumber,
 }) => {
   const { 
@@ -47,7 +49,11 @@ const ToothNotesDialog: React.FC<ToothNotesDialogProps> = ({
 
   const handleSave = () => {
     updateToothNotes(toothNumber, notes.trim());
-    onClose();
+    if (onConfirm) {
+      onConfirm();
+    } else {
+      onClose();
+    }
   };
 
   const handleCancel = () => {
