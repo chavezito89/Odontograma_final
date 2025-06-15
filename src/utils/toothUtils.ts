@@ -85,21 +85,21 @@ export const TOOTH_NUMBERS = {
 
 // Conversión FDI a Universal - Según imagen exacta
 export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
-  // Superior Derecho: 1, 2, 3, 4, 5, 6, 7, 8 (del 18 al 11)
-  18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
+  // Superior Derecho: 1, 2, 3, 4, 5, 6, 7, 8 (del 18 al 11) - de izquierda a derecha
+  18: 8, 17: 7, 16: 6, 15: 5, 14: 4, 13: 3, 12: 2, 11: 1,
   // Superior Izquierdo: 9, 10, 11, 12, 13, 14, 15, 16 (del 21 al 28)
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
-  // Inferior Izquierdo: 17, 18, 19, 20, 21, 22, 23, 24 (del 31 al 38)
+  // Inferior Izquierdo: 24, 23, 22, 21, 20, 19, 18, 17 (del 31 al 38)
   31: 24, 32: 23, 33: 22, 34: 21, 35: 20, 36: 19, 37: 18, 38: 17,
-  // Inferior Derecho: 25, 26, 27, 28, 29, 30, 31, 32 (del 41 al 48)
+  // Inferior Derecho: 32, 31, 30, 29, 28, 27, 26, 25 (del 41 al 48)
   41: 32, 42: 31, 43: 30, 44: 29, 45: 28, 46: 27, 47: 26, 48: 25,
   // Deciduos superiores - cuadrante 5 (superior derecho) - A, B, C, D, E
-  55: 'A', 54: 'B', 53: 'C', 52: 'D', 51: 'E',
+  55: 'E', 54: 'D', 53: 'C', 52: 'B', 51: 'A',
   // Deciduos superiores - cuadrante 6 (superior izquierdo) - F, G, H, I, J
   61: 'F', 62: 'G', 63: 'H', 64: 'I', 65: 'J',
-  // Deciduos inferiores - cuadrante 8 (inferior derecho) - P, Q, R, S, T
+  // Deciduos inferiores - cuadrante 8 (inferior derecho) - T, S, R, Q, P
   85: 'T', 84: 'S', 83: 'R', 82: 'Q', 81: 'P',
-  // Deciduos inferiores - cuadrante 7 (inferior izquierdo) - K, L, M, N, O
+  // Deciduos inferiores - cuadrante 7 (inferior izquierdo) - O, N, M, L, K
   71: 'O', 72: 'N', 73: 'M', 74: 'L', 75: 'K'
 };
 
