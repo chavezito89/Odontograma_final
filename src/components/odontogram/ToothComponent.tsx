@@ -212,8 +212,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     
     const colorMap: Record<string, string> = {
       'bg-red-500': '#ef4444',
-      'bg-blue-500': '#3b82f6',
       'bg-yellow-500': '#eab308',
+      'bg-blue-500': '#3b82f6',
+      'bg-green-500': '#22c55e',
+      'bg-orange-500': '#f97316',
       'bg-purple-500': '#a855f7',
       'bg-purple-600': '#9333ea',
       'bg-gray-500': '#6b7280',
@@ -433,6 +435,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                         <IconComponent
                           size={isCollapsed ? 20 : 16}
                           color={iconColor}
+                          strokeWidth={icon === 'circle' ? 3 : 2}
                           style={{
                             filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.8))',
                             transform: symbolState === 'endodoncia' ? 'rotate(90deg)' : undefined

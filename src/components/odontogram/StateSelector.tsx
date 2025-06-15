@@ -78,6 +78,7 @@ const StateSelector: React.FC = () => {
                 <IconComponent
                   size={12}
                   color={iconColor}
+                  strokeWidth={icon === 'circle' ? 3 : 2}
                   style={{
                     transform: state === 'endodoncia' ? 'rotate(90deg)' : undefined
                   }}
