@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
@@ -234,15 +233,15 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   return (
     <>
       <div className={cn("relative group flex flex-col items-center", className)}>
-        {/* Líneas continuas del puente - POSICIÓN AJUSTADA para alinearse con los círculos */}
+        {/* Líneas continuas del puente - POSICIÓN AJUSTADA más arriba y más anchas */}
         {(isBridgeIntermediate || isBridgePilar) && (
           <>
             {/* Línea hacia la izquierda */}
             {hasAdjacentBridgeTooth('left') && (
               <div 
-                className="absolute -left-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
+                className="absolute -left-4 w-8 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
                 style={{ 
-                  top: '50%',
+                  top: '40%',
                   transform: 'translateY(-50%)' 
                 }}
               />
@@ -251,9 +250,9 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             {/* Línea hacia la derecha */}
             {hasAdjacentBridgeTooth('right') && (
               <div 
-                className="absolute -right-3 w-6 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
+                className="absolute -right-4 w-8 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
                 style={{ 
-                  top: '50%',
+                  top: '40%',
                   transform: 'translateY(-50%)' 
                 }}
               />
@@ -264,7 +263,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               <div 
                 className="absolute left-1/2 w-full h-1 bg-purple-600 z-20 rounded-full shadow-sm"
                 style={{ 
-                  top: '50%',
+                  top: '40%',
                   transform: 'translate(-50%, -50%)' 
                 }}
               />
