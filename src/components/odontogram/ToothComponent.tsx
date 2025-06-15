@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -299,11 +300,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           onClose={() => setIsNotesDialogOpen(false)}
           toothNumber={toothNumber}
         />
-      </div>
-      
-      {/* Número del diente debajo de la casilla */}
-      <div className="mt-1 text-xs font-bold text-gray-700">
-        {displayNumber}
+        
+        {/* Número del diente debajo de la casilla */}
+        <div className="mt-1 text-xs font-bold text-gray-700">
+          {displayNumber}
+        </div>
       </div>
     </>
   );
