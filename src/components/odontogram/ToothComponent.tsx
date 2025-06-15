@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -32,9 +33,33 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6;
   };
   
+  // Determinar si el diente pertenece a un cuadrante derecho
+  const isRightQuadrant = (): boolean => {
+    const quadrant = Math.floor(toothNumber / 10);
+    return quadrant === 1 || quadrant === 4 || quadrant === 5 || quadrant === 8;
+  };
+  
   // Obtener la cara lingual/palatina correcta según el cuadrante
   const getLingopalatineFace = (): ToothFace => {
     return isUpperTooth() ? 'palatina' : 'lingual';
+  };
+  
+  // Obtener clipPath para cara mesial según el cuadrante
+  const getMesialClipPath = (): string => {
+    // En cuadrantes derechos: mesial = derecha
+    // En cuadrantes izquierdos: mesial = izquierda
+    return isRightQuadrant() 
+      ? "polygon(100% 0%, 100% 100%, 50% 50%)" // derecha
+      : "polygon(0% 0%, 50% 50%, 0% 100%)";    // izquierda
+  };
+  
+  // Obtener clipPath para cara distal según el cuadrante
+  const getDistalClipPath = (): string => {
+    // En cuadrantes derechos: distal = izquierda
+    // En cuadrantes izquierdos: distal = derecha
+    return isRightQuadrant()
+      ? "polygon(0% 0%, 50% 50%, 0% 100%)"     // izquierda
+      : "polygon(100% 0%, 100% 100%, 50% 50%)"; // derecha
   };
   
   // Obtener el color del símbolo basado en el estado
@@ -147,7 +172,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             `
           }}
         >
-          {/* Cara Mesial (derecha) */}
+          {/* Cara Mesial - posición dinámica según cuadrante */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
@@ -155,13 +180,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               getFaceColor('mesial')
             )}
             style={{
-              clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)"
+              clipPath: getMesialClipPath()
             }}
             onClick={areFacesInteractive ? (e) => handleFaceClick('mesial', e) : undefined}
             title={areFacesInteractive ? "Cara Mesial" : undefined}
           />
           
-          {/* Cara Distal (izquierda) */}
+          {/* Cara Distal - posición dinámica según cuadrante */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
@@ -169,13 +194,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               getFaceColor('distal')
             )}
             style={{
-              clipPath: "polygon(0% 0%, 50% 50%, 0% 100%)"
+              clipPath: getDistalClipPath()
             }}
             onClick={areFacesInteractive ? (e) => handleFaceClick('distal', e) : undefined}
             title={areFacesInteractive ? "Cara Distal" : undefined}
           />
           
-          {/* Cara Vestibular - posición según cuadrante */}
+          {/* Cara Vestibular - posición según si es superior o inferior */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
@@ -189,7 +214,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title={areFacesInteractive ? "Cara Vestibular" : undefined}
           />
           
-          {/* Cara Lingual/Palatina - posición según cuadrante */}
+          {/* Cara Lingual/Palatina - posición según si es superior o inferior */}
           <div
             className={cn(
               "absolute inset-0 transition-colors duration-200",
