@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useOdontoStore, ToothState } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
@@ -78,7 +79,11 @@ const StateSelector: React.FC = () => {
                 <IconComponent
                   size={12}
                   color={iconColor}
-                  strokeWidth={icon === 'circle' ? 3 : 2}
+                  strokeWidth={
+                    state === 'corona' || state === 'puente' 
+                      ? 3 
+                      : 4
+                  }
                   style={{
                     transform: state === 'endodoncia' ? 'rotate(90deg)' : undefined
                   }}

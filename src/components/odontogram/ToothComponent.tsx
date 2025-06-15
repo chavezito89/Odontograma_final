@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol, isIconState, getStateIcon, getStateIconColor } from '@/utils/toothUtils';
@@ -434,7 +435,11 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                         <IconComponent
                           size={isCollapsed ? 20 : 16}
                           color={iconColor}
-                          strokeWidth={icon === 'circle' ? 3 : 2}
+                          strokeWidth={
+                            symbolState === 'corona' || symbolState === 'puente' 
+                              ? 3 
+                              : 4
+                          }
                           style={{
                             filter: 'drop-shadow(1px 1px 1px rgba(255,255,255,0.8))',
                             transform: symbolState === 'endodoncia' ? 'rotate(90deg)' : undefined
