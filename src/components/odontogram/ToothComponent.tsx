@@ -154,7 +154,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       {/* Diente con forma cuadrada dividida en 5 secciones */}
       <div
         className={cn(
-          "relative w-12 h-12 cursor-pointer transition-all duration-200",
+          "relative w-10 h-10 cursor-pointer transition-all duration-200",
           "hover:scale-105"
         )}
         onClick={handleToothClick}
@@ -231,7 +231,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-              "w-5 h-5 transition-colors duration-200",
+              "w-4 h-4 transition-colors duration-200",
               "border border-gray-700 rounded-sm bg-white z-10",
               areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
             )}
