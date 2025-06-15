@@ -1,12 +1,99 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useEffect } from 'react';
+import { useOdontoStore } from '@/store/odontoStore';
+import OdontogramGrid from '@/components/odontogram/OdontogramGrid';
+import StateSelector from '@/components/odontogram/StateSelector';
+import ControlPanel from '@/components/odontogram/ControlPanel';
+import { Stethoscope, Calendar, Activity } from 'lucide-react';
 
 const Index = () => {
+  const { selectedPatientId, setSelectedPatientId } = useOdontoStore();
+
+  // Inicializar con paciente demo si no hay uno seleccionado
+  useEffect(() => {
+    if (!selectedPatientId) {
+      setSelectedPatientId('patient-demo');
+    }
+  }, [selectedPatientId, setSelectedPatientId]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-blue-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <Stethoscope className="w-8 h-8 text-blue-600" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Odontograma Digital</h1>
+                <p className="text-sm text-gray-600">Sistema de diagnóstico dental profesional</p>
+              </div>
+            </div>
+            
+            {/* Stats rápidas */}
+            <div className="hidden md:flex ml-auto space-x-6">
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <Calendar className="w-4 h-4" />
+                <span>{new Date().toLocaleDateString('es-ES')}</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <Activity className="w-4 h-4" />
+                <span>Sistema Activo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          {/* Panel de Control - Sidebar izquierdo */}
+          <div className="xl:col-span-1 space-y-6">
+            <ControlPanel />
+            <StateSelector />
+          </div>
+
+          {/* Odontograma Principal */}
+          <div className="xl:col-span-3">
+            <div className="space-y-6">
+              {/* Título de sección */}
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                  Odontograma Interactivo
+                </h2>
+                <p className="text-gray-600">
+                  Selecciona un estado dental y haz clic en los dientes o caras específicas para aplicar el tratamiento
+                </p>
+              </div>
+
+              {/* Odontograma */}
+              <OdontogramGrid />
+
+              {/* Instrucciones */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="font-semibold text-blue-800 mb-2">Instrucciones de uso:</h3>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li>• Selecciona un estado dental del panel lateral</li>
+                  <li>• Haz clic en un diente completo para aplicar el estado a todo el diente</li>
+                  <li>• Haz clic en las caras individuales (oclusal, vestibular, lingual, mesial, distal) para tratamientos específicos</li>
+                  <li>• Cambia entre modo Diagnóstico y Tratamiento usando las pestañas</li>
+                  <li>• Los datos se guardan automáticamente por paciente</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center text-sm text-gray-500">
+            <p>© 2024 Odontograma Digital - Sistema de gestión dental profesional</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
