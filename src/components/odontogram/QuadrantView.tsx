@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ToothComponent from './ToothComponent';
 import { TOOTH_NUMBERS } from '@/utils/toothUtils';
@@ -38,10 +39,10 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     const isUpperQuadrant = quadrant === 'upperRight' || quadrant === 'upperLeft';
     
     return (
-      <div className="space-y-2 w-full">
+      <div className="space-y-1 w-full">
         {/* Primera fila */}
         <div className={cn(
-          "flex gap-1 justify-center items-end flex-wrap",
+          "flex gap-0.5 justify-center items-end flex-wrap",
           getFlexDirection(quadrant)
         )}>
           {isUpperQuadrant ? (
@@ -67,7 +68,7 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
         
         {/* Segunda fila */}
         <div className={cn(
-          "flex gap-1 justify-center items-end flex-wrap",
+          "flex gap-0.5 justify-center items-end flex-wrap",
           getFlexDirection(quadrant)
         )}>
           {isUpperQuadrant ? (
@@ -103,7 +104,7 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     
     return (
       <div className={cn(
-        "flex gap-1 justify-center items-end flex-wrap",
+        "flex gap-0.5 justify-center items-end flex-wrap",
         getFlexDirection(quadrant)
       )}>
         {teethArray.length > 0 ? (
@@ -124,8 +125,8 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
   return (
     <div className={cn("w-full overflow-hidden", className)}>
       {/* Etiqueta del cuadrante */}
-      <div className="text-center mb-3">
-        <h3 className="text-xs font-semibold text-gray-700 mb-2">
+      <div className="text-center mb-2">
+        <h3 className="text-xs font-semibold text-gray-700 mb-1">
           {getQuadrantLabel(quadrant)}
         </h3>
         
