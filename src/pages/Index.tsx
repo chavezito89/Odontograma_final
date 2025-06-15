@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useOdontoStore } from '@/store/odontoStore';
 import OdontogramGrid from '@/components/odontogram/OdontogramGrid';
@@ -29,10 +28,10 @@ const MainContent = () => {
       <TopBar />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className={`grid gap-8 ${isCollapsed ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-4'}`}>
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
+        <div className={`grid gap-8 ${isCollapsed ? 'grid-cols-1 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-3'}`}>
           {/* Odontograma Principal */}
-          <div className={isCollapsed ? 'xl:col-span-4' : 'lg:col-span-3'}>
+          <div className={isCollapsed ? 'xl:col-span-3' : 'lg:col-span-2'}>
             <div className="space-y-6">
               {/* Título de sección */}
               <div className="text-center">
@@ -56,7 +55,7 @@ const MainContent = () => {
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-500">
             <p>© 2025 Odontograma Digital - DOTTOO SOLUTIONS</p>
           </div>

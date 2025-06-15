@@ -37,7 +37,7 @@ const StateSelector: React.FC = () => {
         key={state}
         onClick={() => setSelectedState(state)}
         className={cn(
-          "w-full flex items-center space-x-3 p-3 rounded-lg border-2 transition-all duration-200",
+          "w-full flex items-center space-x-2 p-2 rounded-lg border-2 transition-all duration-200",
           "hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500",
           isSelected 
             ? "border-blue-500 bg-blue-50 shadow-md" 
@@ -47,7 +47,7 @@ const StateSelector: React.FC = () => {
         {/* Indicador de color o símbolo */}
         <div 
           className={cn(
-            "w-6 h-6 rounded border flex items-center justify-center text-sm font-bold flex-shrink-0",
+            "w-5 h-5 rounded border flex items-center justify-center text-sm font-bold flex-shrink-0",
             hasSymbol 
               ? "border-gray-300 bg-white" 
               : `${config.bg} ${config.border}`
@@ -59,7 +59,7 @@ const StateSelector: React.FC = () => {
         
         {/* Etiqueta */}
         <span className={cn(
-          "text-sm font-medium text-left",
+          "text-xs font-medium text-left leading-tight",
           isSelected ? "text-blue-700" : "text-gray-700"
         )}>
           {config.label}
@@ -70,28 +70,28 @@ const StateSelector: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-      <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">Estados Dentales</h3>
+      <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Estados Dentales</h3>
       
       {/* Estado sano */}
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-gray-600 mb-3">Estado Normal</h4>
-        <div className="space-y-2">
+      <div className="mb-4">
+        <h4 className="text-xs font-medium text-gray-600 mb-2">Estado Normal</h4>
+        <div className="grid grid-cols-1 gap-1">
           {renderStateButton('healthy')}
         </div>
       </div>
       
-      {/* Estados con símbolos */}
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-gray-600 mb-3">Estados Especiales</h4>
-        <div className="space-y-2">
+      {/* Estados con símbolos - doble columna */}
+      <div className="mb-4">
+        <h4 className="text-xs font-medium text-gray-600 mb-2">Estados Especiales</h4>
+        <div className="grid grid-cols-2 gap-1">
           {symbolStates.map(renderStateButton)}
         </div>
       </div>
       
-      {/* Estados por cara */}
+      {/* Estados por cara - doble columna */}
       <div>
-        <h4 className="text-sm font-medium text-gray-600 mb-3">Estados por Cara</h4>
-        <div className="space-y-2">
+        <h4 className="text-xs font-medium text-gray-600 mb-2">Estados por Cara</h4>
+        <div className="grid grid-cols-2 gap-1">
           {faceStates.map(renderStateButton)}
         </div>
       </div>
