@@ -26,13 +26,13 @@ export type ToothState =
 // Caras del diente - ACTUALIZADO para soportar palatina y lingual
 export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'palatina' | 'oclusal';
 
-// Estado de un diente individual - ACTUALIZADO para soportar símbolos
+// Estado de un diente individual - ACTUALIZADO para soportar múltiples símbolos
 export interface ToothData {
   number: number;
   quadrant: number;
   state: ToothState;
   secondaryState?: ToothState; // Mantenido para compatibilidad
-  symbolState?: ToothState; // Nuevo campo para estados con símbolos superpuestos
+  symbolStates: ToothState[]; // NUEVO: array de estados especiales que se pueden combinar
   faces: Record<ToothFace, ToothState>;
   notes?: string;
   lastModified: Date;
@@ -84,13 +84,13 @@ interface OdontoState {
   initializePatient: (patientId: string) => void;
 }
 
-// Estado inicial de un diente - ACTUALIZADO para incluir palatina
+// Estado inicial de un diente - ACTUALIZADO para incluir symbolStates
 const createInitialTooth = (number: number): ToothData => ({
   number,
   quadrant: Math.ceil(number / 10),
   state: 'healthy',
   secondaryState: undefined,
-  symbolState: undefined,
+  symbolStates: [], // NUEVO: inicializar como array vacío
   faces: {
     mesial: 'healthy',
     distal: 'healthy',
@@ -126,7 +126,7 @@ export const useOdontoStore = create<OdontoState>()(
       setSelectedTooth: (tooth) => set({ selectedTooth: tooth }),
       setSelectedState: (state) => set({ selectedState: state }),
       
-      // Operaciones con dientes - ACTUALIZADO para manejar símbolos y "otro"
+      // Operaciones con dientes - ACTUALIZADO para manejar múltiples símbolos especiales
       updateToothState: (toothNumber, state) => {
         const { selectedPatientId, currentTab } = get();
         if (!selectedPatientId) return;
@@ -147,7 +147,7 @@ export const useOdontoStore = create<OdontoState>()(
                       ...currentTooth,
                       state: 'healthy',
                       secondaryState: undefined,
-                      symbolState: undefined,
+                      symbolStates: [], // Limpiar todos los estados especiales
                       notes: undefined,
                       faces: {
                         mesial: 'healthy',
@@ -169,8 +169,13 @@ export const useOdontoStore = create<OdontoState>()(
           const isSymbol = ['ausente', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'otro'].includes(state);
           
           if (isSymbol) {
+            // Obtener los estados especiales actuales
+            const currentSymbolStates = currentTooth.symbolStates || [];
+            
             // Si ya tiene este símbolo, lo removemos
-            if (currentTooth.symbolState === state) {
+            if (currentSymbolStates.includes(state)) {
+              const newSymbolStates = currentSymbolStates.filter(s => s !== state);
+              
               return {
                 patientData: {
                   ...prev.patientData,
@@ -180,8 +185,8 @@ export const useOdontoStore = create<OdontoState>()(
                       ...prev.patientData[selectedPatientId]?.[currentTab],
                       [toothNumber]: {
                         ...currentTooth,
-                        symbolState: undefined,
-                        notes: state === 'otro' ? undefined : currentTooth.notes,
+                        symbolStates: newSymbolStates,
+                        notes: state === 'otro' && newSymbolStates.length === 0 ? undefined : currentTooth.notes,
                         lastModified: new Date()
                       }
                     }
@@ -190,7 +195,9 @@ export const useOdontoStore = create<OdontoState>()(
               };
             }
             
-            // Aplicar o cambiar el símbolo sin afectar el estado base
+            // Agregar el nuevo símbolo al array
+            const newSymbolStates = [...currentSymbolStates, state];
+            
             return {
               patientData: {
                 ...prev.patientData,
@@ -200,7 +207,7 @@ export const useOdontoStore = create<OdontoState>()(
                     ...prev.patientData[selectedPatientId]?.[currentTab],
                     [toothNumber]: {
                       ...currentTooth,
-                      symbolState: state,
+                      symbolStates: newSymbolStates,
                       lastModified: new Date()
                     }
                   }

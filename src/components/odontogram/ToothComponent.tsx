@@ -30,7 +30,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const isSelected = selectedTooth === toothNumber;
   const displayNumber = getDisplayNumber(toothNumber, numberingSystem);
   const isFullToothStateSelected = isFullToothState(selectedState);
-  const hasSymbol = toothData?.symbolState !== undefined;
+  const hasSymbols = toothData?.symbolStates && toothData.symbolStates.length > 0;
   
   // Tamaño dinámico basado en el estado del sidebar - aumentado para aprovechar el espacio
   const toothSize = isCollapsed ? 'w-16 h-16' : 'w-14 h-14';
@@ -55,8 +55,6 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   
   // Obtener clipPath para cara mesial según el cuadrante
   const getMesialClipPath = (): string => {
-    // En cuadrantes derechos: mesial = derecha
-    // En cuadrantes izquierdos: mesial = izquierda
     return isRightQuadrant() 
       ? "polygon(100% 0%, 100% 100%, 50% 50%)" // derecha
       : "polygon(0% 0%, 50% 50%, 0% 100%)";    // izquierda
@@ -64,42 +62,12 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   
   // Obtener clipPath para cara distal según el cuadrante
   const getDistalClipPath = (): string => {
-    // En cuadrantes derechos: distal = izquierda
-    // En cuadrantes izquierdos: distal = derecha
     return isRightQuadrant()
       ? "polygon(0% 0%, 50% 50%, 0% 100%)"     // izquierda
       : "polygon(100% 0%, 100% 100%, 50% 50%)"; // derecha
   };
   
-  // Obtener el color del símbolo basado en el estado
-  const getSymbolColor = (): string => {
-    if (!hasSymbol || !toothData?.symbolState) return '';
-    
-    const symbolConfig = TOOTH_STATE_COLORS[toothData.symbolState];
-    // Convertir clase de Tailwind a color CSS
-    const colorMap: Record<string, string> = {
-      'bg-red-500': '#ef4444',
-      'bg-yellow-500': '#eab308',
-      'bg-blue-500': '#3b82f6',
-      'bg-green-500': '#22c55e'
-    };
-    
-    return colorMap[symbolConfig.bg] || '#3b82f6'; // Default a azul si no se encuentra
-  };
-  
-  // Obtener el tamaño del símbolo según el tipo y estado del sidebar
-  const getSymbolSize = (): string => {
-    if (!hasSymbol || !toothData?.symbolState) return isCollapsed ? 'text-3xl' : 'text-2xl';
-    
-    // El símbolo de movilidad necesita ser más grande
-    if (toothData.symbolState === 'movilidad') {
-      return isCollapsed ? 'text-4xl' : 'text-3xl';
-    }
-    
-    return isCollapsed ? 'text-3xl' : 'text-2xl';
-  };
-  
-  // Manejar click en el diente completo - ACTUALIZADO para "otro"
+  // Manejar click en el diente completo - ACTUALIZADO para manejar múltiples símbolos
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
@@ -164,7 +132,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   // Verificar si las caras deben ser interactivas
   const areFacesInteractive = !isFullToothStateSelected && 
     !(toothData?.state && isFullToothState(toothData.state)) && 
-    !hasSymbol;
+    !hasSymbols;
 
   // Obtener el color CSS de la cara oclusal
   const getOclusalBackgroundColor = (): string => {
@@ -288,33 +256,73 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolo superpuesto */}
-          {hasSymbol && toothData?.symbolState && (
+          {/* Símbolos superpuestos - ACTUALIZADO para mostrar múltiples símbolos */}
+          {hasSymbols && toothData?.symbolStates && (
             <div 
-              className={cn(
-                "absolute",
-                "flex items-center justify-center",
-                getSymbolSize(),
-                "font-bold pointer-events-none z-20"
-              )}
-              style={{
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                color: getSymbolColor(),
-                textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
-                lineHeight: '1'
-              }}
-              title={TOOTH_STATE_COLORS[toothData.symbolState].label}
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+              style={{ lineHeight: '1' }}
             >
-              {getStateSymbol(toothData.symbolState)}
+              {toothData.symbolStates.map((symbolState, index) => {
+                const symbol = getStateSymbol(symbolState);
+                const config = TOOTH_STATE_COLORS[symbolState];
+                
+                // Mapear colores de Tailwind a valores CSS
+                const colorMap: Record<string, string> = {
+                  'bg-red-500': '#ef4444',
+                  'bg-yellow-500': '#eab308',
+                  'bg-blue-500': '#3b82f6',
+                  'bg-green-500': '#22c55e',
+                  'bg-purple-600': '#9333ea'
+                };
+                
+                const symbolColor = colorMap[config.bg] || '#3b82f6';
+                
+                // Posiciones diferentes para múltiples símbolos
+                const getSymbolPosition = (index: number, total: number) => {
+                  if (total === 1) return { transform: 'translate(-50%, -50%)' };
+                  if (total === 2) {
+                    return index === 0 
+                      ? { transform: 'translate(-75%, -50%)' }
+                      : { transform: 'translate(-25%, -50%)' };
+                  }
+                  if (total === 3) {
+                    if (index === 0) return { transform: 'translate(-50%, -75%)' };
+                    if (index === 1) return { transform: 'translate(-75%, -25%)' };
+                    return { transform: 'translate(-25%, -25%)' };
+                  }
+                  // Para más de 3 símbolos, usar una cuadrícula 2x2
+                  const row = Math.floor(index / 2);
+                  const col = index % 2;
+                  return {
+                    transform: `translate(${col === 0 ? '-75%' : '-25%'}, ${row === 0 ? '-75%' : '-25%'})`
+                  };
+                };
+                
+                return (
+                  <span
+                    key={`${symbolState}-${index}`}
+                    className={cn(
+                      "absolute font-bold",
+                      isCollapsed ? 'text-lg' : 'text-sm'
+                    )}
+                    style={{
+                      ...getSymbolPosition(index, toothData.symbolStates.length),
+                      color: symbolColor,
+                      textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
+                    }}
+                    title={config.label}
+                  >
+                    {symbol}
+                  </span>
+                );
+              })}
             </div>
           )}
           
           {/* Indicador visual para estados completos o símbolos */}
-          {((toothData?.state && isFullToothState(toothData.state)) || hasSymbol) && (
+          {((toothData?.state && isFullToothState(toothData.state)) || hasSymbols) && (
             <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-500 rounded-full border border-white shadow-sm" 
-                 title={hasSymbol ? "Estado con símbolo" : "Estado completo del diente"} />
+                 title={hasSymbols ? "Estado con símbolos" : "Estado completo del diente"} />
           )}
         </div>
         
