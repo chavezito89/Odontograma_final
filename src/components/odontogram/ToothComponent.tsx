@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -80,14 +79,14 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   
   // Obtener el tamaño del símbolo según el tipo
   const getSymbolSize = (): string => {
-    if (!hasSymbol || !toothData?.symbolState) return 'text-3xl';
+    if (!hasSymbol || !toothData?.symbolState) return 'text-2xl';
     
     // El símbolo de movilidad necesita ser más grande
     if (toothData.symbolState === 'movilidad') {
-      return 'text-4xl';
+      return 'text-3xl';
     }
     
-    return 'text-3xl';
+    return 'text-2xl';
   };
   
   // Manejar click en el diente completo
@@ -155,8 +154,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       {/* Diente con forma cuadrada dividida en 5 secciones */}
       <div
         className={cn(
-          "relative w-12 h-12 cursor-pointer transition-all duration-200",
-          "hover:scale-102"
+          "relative w-10 h-10 cursor-pointer transition-all duration-200",
+          "hover:scale-105"
         )}
         onClick={handleToothClick}
       >
@@ -232,8 +231,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-              "w-6 h-6 transition-colors duration-200",
-              "border-2 border-gray-700 rounded-sm bg-white z-10",
+              "w-4 h-4 transition-colors duration-200",
+              "border border-gray-700 rounded-sm bg-white z-10",
               areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
             )}
             onClick={areFacesInteractive ? (e) => handleFaceClick('oclusal', e) : undefined}
@@ -244,7 +243,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           />
         </div>
         
-        {/* Símbolo superpuesto PERFECTAMENTE CENTRADO */}
+        {/* Símbolo superpuesto */}
         {hasSymbol && toothData?.symbolState && (
           <div 
             className={cn(
@@ -269,13 +268,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         
         {/* Indicador visual para estados completos o símbolos */}
         {((toothData?.state && isFullToothState(toothData.state)) || hasSymbol) && (
-          <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-orange-500 rounded-full border border-white shadow-sm" 
+          <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-500 rounded-full border border-white shadow-sm" 
                title={hasSymbol ? "Estado con símbolo" : "Estado completo del diente"} />
         )}
       </div>
       
       {/* Número del diente debajo de la casilla */}
-      <div className="mt-1 text-xs font-bold text-gray-700">
+      <div className="mt-0.5 text-xs font-bold text-gray-700">
         {displayNumber}
       </div>
     </div>

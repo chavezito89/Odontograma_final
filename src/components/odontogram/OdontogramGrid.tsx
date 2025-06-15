@@ -10,22 +10,30 @@ interface OdontogramGridProps {
 
 const OdontogramGrid: React.FC<OdontogramGridProps> = ({ className }) => {
   return (
-    <div className={cn("w-full max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg", className)}>
+    <div className={cn("w-full max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg overflow-hidden", className)}>
       {/* Arcada Superior */}
-      <div className="flex items-center justify-center gap-12 mb-12">
-        <QuadrantView quadrant="upperRight" />
-        <Separator orientation="vertical" className="h-20 bg-gray-200" />
-        <QuadrantView quadrant="upperLeft" />
+      <div className="flex items-center justify-center gap-8 mb-8 min-h-0">
+        <div className="flex-1 max-w-md">
+          <QuadrantView quadrant="upperRight" />
+        </div>
+        <Separator orientation="vertical" className="h-16 bg-gray-200 flex-shrink-0" />
+        <div className="flex-1 max-w-md">
+          <QuadrantView quadrant="upperLeft" />
+        </div>
       </div>
       
       {/* Línea divisoria horizontal */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mb-12" />
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mb-8" />
       
       {/* Arcada Inferior */}
-      <div className="flex items-center justify-center gap-12">
-        <QuadrantView quadrant="lowerRight" />
-        <Separator orientation="vertical" className="h-20 bg-gray-200" />
-        <QuadrantView quadrant="lowerLeft" />
+      <div className="flex items-center justify-center gap-8 min-h-0">
+        <div className="flex-1 max-w-md">
+          <QuadrantView quadrant="lowerRight" />
+        </div>
+        <Separator orientation="vertical" className="h-16 bg-gray-200 flex-shrink-0" />
+        <div className="flex-1 max-w-md">
+          <QuadrantView quadrant="lowerLeft" />
+        </div>
       </div>
     </div>
   );
