@@ -35,6 +35,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const isBridgeMode = selectedState === 'puente' && bridgeSelection.isActive;
   const isFirstPilarSelected = bridgeSelection.firstPilar === toothNumber;
   const isBridgeIntermediate = toothData?.bridgeInfo?.isIntermediate;
+  const isBridgePilar = toothData?.bridgeInfo?.isPilar;
   
   // Tamaño dinámico basado en el estado del sidebar
   const toothSize = isCollapsed ? 'w-16 h-16' : 'w-14 h-14';
@@ -69,6 +70,16 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return isRightQuadrant()
       ? "polygon(0% 0%, 50% 50%, 0% 100%)"     // izquierda
       : "polygon(100% 0%, 100% 100%, 50% 50%)"; // derecha
+  };
+  
+  // Verificar si hay un diente adyacente que también es parte del puente
+  const hasAdjacentBridgeTooth = (direction: 'left' | 'right'): boolean => {
+    if (!toothData?.bridgeInfo?.bridgeId) return false;
+    
+    const adjacentNumber = direction === 'right' ? toothNumber + 1 : toothNumber - 1;
+    const adjacentTooth = odontogram[adjacentNumber];
+    
+    return adjacentTooth?.bridgeInfo?.bridgeId === toothData.bridgeInfo.bridgeId;
   };
   
   // Manejar click en el diente completo - ACTUALIZADO para manejar puentes
@@ -164,6 +175,27 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   return (
     <>
       <div className={cn("relative group flex flex-col items-center", className)}>
+        {/* Líneas continuas del puente */}
+        {(isBridgeIntermediate || isBridgePilar) && (
+          <>
+            {/* Línea hacia la izquierda */}
+            {hasAdjacentBridgeTooth('left') && (
+              <div 
+                className="absolute top-1/2 -left-2 w-4 h-0.5 bg-purple-600 z-30"
+                style={{ transform: 'translateY(-50%)' }}
+              />
+            )}
+            
+            {/* Línea hacia la derecha */}
+            {hasAdjacentBridgeTooth('right') && (
+              <div 
+                className="absolute top-1/2 -right-2 w-4 h-0.5 bg-purple-600 z-30"
+                style={{ transform: 'translateY(-50%)' }}
+              />
+            )}
+          </>
+        )}
+        
         {/* Diente con forma cuadrada dividida en 5 secciones */}
         <div
           className={cn(
@@ -282,7 +314,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             </div>
           )}
           
-          {/* Símbolos superpuestos - ACTUALIZADO con mapeo de colores ampliado */}
+          {/* Símbolos superpuestos - ACTUALIZADO sin línea individual para puentes intermedios */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
