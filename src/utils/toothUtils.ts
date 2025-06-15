@@ -83,15 +83,15 @@ export const TOOTH_NUMBERS = {
   }
 } as const;
 
-// Conversión FDI a Universal - CORRECCIÓN FINAL
+// Conversión FDI a Universal - CORRECCIÓN DEFINITIVA
 export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
-  // Superior Derecho: 1, 2, 3, 4, 5, 6, 7, 8 (del 11 al 18)
+  // Superior Derecho: 1, 2, 3, 4, 5, 6, 7, 8 (del 18 al 11)
   18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
   // Superior Izquierdo: 9, 10, 11, 12, 13, 14, 15, 16 (del 21 al 28)
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
-  // Inferior Izquierdo (31-38): 32, 31, 30, 29, 28, 27, 26, 25
+  // Inferior Izquierdo (31-38): van del 32 al 25 en Universal
   31: 32, 32: 31, 33: 30, 34: 29, 35: 28, 36: 27, 37: 26, 38: 25,
-  // Inferior Derecho (41-48): 24, 23, 22, 21, 20, 19, 18, 17
+  // Inferior Derecho (41-48): van del 24 al 17 en Universal  
   41: 24, 42: 23, 43: 22, 44: 21, 45: 20, 46: 19, 47: 18, 48: 17,
   // Deciduos superiores - cuadrante 5 (superior derecho)
   55: 'A', 54: 'B', 53: 'C', 52: 'D', 51: 'E',
