@@ -1,60 +1,68 @@
-
 import { ToothState } from '@/store/odontoStore';
 
-// Configuración de colores por estado dental - ACTUALIZADA con todos los nuevos estados
-export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string }> = {
+// Configuración de colores por estado dental - ACTUALIZADA con símbolos
+export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string; symbol?: string }> = {
   healthy: {
     bg: 'bg-white',
     border: 'border-slate-300',
     label: 'Sano'
   },
-  // Estados que abarcan TODO el diente
+  // Estados con símbolos que pueden superponerse
   ausente: {
-    bg: 'bg-gray-300',
-    border: 'border-gray-400',
-    label: 'Ausente'
+    bg: 'bg-red-500',
+    border: 'border-red-600',
+    label: 'Ausente',
+    symbol: '❌'
   },
   movilidad: {
-    bg: 'bg-yellow-300',
-    border: 'border-yellow-400',
-    label: 'Movilidad'
-  },
-  macrodontia: {
-    bg: 'bg-red-300',
-    border: 'border-red-400',
-    label: 'Macrodontia'
-  },
-  microdontia: {
-    bg: 'bg-blue-300',
-    border: 'border-blue-400',
-    label: 'Microdontia'
-  },
-  corona: {
     bg: 'bg-yellow-500',
     border: 'border-yellow-600',
-    label: 'Corona'
+    label: 'Movilidad',
+    symbol: '↔'
+  },
+  macrodontia: {
+    bg: 'bg-red-500',
+    border: 'border-red-600',
+    label: 'Macrodontia',
+    symbol: '🔺'
+  },
+  microdontia: {
+    bg: 'bg-red-500',
+    border: 'border-red-600',
+    label: 'Microdontia',
+    symbol: '🔻'
+  },
+  corona: {
+    bg: 'bg-blue-500',
+    border: 'border-blue-600',
+    label: 'Corona',
+    symbol: '◼'
   },
   puente: {
     bg: 'bg-blue-500',
     border: 'border-blue-600',
-    label: 'Puente'
+    label: 'Puente',
+    symbol: '═'
   },
   endodoncia: {
     bg: 'bg-red-500',
     border: 'border-red-600',
-    label: 'Endodoncia'
+    label: 'Endodoncia',
+    symbol: '≡'
   },
   tornillo: {
-    bg: 'bg-gray-500',
-    border: 'border-gray-600',
-    label: 'Implante'
-  },
-  temporal: {
     bg: 'bg-green-500',
     border: 'border-green-600',
-    label: 'Temporal'
+    label: 'Implante',
+    symbol: '⊙'
   },
-  // Estados que se aplican a UNA CARA del diente
+  temporal: {
+    bg: 'bg-yellow-500',
+    border: 'border-yellow-600',
+    label: 'Temporal',
+    symbol: 'T'
+  },
+  // Estados que se aplican a UNA CARA del diente (sin símbolos)
   caries: {
     bg: 'bg-orange-500',
     border: 'border-orange-600',
@@ -97,7 +105,7 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   }
 };
 
-// Estados que abarcan todo el diente (no permiten selección por caras) - ACTUALIZADO
+// Estados que abarcan todo el diente (con símbolos)
 export const FULL_TOOTH_STATES: ToothState[] = [
   'ausente',
   'movilidad',
@@ -110,7 +118,7 @@ export const FULL_TOOTH_STATES: ToothState[] = [
   'temporal'
 ];
 
-// Estados que permiten selección por caras individuales - ACTUALIZADO
+// Estados que permiten selección por caras individuales
 export const FACE_SELECTABLE_STATES: ToothState[] = [
   'healthy',
   'caries',
@@ -123,6 +131,19 @@ export const FACE_SELECTABLE_STATES: ToothState[] = [
   'carilla'
 ];
 
+// Estados que usan símbolos
+export const SYMBOL_STATES: ToothState[] = [
+  'ausente',
+  'movilidad',
+  'macrodontia',
+  'microdontia',
+  'corona',
+  'puente',
+  'endodoncia',
+  'tornillo',
+  'temporal'
+];
+
 // Verificar si un estado abarca todo el diente
 export const isFullToothState = (state: ToothState): boolean => {
   return FULL_TOOTH_STATES.includes(state);
@@ -131,6 +152,16 @@ export const isFullToothState = (state: ToothState): boolean => {
 // Verificar si un estado permite selección por caras
 export const isFaceSelectableState = (state: ToothState): boolean => {
   return FACE_SELECTABLE_STATES.includes(state);
+};
+
+// Verificar si un estado usa símbolo
+export const isSymbolState = (state: ToothState): boolean => {
+  return SYMBOL_STATES.includes(state);
+};
+
+// Obtener el símbolo de un estado
+export const getStateSymbol = (state: ToothState): string | undefined => {
+  return TOOTH_STATE_COLORS[state].symbol;
 };
 
 // Números de dientes por cuadrante (FDI)
@@ -210,23 +241,22 @@ export const isPosteriorTooth = (toothNumber: number): boolean => {
   return position >= 4; // Premolares y molares
 };
 
-// Verificar si un diente tiene estados combinados
+// Verificar si un diente tiene estados combinados (ahora obsoleto con símbolos)
 export const hasCombinedStates = (primaryState: ToothState, secondaryState?: ToothState): boolean => {
   return secondaryState !== undefined && primaryState !== 'healthy' && secondaryState !== 'healthy';
 };
 
-// Obtener clases CSS para estados combinados
+// Obtener clases CSS para estados combinados (mantenido para compatibilidad)
 export const getCombinedStateClasses = (primaryState: ToothState, secondaryState?: ToothState): string => {
   if (!hasCombinedStates(primaryState, secondaryState)) {
     const config = TOOTH_STATE_COLORS[primaryState];
     return `${config.bg} ${config.border}`;
   }
   
-  // Para estados combinados, no usar clases de fondo ya que usaremos gradientes
   return 'border-2 border-gray-800';
 };
 
-// Obtener estilo de gradiente para estados combinados
+// Obtener estilo de gradiente para estados combinados (mantenido para compatibilidad)
 export const getCombinedStateGradient = (primaryState: ToothState, secondaryState?: ToothState): string => {
   if (!hasCombinedStates(primaryState, secondaryState)) {
     const primaryConfig = TOOTH_STATE_COLORS[primaryState];

@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { useOdontoStore, ToothState } from '@/store/odontoStore';
-import { TOOTH_STATE_COLORS } from '@/utils/toothUtils';
+import { TOOTH_STATE_COLORS, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
 
 const StateSelector: React.FC = () => {
   const { selectedState, setSelectedState } = useOdontoStore();
   
   // Estados organizados por categorías
-  const fullToothStates: ToothState[] = [
+  const symbolStates: ToothState[] = [
     'ausente',
     'movilidad',
     'macrodontia',
@@ -34,6 +34,8 @@ const StateSelector: React.FC = () => {
   const renderStateButton = (state: ToothState) => {
     const config = TOOTH_STATE_COLORS[state];
     const isSelected = selectedState === state;
+    const hasSymbol = isSymbolState(state);
+    const symbol = getStateSymbol(state);
     
     return (
       <button
@@ -47,14 +49,17 @@ const StateSelector: React.FC = () => {
             : "border-gray-200 hover:border-gray-300"
         )}
       >
-        {/* Indicador de color */}
+        {/* Indicador de color o símbolo */}
         <div
           className={cn(
-            "w-3 h-3 rounded-full border",
+            "w-4 h-4 rounded border flex items-center justify-center text-xs font-bold",
             config.bg,
-            config.border
+            config.border,
+            hasSymbol ? "text-white" : ""
           )}
-        />
+        >
+          {hasSymbol && symbol}
+        </div>
         
         {/* Etiqueta */}
         <span className={cn(
@@ -79,11 +84,11 @@ const StateSelector: React.FC = () => {
         </div>
       </div>
       
-      {/* Estados de diente completo */}
+      {/* Estados con símbolos */}
       <div className="mb-4">
-        <h4 className="text-sm font-medium text-gray-600 mb-2">Estados de Diente Completo</h4>
+        <h4 className="text-sm font-medium text-gray-600 mb-2">Estados con Símbolos</h4>
         <div className="grid grid-cols-2 gap-2">
-          {fullToothStates.map(renderStateButton)}
+          {symbolStates.map(renderStateButton)}
         </div>
       </div>
       
