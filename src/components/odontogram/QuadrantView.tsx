@@ -33,17 +33,17 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     }
   };
 
-  // Fix: Properly type the teeth array to avoid union type issues
-  const getTeethArray = (): number[] => {
+  // Siempre usar una sola fila, sin importar el tipo de dentición
+  const getTeethArray = () => {
     const teethData = TOOTH_NUMBERS[dentitionType]?.[quadrant];
     
     // Si es mixed dentition, usar solo permanent para evitar dobles filas
     if (dentitionType === 'mixed' && teethData && typeof teethData === 'object' && 'permanent' in teethData) {
-      return (teethData.permanent || []) as number[];
+      return teethData.permanent || [];
     }
     
     // Para permanent y deciduous que ya son arrays
-    return (Array.isArray(teethData) ? teethData : []) as number[];
+    return Array.isArray(teethData) ? teethData : [];
   };
 
   const teeth = getTeethArray();
