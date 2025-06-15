@@ -1,7 +1,9 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ToothSummary {
@@ -19,8 +21,12 @@ const DiagnosisSummary: React.FC = () => {
   const { 
     getCurrentOdontogram, 
     currentTab, 
-    numberingSystem 
+    numberingSystem,
+    updateToothNotes
   } = useOdontoStore();
+
+  const [editingTooth, setEditingTooth] = useState<number | null>(null);
+  const [editText, setEditText] = useState('');
 
   const odontogram = getCurrentOdontogram();
 
@@ -93,9 +99,28 @@ const DiagnosisSummary: React.FC = () => {
     return faceNames[face];
   };
 
-  // Renderizar entrada de resumen para un diente - ACTUALIZADO para manejar múltiples símbolos
+  // Manejar la edición de texto personalizado
+  const handleEditClick = (toothNumber: number, currentNotes?: string) => {
+    setEditingTooth(toothNumber);
+    setEditText(currentNotes || '');
+  };
+
+  const handleSaveEdit = () => {
+    if (editingTooth !== null) {
+      updateToothNotes(editingTooth, editText.trim() || undefined);
+      setEditingTooth(null);
+      setEditText('');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTooth(null);
+    setEditText('');
+  };
+
+  // Renderizar entrada de resumen para un diente - ACTUALIZADO para manejar múltiples símbolos y botón de edición
   const renderToothSummary = (summary: ToothSummary) => {
-    const { displayNumber, states, notes } = summary;
+    const { displayNumber, states, notes, toothNumber } = summary;
     const entries: string[] = [];
 
     // Agregar estado principal (no símbolo)
@@ -135,14 +160,65 @@ const DiagnosisSummary: React.FC = () => {
       });
     }
 
+    const toothData = odontogram[toothNumber];
+    const customNotes = toothData?.notes && !states.symbolStates.includes('otro') ? toothData.notes : '';
+
     return (
-      <div key={summary.toothNumber} className="mb-2">
-        <span className="font-semibold text-gray-800">
-          Diente {displayNumber}:
-        </span>
-        <span className="ml-2 text-gray-700">
-          {entries.join(' • ')}
-        </span>
+      <div key={summary.toothNumber} className="mb-2 flex items-center justify-between">
+        <div className="flex-1">
+          <span className="font-semibold text-gray-800">
+            Diente {displayNumber}:
+          </span>
+          <span className="ml-2 text-gray-700">
+            {entries.join(' • ')}
+            {customNotes && (
+              <span className="ml-2 text-blue-600 italic">
+                • {customNotes}
+              </span>
+            )}
+          </span>
+        </div>
+        
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="ml-4 h-8 w-8 p-0 hover:bg-gray-100"
+              onClick={() => handleEditClick(toothNumber, customNotes)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Editar texto del diente {displayNumber}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="custom-text" className="block text-sm font-medium text-gray-700 mb-2">
+                  Texto personalizado:
+                </label>
+                <textarea
+                  id="custom-text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  placeholder="Agregar texto personalizado para este diente..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  rows={3}
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={handleCancelEdit}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveEdit}>
+                  Guardar
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   };
