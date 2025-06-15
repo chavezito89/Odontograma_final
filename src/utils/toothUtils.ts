@@ -83,16 +83,16 @@ export const TOOTH_NUMBERS = {
   }
 } as const;
 
-// Conversión FDI a Universal - Corregido según imagen proporcionada
+// Conversión FDI a Universal - Según imagen exacta proporcionada
 export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
-  // Permanentes superiores - cuadrante 1 (superior derecho) - del 8 al 1
+  // Superior Derecho: 8, 7, 6, 5, 4, 3, 2, 1
   18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
-  // Permanentes superiores - cuadrante 2 (superior izquierdo) - del 9 al 16
+  // Superior Izquierdo: 9, 10, 11, 12, 13, 14, 15, 16
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
-  // Permanentes inferiores - cuadrante 4 (inferior derecho) - del 32 al 25
-  48: 32, 47: 31, 46: 30, 45: 29, 44: 28, 43: 27, 42: 26, 41: 25,
-  // Permanentes inferiores - cuadrante 3 (inferior izquierdo) - del 24 al 17
+  // Inferior Izquierdo: 24, 23, 22, 21, 20, 19, 18, 17
   31: 24, 32: 23, 33: 22, 34: 21, 35: 20, 36: 19, 37: 18, 38: 17,
+  // Inferior Derecho: 25, 26, 27, 28, 29, 30, 31, 32
+  41: 25, 42: 26, 43: 27, 44: 28, 45: 29, 46: 30, 47: 31, 48: 32,
   // Deciduos superiores - cuadrante 5 (superior derecho) - E, D, C, B, A
   55: 'A', 54: 'B', 53: 'C', 52: 'D', 51: 'E',
   // Deciduos superiores - cuadrante 6 (superior izquierdo) - F, G, H, I, J
