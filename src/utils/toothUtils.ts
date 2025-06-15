@@ -1,3 +1,4 @@
+
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental
@@ -89,10 +90,10 @@ export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
   18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
   // Superior Izquierdo: 9, 10, 11, 12, 13, 14, 15, 16 (del 21 al 28)
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
-  // Inferior Izquierdo: 17, 18, 19, 20, 21, 22, 23, 24 (del 31 al 38)
+  // Inferior Izquierdo: 17, 18, 19, 20, 21, 22, 23, 24 (del 31 al 38) - de izquierda a derecha
   31: 17, 32: 18, 33: 19, 34: 20, 35: 21, 36: 22, 37: 23, 38: 24,
-  // Inferior Derecho: 25, 26, 27, 28, 29, 30, 31, 32 (del 48 al 41) - de derecha a izquierda en FDI, de izquierda a derecha en Universal
-  48: 25, 47: 26, 46: 27, 45: 28, 44: 29, 43: 30, 42: 31, 41: 32,
+  // Inferior Derecho: 25, 26, 27, 28, 29, 30, 31, 32 (del 41 al 48) - de izquierda a derecha
+  41: 32, 42: 31, 43: 30, 44: 29, 45: 28, 46: 27, 47: 26, 48: 25,
   // Deciduos superiores - cuadrante 5 (superior derecho) - E, D, C, B, A (de izquierda a derecha)
   51: 'E', 52: 'D', 53: 'C', 54: 'B', 55: 'A',
   // Deciduos superiores - cuadrante 6 (superior izquierdo) - F, G, H, I, J
