@@ -1,9 +1,7 @@
 
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
-import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
 
 interface ToothSummary {
@@ -95,72 +93,23 @@ const DiagnosisSummary: React.FC = () => {
     return faceNames[face];
   };
 
-  // Obtener color del badge basado en el estado
-  const getBadgeColor = (state: ToothState): string => {
-    const config = TOOTH_STATE_COLORS[state];
-    const colorMap: Record<string, string> = {
-      'bg-red-500': 'bg-red-100 text-red-800 border-red-200',
-      'bg-yellow-500': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'bg-blue-500': 'bg-blue-100 text-blue-800 border-blue-200',
-      'bg-green-500': 'bg-green-100 text-green-800 border-green-200',
-      'bg-purple-500': 'bg-purple-100 text-purple-800 border-purple-200',
-      'bg-purple-600': 'bg-purple-100 text-purple-800 border-purple-200',
-      'bg-orange-500': 'bg-orange-100 text-orange-800 border-orange-200',
-      'bg-orange-400': 'bg-orange-100 text-orange-800 border-orange-200',
-      'bg-purple-400': 'bg-purple-100 text-purple-800 border-purple-200',
-      'bg-yellow-400': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'bg-yellow-600': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'bg-blue-600': 'bg-blue-100 text-blue-800 border-blue-200',
-      'bg-amber-600': 'bg-amber-100 text-amber-800 border-amber-200',
-      'bg-white': 'bg-gray-100 text-gray-800 border-gray-200'
-    };
-    return colorMap[config.bg] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
-
-  // Renderizar badge de estado
-  const renderStateBadge = (state: ToothState, label?: string) => {
-    const symbol = getStateSymbol(state);
-    const badgeColor = getBadgeColor(state);
-    const displayLabel = label || TOOTH_STATE_COLORS[state].label;
-
-    return (
-      <Badge 
-        key={state} 
-        variant="outline" 
-        className={cn("text-xs font-medium border", badgeColor)}
-      >
-        {symbol && <span className="mr-1">{symbol}</span>}
-        {displayLabel}
-      </Badge>
-    );
-  };
-
-  // Renderizar entrada de resumen para un diente
+  // Renderizar entrada de resumen para un diente - ACTUALIZADO para no mostrar "Otro:"
   const renderToothSummary = (summary: ToothSummary) => {
     const { displayNumber, states, notes } = summary;
-    const badges: React.ReactNode[] = [];
+    const entries: string[] = [];
 
     // Agregar estado principal (no símbolo)
     if (states.mainState && !isSymbolState(states.mainState)) {
-      badges.push(renderStateBadge(states.mainState));
+      entries.push(`${TOOTH_STATE_COLORS[states.mainState].label}`);
     }
 
     // Agregar estado símbolo
     if (states.symbolState) {
       if (states.symbolState === 'otro' && notes) {
-        // Para "otro", crear badge personalizado con las notas
-        badges.push(
-          <Badge 
-            key="otro-custom" 
-            variant="outline" 
-            className={cn("text-xs font-medium border", getBadgeColor(states.symbolState))}
-          >
-            <span className="mr-1">?</span>
-            {notes}
-          </Badge>
-        );
+        // Para "otro", solo mostrar las notas sin el prefijo "Otro:"
+        entries.push(notes);
       } else {
-        badges.push(renderStateBadge(states.symbolState));
+        entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}`);
       }
     }
 
@@ -175,36 +124,24 @@ const DiagnosisSummary: React.FC = () => {
         stateGroups[state]!.push(face);
       });
 
-      // Crear badges para cada grupo de estado
+      // Crear entradas para cada grupo de estado
       Object.entries(stateGroups).forEach(([state, faces]) => {
         if (faces) {
           const faceNames = faces.map(formatFaceName).join(', ');
-          badges.push(
-            renderStateBadge(
-              state as ToothState, 
-              `${TOOTH_STATE_COLORS[state as ToothState].label} en ${faceNames}`
-            )
-          );
+          entries.push(`${TOOTH_STATE_COLORS[state as ToothState].label} en ${faceNames}`);
         }
       });
     }
 
     return (
-      <Card key={summary.toothNumber} className="mb-3 border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-start space-x-3">
-            {/* Número de diente destacado */}
-            <Badge variant="default" className="bg-blue-600 text-white font-bold text-sm px-3 py-1 flex-shrink-0">
-              Diente {displayNumber}
-            </Badge>
-            
-            {/* Estados como badges */}
-            <div className="flex flex-wrap gap-2 flex-1">
-              {badges}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div key={summary.toothNumber} className="mb-2">
+        <span className="font-semibold text-gray-800">
+          Diente {displayNumber}:
+        </span>
+        <span className="ml-2 text-gray-700">
+          {entries.join(' • ')}
+        </span>
+      </div>
     );
   };
 
@@ -212,36 +149,23 @@ const DiagnosisSummary: React.FC = () => {
   const tabTitle = currentTab === 'diagnosis' ? 'Diagnóstico' : 'Tratamiento';
 
   return (
-    <Card className="w-full mx-auto shadow-lg border-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
-        <CardTitle className="text-2xl font-bold text-center">
-          📋 Resumen del {tabTitle}
-        </CardTitle>
-      </CardHeader>
+    <div className="w-full mx-auto p-6 bg-white rounded-xl shadow-lg">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4">
+        Resumen del {tabTitle}
+      </h3>
       
-      <CardContent className="p-6">
-        {summaries.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🦷</div>
-            <p className="text-gray-500 text-xl font-medium">
-              No hay estados dentales registrados en {tabTitle.toLowerCase()}
-            </p>
-            <p className="text-gray-400 text-sm mt-2">
-              Selecciona un estado dental y haz clic en los dientes para comenzar
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="text-center mb-6">
-              <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200 text-sm px-4 py-1">
-                {summaries.length} {summaries.length === 1 ? 'diente afectado' : 'dientes afectados'}
-              </Badge>
-            </div>
-            {summaries.map(renderToothSummary)}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      {summaries.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-gray-500 text-lg">
+            No hay estados dentales registrados en {tabTitle.toLowerCase()}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          {summaries.map(renderToothSummary)}
+        </div>
+      )}
+    </div>
   );
 };
 
