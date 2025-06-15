@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -120,6 +121,34 @@ export const useOdontoStore = create<OdontoState>()(
         set((prev) => {
           const currentTooth = prev.patientData[selectedPatientId]?.[currentTab]?.[toothNumber] || createInitialTooth(toothNumber);
           
+          // Si seleccionamos "healthy", siempre limpiar el diente
+          if (state === 'healthy') {
+            return {
+              patientData: {
+                ...prev.patientData,
+                [selectedPatientId]: {
+                  ...prev.patientData[selectedPatientId],
+                  [currentTab]: {
+                    ...prev.patientData[selectedPatientId]?.[currentTab],
+                    [toothNumber]: {
+                      ...currentTooth,
+                      state: 'healthy',
+                      secondaryState: undefined,
+                      faces: {
+                        mesial: 'healthy',
+                        distal: 'healthy',
+                        vestibular: 'healthy',
+                        lingual: 'healthy',
+                        oclusal: 'healthy'
+                      },
+                      lastModified: new Date()
+                    }
+                  }
+                }
+              }
+            };
+          }
+          
           // Si el diente ya tiene este estado como primario, lo removemos
           if (currentTooth.state === state) {
             return {
@@ -133,6 +162,13 @@ export const useOdontoStore = create<OdontoState>()(
                       ...currentTooth,
                       state: 'healthy',
                       secondaryState: undefined,
+                      faces: {
+                        mesial: 'healthy',
+                        distal: 'healthy',
+                        vestibular: 'healthy',
+                        lingual: 'healthy',
+                        oclusal: 'healthy'
+                      },
                       lastModified: new Date()
                     }
                   }

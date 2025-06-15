@@ -30,17 +30,9 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    if (isFullToothStateSelected) {
-      // Para estados que abarcan todo el diente, aplicar directamente
-      if (toothData?.state === selectedState) {
-        updateToothState(toothNumber, 'healthy');
-      } else {
-        updateToothState(toothNumber, selectedState);
-        // Limpiar todas las caras cuando se aplica un estado completo
-        ['mesial', 'distal', 'vestibular', 'lingual', 'oclusal'].forEach(face => {
-          updateToothFace(toothNumber, face as ToothFace, 'healthy');
-        });
-      }
+    if (isFullToothStateSelected || selectedState === 'healthy') {
+      // Para estados que abarcan todo el diente o estado sano, aplicar directamente
+      updateToothState(toothNumber, selectedState);
     } else {
       // Para estados por caras, solo seleccionar el diente
       if (isSelected) {
