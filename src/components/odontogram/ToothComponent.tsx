@@ -256,7 +256,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos superpuestos - ACTUALIZADO para mejor espaciado */}
+          {/* Símbolos superpuestos - ACTUALIZADO con tamaños más grandes */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
@@ -303,7 +303,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                     key={`${symbolState}-${index}`}
                     className={cn(
                       "absolute font-bold",
-                      isCollapsed ? 'text-base' : 'text-xs'
+                      isCollapsed ? 'text-xl' : 'text-lg'
                     )}
                     style={{
                       ...getSymbolPosition(index, toothData.symbolStates.length),
