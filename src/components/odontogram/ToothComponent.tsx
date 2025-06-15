@@ -31,8 +31,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const hasSymbol = toothData?.symbolState !== undefined;
   
   // Tamaño dinámico basado en el estado del sidebar
-  const toothSize = isCollapsed ? 'w-14 h-14' : 'w-10 h-10';
-  const centerSize = isCollapsed ? 'w-6 h-6' : 'w-4 h-4';
+  const toothSize = isCollapsed ? 'w-12 h-12' : 'w-10 h-10';
+  const centerSize = isCollapsed ? 'w-5 h-5' : 'w-4 h-4';
   
   // Determinar si el diente es superior o inferior
   const isUpperTooth = (): boolean => {
@@ -87,14 +87,14 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   
   // Obtener el tamaño del símbolo según el tipo y estado del sidebar
   const getSymbolSize = (): string => {
-    if (!hasSymbol || !toothData?.symbolState) return isCollapsed ? 'text-3xl' : 'text-2xl';
+    if (!hasSymbol || !toothData?.symbolState) return isCollapsed ? 'text-2xl' : 'text-xl';
     
     // El símbolo de movilidad necesita ser más grande
     if (toothData.symbolState === 'movilidad') {
-      return isCollapsed ? 'text-4xl' : 'text-3xl';
+      return isCollapsed ? 'text-3xl' : 'text-2xl';
     }
     
-    return isCollapsed ? 'text-3xl' : 'text-2xl';
+    return isCollapsed ? 'text-2xl' : 'text-xl';
   };
   
   // Manejar click en el diente completo
