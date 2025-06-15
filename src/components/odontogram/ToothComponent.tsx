@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
-import { getStateClasses, TOOTH_STATE_COLORS } from '@/utils/toothUtils';
+import { getStateClasses, TOOTH_STATE_COLORS, getDisplayNumber } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
 
 interface ToothComponentProps {
@@ -14,6 +14,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     getCurrentOdontogram, 
     selectedTooth, 
     selectedState,
+    numberingSystem,
     setSelectedTooth,
     updateToothState,
     updateToothFace 
@@ -22,6 +23,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const odontogram = getCurrentOdontogram();
   const toothData = odontogram[toothNumber];
   const isSelected = selectedTooth === toothNumber;
+  const displayNumber = getDisplayNumber(toothNumber, numberingSystem);
   
   // Manejar click en el diente completo
   const handleToothClick = (e: React.MouseEvent) => {
@@ -56,81 +58,69 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       {/* Contenedor principal del diente */}
       <div
         className={cn(
-          "relative w-12 h-16 cursor-pointer transition-all duration-200",
-          "border-2 rounded-lg shadow-sm hover:shadow-md",
-          isSelected ? "ring-2 ring-blue-500 ring-offset-1" : "",
-          "bg-white"
+          "relative w-14 h-14 cursor-pointer transition-all duration-200",
+          "border-2 border-gray-400 bg-white hover:shadow-md",
+          isSelected ? "ring-2 ring-blue-500 ring-offset-1" : ""
         )}
         onClick={handleToothClick}
       >
-        {/* Cara Oclusal/Incisal (superior) */}
-        <div
-          className={cn(
-            "absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-3 rounded-t-lg border cursor-pointer z-10",
-            getFaceColor('oclusal'),
-            "hover:opacity-80 transition-opacity"
-          )}
-          onClick={(e) => handleFaceClick('oclusal', e)}
-          title="Cara Oclusal"
-        />
-        
-        {/* Cara Vestibular (frontal) */}
-        <div
-          className={cn(
-            "absolute top-3 left-0 w-full h-8 border-x cursor-pointer",
-            getFaceColor('vestibular'),
-            "hover:opacity-80 transition-opacity"
-          )}
-          onClick={(e) => handleFaceClick('vestibular', e)}
-          title="Cara Vestibular"
-        />
-        
-        {/* Cara Lingual (posterior) - se ve a través de transparencia */}
-        <div
-          className={cn(
-            "absolute top-3 left-1 right-1 h-8 border cursor-pointer opacity-30",
-            getFaceColor('lingual'),
-            "hover:opacity-50 transition-opacity rounded-sm"
-          )}
-          onClick={(e) => handleFaceClick('lingual', e)}
-          title="Cara Lingual"
-        />
-        
-        {/* Cara Mesial (izquierda) */}
-        <div
-          className={cn(
-            "absolute top-3 left-0 w-3 h-8 border-l border-y cursor-pointer",
-            getFaceColor('mesial'),
-            "hover:opacity-80 transition-opacity rounded-l"
-          )}
-          onClick={(e) => handleFaceClick('mesial', e)}
-          title="Cara Mesial"
-        />
-        
-        {/* Cara Distal (derecha) */}
-        <div
-          className={cn(
-            "absolute top-3 right-0 w-3 h-8 border-r border-y cursor-pointer",
-            getFaceColor('distal'),
-            "hover:opacity-80 transition-opacity rounded-r"
-          )}
-          onClick={(e) => handleFaceClick('distal', e)}
-          title="Cara Distal"
-        />
-        
-        {/* Raíz del diente */}
-        <div
-          className={cn(
-            "absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4 h-5 rounded-b-full border",
-            getToothColor(),
-            "opacity-60"
-          )}
-        />
-      </div>
-      
-      {/* Número del diente */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-600">
-        {toothNumber}
+        {/* Layout en cuadrícula 3x3 */}
+        <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
+          {/* Fila superior */}
+          <div className="border-r border-b border-gray-400"></div>
+          <div 
+            className={cn(
+              "border-r border-b border-gray-400 cursor-pointer hover:opacity-80 transition-opacity",
+              getFaceColor('oclusal')
+            )}
+            onClick={(e) => handleFaceClick('oclusal', e)}
+            title="Cara Oclusal"
+          ></div>
+          <div className="border-b border-gray-400"></div>
+          
+          {/* Fila media */}
+          <div 
+            className={cn(
+              "border-r border-b border-gray-400 cursor-pointer hover:opacity-80 transition-opacity",
+              getFaceColor('mesial')
+            )}
+            onClick={(e) => handleFaceClick('mesial', e)}
+            title="Cara Mesial"
+          ></div>
+          <div 
+            className={cn(
+              "border-r border-b border-gray-400 cursor-pointer hover:opacity-80 transition-opacity relative",
+              getFaceColor('vestibular')
+            )}
+            onClick={(e) => handleFaceClick('vestibular', e)}
+            title="Cara Vestibular"
+          >
+            {/* Número del diente centrado */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xs font-bold text-gray-800">{displayNumber}</span>
+            </div>
+          </div>
+          <div 
+            className={cn(
+              "border-b border-gray-400 cursor-pointer hover:opacity-80 transition-opacity",
+              getFaceColor('distal')
+            )}
+            onClick={(e) => handleFaceClick('distal', e)}
+            title="Cara Distal"
+          ></div>
+          
+          {/* Fila inferior */}
+          <div className="border-r border-gray-400"></div>
+          <div 
+            className={cn(
+              "border-r border-gray-400 cursor-pointer hover:opacity-80 transition-opacity",
+              getFaceColor('lingual')
+            )}
+            onClick={(e) => handleFaceClick('lingual', e)}
+            title="Cara Lingual"
+          ></div>
+          <div className=""></div>
+        </div>
       </div>
       
       {/* Indicador de estado seleccionado */}

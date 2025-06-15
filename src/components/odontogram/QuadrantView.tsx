@@ -17,10 +17,10 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
   
   const getQuadrantLabel = (quad: string): string => {
     switch (quad) {
-      case 'upperRight': return 'Superior Derecho';
-      case 'upperLeft': return 'Superior Izquierdo';
-      case 'lowerLeft': return 'Inferior Izquierdo';
-      case 'lowerRight': return 'Inferior Derecho';
+      case 'upperRight': return 'MAXILAR DERECHO';
+      case 'upperLeft': return 'MAXILAR IZQUIERDO';
+      case 'lowerLeft': return 'MANDIBULAR IZQUIERDO';
+      case 'lowerRight': return 'MANDIBULAR DERECHO';
       default: return '';
     }
   };
@@ -39,13 +39,13 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     <div className={cn("space-y-4", className)}>
       {/* Etiqueta del cuadrante */}
       <div className="text-center">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
+        <h3 className="text-sm font-bold text-gray-700 mb-4">
           {getQuadrantLabel(quadrant)}
         </h3>
         
         {/* Contenedor de dientes */}
         <div className={cn(
-          "flex gap-2 justify-center items-end pb-8",
+          "flex gap-1 justify-center items-center",
           getFlexDirection(quadrant)
         )}>
           {teeth.map((toothNumber) => (
