@@ -80,6 +80,8 @@ const StateSelector: React.FC = () => {
                   strokeWidth={
                     state === 'corona' || state === 'puente' 
                       ? 3 
+                      : state === 'endodoncia' || state === 'tornillo'
+                      ? 2
                       : 4
                   }
                   style={{

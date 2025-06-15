@@ -436,6 +436,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                           strokeWidth={
                             symbolState === 'corona' || symbolState === 'puente' 
                               ? 3 
+                              : symbolState === 'endodoncia' || symbolState === 'tornillo'
+                              ? 2
                               : 4
                           }
                           style={{
