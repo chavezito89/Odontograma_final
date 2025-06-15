@@ -1,6 +1,6 @@
 import { ToothState } from '@/store/odontoStore';
 
-// Configuración de colores por estado dental - ACTUALIZADA con "otro"
+// Configuración de colores por estado dental - ACTUALIZADA con "extracción"
 export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string; symbol?: string }> = {
   healthy: {
     bg: 'bg-white',
@@ -12,6 +12,12 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     bg: 'bg-red-500',
     border: 'border-red-600',
     label: 'Ausente',
+    symbol: '❌'
+  },
+  extraccion: {
+    bg: 'bg-green-500',
+    border: 'border-green-600',
+    label: 'Extracción',
     symbol: '❌'
   },
   movilidad: {
@@ -111,9 +117,10 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
   }
 };
 
-// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO con "otro"
+// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO con "extracción"
 export const FULL_TOOTH_STATES: ToothState[] = [
   'ausente',
+  'extraccion',
   'movilidad',
   'macrodontia',
   'microdontia',
@@ -138,9 +145,10 @@ export const FACE_SELECTABLE_STATES: ToothState[] = [
   'carilla'
 ];
 
-// Estados que usan símbolos - ACTUALIZADO con "otro"
+// Estados que usan símbolos - ACTUALIZADO con "extracción"
 export const SYMBOL_STATES: ToothState[] = [
   'ausente',
+  'extraccion',
   'movilidad',
   'macrodontia',
   'microdontia',
