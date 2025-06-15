@@ -31,6 +31,19 @@ const StateSelector: React.FC = () => {
     'carilla'
   ];
 
+  // Obtener color del símbolo
+  const getSymbolColor = (state: ToothState): string => {
+    const config = TOOTH_STATE_COLORS[state];
+    const colorMap: Record<string, string> = {
+      'bg-red-500': '#ef4444',
+      'bg-yellow-500': '#eab308',
+      'bg-blue-500': '#3b82f6',
+      'bg-green-500': '#22c55e'
+    };
+    
+    return colorMap[config.bg] || '#000000';
+  };
+
   const renderStateButton = (state: ToothState) => {
     const config = TOOTH_STATE_COLORS[state];
     const isSelected = selectedState === state;
@@ -53,10 +66,9 @@ const StateSelector: React.FC = () => {
         <div
           className={cn(
             "w-4 h-4 rounded border flex items-center justify-center text-xs font-bold",
-            config.bg,
-            config.border,
-            hasSymbol ? "text-white" : ""
+            hasSymbol ? "border-gray-300 bg-white" : `${config.bg} ${config.border}`
           )}
+          style={hasSymbol ? { color: getSymbolColor(state) } : {}}
         >
           {hasSymbol && symbol}
         </div>

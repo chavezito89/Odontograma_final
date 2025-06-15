@@ -27,6 +27,22 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const isFullToothStateSelected = isFullToothState(selectedState);
   const hasSymbol = toothData?.symbolState !== undefined;
   
+  // Obtener el color del símbolo basado en el estado
+  const getSymbolColor = (): string => {
+    if (!hasSymbol || !toothData?.symbolState) return '';
+    
+    const symbolConfig = TOOTH_STATE_COLORS[toothData.symbolState];
+    // Convertir clase de Tailwind a color CSS
+    const colorMap: Record<string, string> = {
+      'bg-red-500': '#ef4444',
+      'bg-yellow-500': '#eab308',
+      'bg-blue-500': '#3b82f6',
+      'bg-green-500': '#22c55e'
+    };
+    
+    return colorMap[symbolConfig.bg] || '#000000';
+  };
+  
   // Manejar click en el diente completo
   const handleToothClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -165,34 +181,37 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title={areFacesInteractive ? "Cara Lingual" : undefined}
           />
           
-          {/* Cara Oclusal (centro) */}
+          {/* Cara Oclusal (centro) - SIEMPRE VISIBLE */}
           <div
             className={cn(
               "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
               "w-6 h-6 transition-colors duration-200",
               "flex items-center justify-center text-xs font-bold text-gray-800",
-              "border-2 border-gray-700 rounded-sm",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('oclusal')
+              "border-2 border-gray-700 rounded-sm bg-white z-10",
+              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default"
             )}
             onClick={areFacesInteractive ? (e) => handleFaceClick('oclusal', e) : undefined}
             title={areFacesInteractive ? "Cara Oclusal" : undefined}
+            style={{
+              backgroundColor: !hasSymbol ? getFaceColor('oclusal').replace('bg-', '') === 'white' ? '#ffffff' : getFaceColor('oclusal') : '#ffffff'
+            }}
           >
             {displayNumber}
           </div>
         </div>
         
-        {/* Símbolo superpuesto */}
+        {/* Símbolo superpuesto SIN FONDO */}
         {hasSymbol && toothData?.symbolState && (
           <div 
             className={cn(
-              "absolute inset-0 flex items-center justify-center",
-              "text-white text-lg font-bold drop-shadow-lg pointer-events-none",
-              TOOTH_STATE_COLORS[toothData.symbolState].bg,
-              "rounded border-2",
-              TOOTH_STATE_COLORS[toothData.symbolState].border
+              "absolute top-1 right-1",
+              "flex items-center justify-center",
+              "text-lg font-bold drop-shadow-lg pointer-events-none z-20"
             )}
             title={TOOTH_STATE_COLORS[toothData.symbolState].label}
+            style={{
+              color: getSymbolColor()
+            }}
           >
             {getStateSymbol(toothData.symbolState)}
           </div>
