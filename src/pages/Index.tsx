@@ -57,9 +57,7 @@ const Index = () => {
             <div className="space-y-6">
               {/* Título de sección */}
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                  Odontograma Interactivo
-                </h2>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">Odontograma </h2>
                 <p className="text-gray-600">
                   Selecciona un estado dental y haz clic en los dientes o caras específicas para aplicar el tratamiento
                 </p>
