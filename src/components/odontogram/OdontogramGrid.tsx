@@ -9,7 +9,7 @@ interface OdontogramGridProps {
 
 const OdontogramGrid: React.FC<OdontogramGridProps> = ({ className }) => {
   return (
-    <div className={cn("w-full max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg", className)}>
+    <div className={cn("w-full max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg", className)}>
       {/* Arcada Superior */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <QuadrantView quadrant="upperRight" />
