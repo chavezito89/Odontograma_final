@@ -1,9 +1,11 @@
+
 import React, { useEffect } from 'react';
 import { useOdontoStore } from '@/store/odontoStore';
 import OdontogramGrid from '@/components/odontogram/OdontogramGrid';
 import StateSelector from '@/components/odontogram/StateSelector';
 import TopBar from '@/components/odontogram/TopBar';
 import ControlSidebar from '@/components/odontogram/ControlSidebar';
+import DiagnosisSummary from '@/components/odontogram/DiagnosisSummary';
 import { SidebarProvider, SidebarInset, useSidebar } from '@/components/ui/sidebar';
 
 const MainContent = () => {
@@ -43,11 +45,14 @@ const MainContent = () => {
 
               {/* Odontograma */}
               <OdontogramGrid />
+              
+              {/* Resumen del Diagnóstico/Tratamiento */}
+              <DiagnosisSummary />
             </div>
           </div>
 
           {/* Estados Dentales - Dynamic width based on sidebar state */}
-          <div className={`flex-shrink-0 ${isCollapsed ? 'w-80' : 'w-64'} transition-all duration-200`}>
+          <div className={`flex-shrink-0 ${isCollapsed ? 'w-72' : 'w-64'} transition-all duration-200`}>
             <StateSelector />
           </div>
         </div>
