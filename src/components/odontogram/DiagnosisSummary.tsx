@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
@@ -173,7 +172,7 @@ const DiagnosisSummary: React.FC = () => {
       distal: 'Distal',
       vestibular: 'Vestibular',
       lingual: 'Lingual',
-      palatina: 'Palatina',
+      palatina: 'Palatino',
       oclusal: 'Oclusal'
     };
     return faceNames[face];
