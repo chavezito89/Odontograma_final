@@ -33,38 +33,63 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     }
   };
 
-  // Render mixed dentition with two rows - deciduous on top, permanent below
+  // Render mixed dentition with two rows
   const renderMixedDentition = () => {
     const mixedData = TOOTH_NUMBERS.mixed[quadrant];
+    const isUpperQuadrant = quadrant === 'upperRight' || quadrant === 'upperLeft';
     
     return (
       <div className="space-y-2">
-        {/* Deciduous teeth row (top) */}
+        {/* Primera fila */}
         <div className={cn(
           "flex gap-1 justify-center items-end",
           getFlexDirection(quadrant)
         )}>
-          {mixedData.deciduous.map((toothNumber) => (
-            <ToothComponent
-              key={toothNumber}
-              toothNumber={toothNumber}
-              className="flex-shrink-0"
-            />
-          ))}
+          {isUpperQuadrant ? (
+            // Cuadrantes superiores: permanentes arriba
+            mixedData.permanent.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          ) : (
+            // Cuadrantes inferiores: temporales arriba
+            mixedData.deciduous.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          )}
         </div>
         
-        {/* Permanent teeth row (bottom) */}
+        {/* Segunda fila */}
         <div className={cn(
           "flex gap-1 justify-center items-end",
           getFlexDirection(quadrant)
         )}>
-          {mixedData.permanent.map((toothNumber) => (
-            <ToothComponent
-              key={toothNumber}
-              toothNumber={toothNumber}
-              className="flex-shrink-0"
-            />
-          ))}
+          {isUpperQuadrant ? (
+            // Cuadrantes superiores: temporales abajo
+            mixedData.deciduous.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          ) : (
+            // Cuadrantes inferiores: permanentes abajo
+            mixedData.permanent.map((toothNumber) => (
+              <ToothComponent
+                key={toothNumber}
+                toothNumber={toothNumber}
+                className="flex-shrink-0"
+              />
+            ))
+          )}
         </div>
       </div>
     );
