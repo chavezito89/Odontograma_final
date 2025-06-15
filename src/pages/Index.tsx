@@ -29,9 +29,9 @@ const MainContent = () => {
 
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className={`grid gap-8 ${isCollapsed ? 'grid-cols-1 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-3'}`}>
-          {/* Odontograma Principal */}
-          <div className={isCollapsed ? 'xl:col-span-3' : 'lg:col-span-2'}>
+        <div className="flex gap-8">
+          {/* Odontograma Principal - Fixed width */}
+          <div className="flex-1 min-w-0">
             <div className="space-y-6">
               {/* Título de sección */}
               <div className="text-center">
@@ -46,8 +46,8 @@ const MainContent = () => {
             </div>
           </div>
 
-          {/* Estados Dentales - Sidebar derecho */}
-          <div className={isCollapsed ? 'xl:col-span-1' : 'lg:col-span-1'}>
+          {/* Estados Dentales - Dynamic width based on sidebar state */}
+          <div className={`flex-shrink-0 ${isCollapsed ? 'w-80' : 'w-64'} transition-all duration-200`}>
             <StateSelector />
           </div>
         </div>
