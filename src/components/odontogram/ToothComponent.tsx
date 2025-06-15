@@ -256,7 +256,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos superpuestos - ACTUALIZADO para mostrar múltiples símbolos */}
+          {/* Símbolos superpuestos - ACTUALIZADO para mejor espaciado */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
@@ -277,24 +277,24 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                 
                 const symbolColor = colorMap[config.bg] || '#3b82f6';
                 
-                // Posiciones diferentes para múltiples símbolos
+                // Posiciones mejoradas para múltiples símbolos con mejor espaciado
                 const getSymbolPosition = (index: number, total: number) => {
                   if (total === 1) return { transform: 'translate(-50%, -50%)' };
                   if (total === 2) {
                     return index === 0 
-                      ? { transform: 'translate(-75%, -50%)' }
-                      : { transform: 'translate(-25%, -50%)' };
+                      ? { transform: 'translate(-100%, -50%)' }
+                      : { transform: 'translate(0%, -50%)' };
                   }
                   if (total === 3) {
-                    if (index === 0) return { transform: 'translate(-50%, -75%)' };
-                    if (index === 1) return { transform: 'translate(-75%, -25%)' };
-                    return { transform: 'translate(-25%, -25%)' };
+                    if (index === 0) return { transform: 'translate(-50%, -100%)' };
+                    if (index === 1) return { transform: 'translate(-100%, 0%)' };
+                    return { transform: 'translate(0%, 0%)' };
                   }
-                  // Para más de 3 símbolos, usar una cuadrícula 2x2
+                  // Para más de 3 símbolos, usar una cuadrícula 2x2 con más espacio
                   const row = Math.floor(index / 2);
                   const col = index % 2;
                   return {
-                    transform: `translate(${col === 0 ? '-75%' : '-25%'}, ${row === 0 ? '-75%' : '-25%'})`
+                    transform: `translate(${col === 0 ? '-100%' : '0%'}, ${row === 0 ? '-100%' : '0%'})`
                   };
                 };
                 
@@ -303,12 +303,12 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                     key={`${symbolState}-${index}`}
                     className={cn(
                       "absolute font-bold",
-                      isCollapsed ? 'text-lg' : 'text-sm'
+                      isCollapsed ? 'text-base' : 'text-xs'
                     )}
                     style={{
                       ...getSymbolPosition(index, toothData.symbolStates.length),
                       color: symbolColor,
-                      textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
+                      textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff'
                     }}
                     title={config.label}
                   >
