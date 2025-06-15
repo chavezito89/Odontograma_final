@@ -18,7 +18,7 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     bg: 'bg-green-500',
     border: 'border-green-600',
     label: 'Extracción',
-    symbol: '❌'
+    symbol: '✖️'
   },
   movilidad: {
     bg: 'bg-yellow-500',
