@@ -153,6 +153,50 @@ export const isPosteriorTooth = (toothNumber: number): boolean => {
   return position >= 4; // Premolares y molares
 };
 
+// Verificar si un diente tiene estados combinados
+export const hasCombinedStates = (primaryState: ToothState, secondaryState?: ToothState): boolean => {
+  return secondaryState !== undefined && primaryState !== 'healthy' && secondaryState !== 'healthy';
+};
+
+// Obtener clases CSS para estados combinados
+export const getCombinedStateClasses = (primaryState: ToothState, secondaryState?: ToothState): string => {
+  if (!hasCombinedStates(primaryState, secondaryState)) {
+    const config = TOOTH_STATE_COLORS[primaryState];
+    return `${config.bg} ${config.border}`;
+  }
+  
+  // Para estados combinados, no usar clases de fondo ya que usaremos gradientes
+  return 'border-2 border-gray-800';
+};
+
+// Obtener estilo de gradiente para estados combinados
+export const getCombinedStateGradient = (primaryState: ToothState, secondaryState?: ToothState): string => {
+  if (!hasCombinedStates(primaryState, secondaryState)) {
+    return TOOTH_STATE_COLORS[primaryState].bg.replace('bg-', '');
+  }
+  
+  const primaryColor = TOOTH_STATE_COLORS[primaryState].bg.replace('bg-', '');
+  const secondaryColor = TOOTH_STATE_COLORS[secondaryState!].bg.replace('bg-', '');
+  
+  // Mapear colores de Tailwind a valores CSS
+  const colorMap: Record<string, string> = {
+    'white': '#ffffff',
+    'red-500': '#ef4444',
+    'blue-500': '#3b82f6',
+    'yellow-500': '#eab308',
+    'purple-500': '#a855f7',
+    'gray-500': '#6b7280',
+    'green-500': '#22c55e',
+    'orange-500': '#f97316',
+    'gray-300': '#d1d5db'
+  };
+  
+  const primaryColorValue = colorMap[primaryColor] || primaryColor;
+  const secondaryColorValue = colorMap[secondaryColor] || secondaryColor;
+  
+  return `linear-gradient(90deg, ${primaryColorValue} 50%, ${secondaryColorValue} 50%)`;
+};
+
 // Obtener clase CSS para el estado
 export const getStateClasses = (state: ToothState): string => {
   const config = TOOTH_STATE_COLORS[state];

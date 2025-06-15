@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -17,11 +16,12 @@ export type ToothState =
 // Caras del diente
 export type ToothFace = 'mesial' | 'distal' | 'vestibular' | 'lingual' | 'oclusal';
 
-// Estado de un diente individual
+// Estado de un diente individual - ACTUALIZADO para soportar estados combinados
 export interface ToothData {
   number: number;
   quadrant: number;
   state: ToothState;
+  secondaryState?: ToothState; // Nuevo campo para estado secundario
   faces: Record<ToothFace, ToothState>;
   notes?: string;
   lastModified: Date;
@@ -77,6 +77,7 @@ const createInitialTooth = (number: number): ToothData => ({
   number,
   quadrant: Math.ceil(number / 10),
   state: 'healthy',
+  secondaryState: undefined,
   faces: {
     mesial: 'healthy',
     distal: 'healthy',
@@ -116,22 +117,96 @@ export const useOdontoStore = create<OdontoState>()(
         const { selectedPatientId, currentTab } = get();
         if (!selectedPatientId) return;
         
-        set((prev) => ({
-          patientData: {
-            ...prev.patientData,
-            [selectedPatientId]: {
-              ...prev.patientData[selectedPatientId],
-              [currentTab]: {
-                ...prev.patientData[selectedPatientId]?.[currentTab],
-                [toothNumber]: {
-                  ...prev.patientData[selectedPatientId]?.[currentTab]?.[toothNumber] || createInitialTooth(toothNumber),
-                  state,
-                  lastModified: new Date()
+        set((prev) => {
+          const currentTooth = prev.patientData[selectedPatientId]?.[currentTab]?.[toothNumber] || createInitialTooth(toothNumber);
+          
+          // Si el diente ya tiene este estado como primario, lo removemos
+          if (currentTooth.state === state) {
+            return {
+              patientData: {
+                ...prev.patientData,
+                [selectedPatientId]: {
+                  ...prev.patientData[selectedPatientId],
+                  [currentTab]: {
+                    ...prev.patientData[selectedPatientId]?.[currentTab],
+                    [toothNumber]: {
+                      ...currentTooth,
+                      state: 'healthy',
+                      secondaryState: undefined,
+                      lastModified: new Date()
+                    }
+                  }
+                }
+              }
+            };
+          }
+          
+          // Si el diente ya tiene este estado como secundario, lo removemos
+          if (currentTooth.secondaryState === state) {
+            return {
+              patientData: {
+                ...prev.patientData,
+                [selectedPatientId]: {
+                  ...prev.patientData[selectedPatientId],
+                  [currentTab]: {
+                    ...prev.patientData[selectedPatientId]?.[currentTab],
+                    [toothNumber]: {
+                      ...currentTooth,
+                      secondaryState: undefined,
+                      lastModified: new Date()
+                    }
+                  }
+                }
+              }
+            };
+          }
+          
+          // Si el diente está sano, aplicar como estado primario
+          if (currentTooth.state === 'healthy') {
+            return {
+              patientData: {
+                ...prev.patientData,
+                [selectedPatientId]: {
+                  ...prev.patientData[selectedPatientId],
+                  [currentTab]: {
+                    ...prev.patientData[selectedPatientId]?.[currentTab],
+                    [toothNumber]: {
+                      ...currentTooth,
+                      state,
+                      lastModified: new Date()
+                    }
+                  }
+                }
+              }
+            };
+          }
+          
+          // Si el diente ya tiene un estado primario diferente, aplicar como secundario
+          return {
+            patientData: {
+              ...prev.patientData,
+              [selectedPatientId]: {
+                ...prev.patientData[selectedPatientId],
+                [currentTab]: {
+                  ...prev.patientData[selectedPatientId]?.[currentTab],
+                  [toothNumber]: {
+                    ...currentTooth,
+                    secondaryState: state,
+                    // Limpiar todas las caras cuando se aplica un estado completo
+                    faces: {
+                      mesial: 'healthy',
+                      distal: 'healthy',
+                      vestibular: 'healthy',
+                      lingual: 'healthy',
+                      oclusal: 'healthy'
+                    },
+                    lastModified: new Date()
+                  }
                 }
               }
             }
-          }
-        }));
+          };
+        });
       },
       
       updateToothFace: (toothNumber, face, state) => {

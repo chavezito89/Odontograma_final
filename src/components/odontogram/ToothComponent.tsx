@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
-import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState } from '@/utils/toothUtils';
+import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, hasCombinedStates, getCombinedStateGradient } from '@/utils/toothUtils';
 import { cn } from '@/lib/utils';
 
 interface ToothComponentProps {
@@ -25,6 +24,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   const isSelected = selectedTooth === toothNumber;
   const displayNumber = getDisplayNumber(toothNumber, numberingSystem);
   const isFullToothStateSelected = isFullToothState(selectedState);
+  const hasStatesCombo = hasCombinedStates(toothData?.state || 'healthy', toothData?.secondaryState);
   
   // Manejar click en el diente completo
   const handleToothClick = (e: React.MouseEvent) => {
@@ -77,8 +77,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     }
   };
   
-  // Obtener color de la cara
+  // Obtener color de la cara - ACTUALIZADO para estados combinados
   const getFaceColor = (face: ToothFace): string => {
+    // Si el diente tiene estados combinados, usar gradiente
+    if (hasStatesCombo) {
+      return 'transparent'; // Se manejará con el gradiente en el contenedor
+    }
+    
     // Si el diente tiene un estado completo, mostrar ese color en todas las caras
     if (toothData?.state && isFullToothState(toothData.state)) {
       return TOOTH_STATE_COLORS[toothData.state].bg;
@@ -90,7 +95,9 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   };
 
   // Verificar si las caras deben ser interactivas
-  const areFacesInteractive = !isFullToothStateSelected && !(toothData?.state && isFullToothState(toothData.state));
+  const areFacesInteractive = !isFullToothStateSelected && 
+    !(toothData?.state && isFullToothState(toothData.state)) && 
+    !hasStatesCombo;
 
   return (
     <div className={cn("relative group", className)}>
@@ -102,72 +109,86 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
           isSelected ? "ring-2 ring-blue-500 ring-offset-1" : ""
         )}
         onClick={handleToothClick}
+        style={hasStatesCombo ? {
+          background: getCombinedStateGradient(toothData?.state || 'healthy', toothData?.secondaryState),
+          border: '2px solid #1f2937'
+        } : undefined}
       >
         {/* Contenedor principal con bordes diagonales */}
         <div 
-          className="relative w-full h-full border-2 border-gray-800 bg-white"
-          style={{
+          className={cn(
+            "relative w-full h-full border-2 border-gray-800",
+            hasStatesCombo ? "bg-transparent" : "bg-white"
+          )}
+          style={hasStatesCombo ? {
+            background: getCombinedStateGradient(toothData?.state || 'healthy', toothData?.secondaryState)
+          } : {
             background: `
               linear-gradient(to bottom left, transparent 0 calc(50% - 1px), #1f2937, transparent calc(50% + 1px)) no-repeat,
               linear-gradient(to bottom right, transparent 0 calc(50% - 1px), #1f2937, transparent calc(50% + 1px)) no-repeat
             `
           }}
         >
-          {/* Cara Mesial (superior) */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('mesial')
-            )}
-            style={{
-              clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)"
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('mesial', e) : undefined}
-            title={areFacesInteractive ? "Cara Mesial" : undefined}
-          />
-          
-          {/* Cara Distal (inferior) */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('distal')
-            )}
-            style={{
-              clipPath: "polygon(0% 100%, 50% 50%, 100% 100%)"
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('distal', e) : undefined}
-            title={areFacesInteractive ? "Cara Distal" : undefined}
-          />
-          
-          {/* Cara Vestibular (izquierda) */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('vestibular')
-            )}
-            style={{
-              clipPath: "polygon(0% 0%, 50% 50%, 0% 100%)"
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('vestibular', e) : undefined}
-            title={areFacesInteractive ? "Cara Vestibular" : undefined}
-          />
-          
-          {/* Cara Lingual (derecha) */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-colors duration-200",
-              areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('lingual')
-            )}
-            style={{
-              clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)"
-            }}
-            onClick={areFacesInteractive ? (e) => handleFaceClick('lingual', e) : undefined}
-            title={areFacesInteractive ? "Cara Lingual" : undefined}
-          />
+          {/* Solo mostrar caras individuales si no hay estados combinados */}
+          {!hasStatesCombo && (
+            <>
+              {/* Cara Mesial (superior) */}
+              <div
+                className={cn(
+                  "absolute inset-0 transition-colors duration-200",
+                  areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                  getFaceColor('mesial')
+                )}
+                style={{
+                  clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)"
+                }}
+                onClick={areFacesInteractive ? (e) => handleFaceClick('mesial', e) : undefined}
+                title={areFacesInteractive ? "Cara Mesial" : undefined}
+              />
+              
+              {/* Cara Distal (inferior) */}
+              <div
+                className={cn(
+                  "absolute inset-0 transition-colors duration-200",
+                  areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                  getFaceColor('distal')
+                )}
+                style={{
+                  clipPath: "polygon(0% 100%, 50% 50%, 100% 100%)"
+                }}
+                onClick={areFacesInteractive ? (e) => handleFaceClick('distal', e) : undefined}
+                title={areFacesInteractive ? "Cara Distal" : undefined}
+              />
+              
+              {/* Cara Vestibular (izquierda) */}
+              <div
+                className={cn(
+                  "absolute inset-0 transition-colors duration-200",
+                  areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                  getFaceColor('vestibular')
+                )}
+                style={{
+                  clipPath: "polygon(0% 0%, 50% 50%, 0% 100%)"
+                }}
+                onClick={areFacesInteractive ? (e) => handleFaceClick('vestibular', e) : undefined}
+                title={areFacesInteractive ? "Cara Vestibular" : undefined}
+              />
+              
+              {/* Cara Lingual (derecha) */}
+              <div
+                className={cn(
+                  "absolute inset-0 transition-colors duration-200",
+                  areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
+                  getFaceColor('lingual')
+                )}
+                style={{
+                  clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)"
+                }}
+                onClick={areFacesInteractive ? (e) => handleFaceClick('lingual', e) : undefined}
+                title={areFacesInteractive ? "Cara Lingual" : undefined}
+              />
+            </>
+          )}
           
           {/* Cara Oclusal (centro) - reducida proporcionalmente */}
           <div
@@ -177,7 +198,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
               "flex items-center justify-center text-xs font-bold text-gray-800",
               "border-2 border-gray-700 rounded-sm",
               areFacesInteractive ? "cursor-pointer hover:brightness-90" : "cursor-default",
-              getFaceColor('oclusal')
+              hasStatesCombo ? "bg-white bg-opacity-90" : getFaceColor('oclusal')
             )}
             onClick={areFacesInteractive ? (e) => handleFaceClick('oclusal', e) : undefined}
             title={areFacesInteractive ? "Cara Oclusal" : undefined}
@@ -193,9 +214,9 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       )}
       
       {/* Indicador visual para estados completos */}
-      {toothData?.state && isFullToothState(toothData.state) && (
+      {((toothData?.state && isFullToothState(toothData.state)) || hasStatesCombo) && (
         <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-orange-500 rounded-full border border-white shadow-sm" 
-             title="Estado completo del diente" />
+             title={hasStatesCombo ? "Estados combinados" : "Estado completo del diente"} />
       )}
     </div>
   );
