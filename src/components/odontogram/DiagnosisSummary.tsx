@@ -9,7 +9,7 @@ interface ToothSummary {
   displayNumber: string | number;
   states: {
     mainState?: ToothState;
-    symbolState?: ToothState;
+    symbolStates: ToothState[];
     faceStates: { face: ToothFace; state: ToothState }[];
   };
   notes?: string;
@@ -34,7 +34,7 @@ const DiagnosisSummary: React.FC = () => {
       
       // Recopilar estados del diente
       const mainState = toothData.state !== 'healthy' ? toothData.state : undefined;
-      const symbolState = toothData.symbolState;
+      const symbolStates = toothData.symbolStates || [];
       
       // Recopilar estados por caras (solo caras no sanas)
       const faceStates: { face: ToothFace; state: ToothState }[] = [];
@@ -45,13 +45,13 @@ const DiagnosisSummary: React.FC = () => {
       });
 
       // Si el diente tiene algún estado activo, agregarlo al resumen
-      if (mainState || symbolState || faceStates.length > 0) {
+      if (mainState || symbolStates.length > 0 || faceStates.length > 0) {
         summaries.push({
           toothNumber,
           displayNumber,
           states: {
             mainState,
-            symbolState,
+            symbolStates,
             faceStates
           },
           notes: toothData.notes
@@ -93,7 +93,7 @@ const DiagnosisSummary: React.FC = () => {
     return faceNames[face];
   };
 
-  // Renderizar entrada de resumen para un diente - ACTUALIZADO para no mostrar "Otro:"
+  // Renderizar entrada de resumen para un diente - ACTUALIZADO para manejar múltiples símbolos
   const renderToothSummary = (summary: ToothSummary) => {
     const { displayNumber, states, notes } = summary;
     const entries: string[] = [];
@@ -103,14 +103,16 @@ const DiagnosisSummary: React.FC = () => {
       entries.push(`${TOOTH_STATE_COLORS[states.mainState].label}`);
     }
 
-    // Agregar estado símbolo
-    if (states.symbolState) {
-      if (states.symbolState === 'otro' && notes) {
-        // Para "otro", solo mostrar las notas sin el prefijo "Otro:"
-        entries.push(notes);
-      } else {
-        entries.push(`${TOOTH_STATE_COLORS[states.symbolState].label}`);
-      }
+    // Agregar estados símbolo (múltiples)
+    if (states.symbolStates.length > 0) {
+      states.symbolStates.forEach(symbolState => {
+        if (symbolState === 'otro' && notes) {
+          // Para "otro", solo mostrar las notas sin el prefijo "Otro:"
+          entries.push(notes);
+        } else {
+          entries.push(`${TOOTH_STATE_COLORS[symbolState].label}`);
+        }
+      });
     }
 
     // Agregar estados por caras agrupados
