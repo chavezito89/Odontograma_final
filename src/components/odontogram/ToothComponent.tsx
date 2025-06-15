@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -40,7 +39,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       'bg-green-500': '#22c55e'
     };
     
-    return colorMap[symbolConfig.bg] || '#000000';
+    return colorMap[symbolConfig.bg] || '#3b82f6'; // Default a azul si no se encuentra
   };
   
   // Obtener el tamaño del símbolo según el tipo
