@@ -10,9 +10,9 @@ const StateSelector: React.FC = () => {
     setSelectedState
   } = useOdontoStore();
 
-  // Estados organizados por categorías - ACTUALIZADO con "extracción"
-  const symbolStates: ToothState[] = ['ausente', 'extraccion', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'otro'];
-  const faceStates: ToothState[] = ['caries', 'fisura', 'desgaste', 'furcacion', 'fracturado', 'amalgama', 'resina', 'carilla'];
+  // Estados organizados por categorías - ACTUALIZADO con nuevos estados especiales
+  const symbolStates: ToothState[] = ['ausente', 'extraccion', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'carilla', 'fractura', 'furcacion', 'otro'];
+  const faceStates: ToothState[] = ['caries', 'fisura', 'desgaste', 'amalgama', 'resina'];
 
   // Obtener color del símbolo
   const getSymbolColor = (state: ToothState): string => {
@@ -21,7 +21,8 @@ const StateSelector: React.FC = () => {
       'bg-red-500': '#ef4444',
       'bg-yellow-500': '#eab308',
       'bg-blue-500': '#3b82f6',
-      'bg-green-500': '#22c55e'
+      'bg-green-500': '#22c55e',
+      'bg-orange-500': '#f97316'
     };
     return colorMap[config.bg] || '#000000';
   };

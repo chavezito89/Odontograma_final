@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Tipos de estados dentales - ACTUALIZADO con "extracción"
+// Tipos de estados dentales - ACTUALIZADO con "fractura" y estados especiales
 export type ToothState = 
   | 'healthy' 
   | 'ausente'
@@ -14,14 +14,14 @@ export type ToothState =
   | 'endodoncia'
   | 'tornillo'
   | 'temporal'
+  | 'carilla'
+  | 'fractura'
+  | 'furcacion'
   | 'caries'
   | 'fisura'
   | 'desgaste'
-  | 'furcacion'
-  | 'fracturado'
   | 'amalgama'
   | 'resina'
-  | 'carilla'
   | 'otro';
 
 // Caras del diente - ACTUALIZADO para soportar palatina y lingual
@@ -127,7 +127,7 @@ export const useOdontoStore = create<OdontoState>()(
       setSelectedTooth: (tooth) => set({ selectedTooth: tooth }),
       setSelectedState: (state) => set({ selectedState: state }),
       
-      // Operaciones con dientes - ACTUALIZADO para manejar múltiples símbolos especiales incluyendo "extracción"
+      // Operaciones con dientes - ACTUALIZADO para manejar múltiples símbolos especiales incluyendo nuevos estados
       updateToothState: (toothNumber, state) => {
         const { selectedPatientId, currentTab } = get();
         if (!selectedPatientId) return;
@@ -166,8 +166,8 @@ export const useOdontoStore = create<OdontoState>()(
             };
           }
           
-          // Verificar si es un estado con símbolo (incluyendo "extracción")
-          const isSymbol = ['ausente', 'extraccion', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'otro'].includes(state);
+          // Verificar si es un estado con símbolo - ACTUALIZADO con nuevos estados especiales
+          const isSymbol = ['ausente', 'extraccion', 'movilidad', 'macrodontia', 'microdontia', 'corona', 'puente', 'endodoncia', 'tornillo', 'temporal', 'carilla', 'fractura', 'furcacion', 'otro'].includes(state);
           
           if (isSymbol) {
             // Obtener los estados especiales actuales

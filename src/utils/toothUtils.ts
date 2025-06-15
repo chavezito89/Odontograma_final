@@ -1,6 +1,6 @@
 import { ToothState } from '@/store/odontoStore';
 
-// Configuración de colores por estado dental - ACTUALIZADA con "extracción"
+// Configuración de colores por estado dental - ACTUALIZADA con nuevos estados especiales
 export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string; label: string; symbol?: string }> = {
   healthy: {
     bg: 'bg-white',
@@ -68,6 +68,24 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     label: 'Temporal',
     symbol: 'T'
   },
+  carilla: {
+    bg: 'bg-orange-500',
+    border: 'border-orange-600',
+    label: 'Carilla',
+    symbol: '🟠'
+  },
+  fractura: {
+    bg: 'bg-red-500',
+    border: 'border-red-600',
+    label: 'Fractura',
+    symbol: '⭕'
+  },
+  furcacion: {
+    bg: 'bg-yellow-500',
+    border: 'border-yellow-600',
+    label: 'Furcación',
+    symbol: '🔶'
+  },
   otro: {
     bg: 'bg-purple-600',
     border: 'border-purple-700',
@@ -90,16 +108,6 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     border: 'border-amber-700',
     label: 'Desgaste/Erosión'
   },
-  furcacion: {
-    bg: 'bg-yellow-600',
-    border: 'border-yellow-700',
-    label: 'Furcación'
-  },
-  fracturado: {
-    bg: 'bg-purple-500',
-    border: 'border-purple-600',
-    label: 'Fracturado'
-  },
   amalgama: {
     bg: 'bg-yellow-400',
     border: 'border-yellow-500',
@@ -109,15 +117,10 @@ export const TOOTH_STATE_COLORS: Record<ToothState, { bg: string; border: string
     bg: 'bg-purple-400',
     border: 'border-purple-500',
     label: 'Resina'
-  },
-  carilla: {
-    bg: 'bg-orange-400',
-    border: 'border-orange-500',
-    label: 'Carilla'
   }
 };
 
-// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO con "extracción"
+// Estados que abarcan todo el diente (con símbolos) - ACTUALIZADO
 export const FULL_TOOTH_STATES: ToothState[] = [
   'ausente',
   'extraccion',
@@ -129,23 +132,23 @@ export const FULL_TOOTH_STATES: ToothState[] = [
   'endodoncia',
   'tornillo',
   'temporal',
+  'carilla',
+  'fractura',
+  'furcacion',
   'otro'
 ];
 
-// Estados que permiten selección por caras individuales - ACTUALIZADO con palatina
+// Estados que permiten selección por caras individuales - ACTUALIZADO
 export const FACE_SELECTABLE_STATES: ToothState[] = [
   'healthy',
   'caries',
   'fisura',
   'desgaste',
-  'furcacion',
-  'fracturado',
   'amalgama',
-  'resina',
-  'carilla'
+  'resina'
 ];
 
-// Estados que usan símbolos - ACTUALIZADO con "extracción"
+// Estados que usan símbolos - ACTUALIZADO
 export const SYMBOL_STATES: ToothState[] = [
   'ausente',
   'extraccion',
@@ -157,6 +160,9 @@ export const SYMBOL_STATES: ToothState[] = [
   'endodoncia',
   'tornillo',
   'temporal',
+  'carilla',
+  'fractura',
+  'furcacion',
   'otro'
 ];
 

@@ -139,7 +139,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     const faceColor = getFaceColor('oclusal');
     if (faceColor === 'bg-white') return '#ffffff';
     
-    // Mapear colores de Tailwind a valores CSS
+    // Mapear colores de Tailwind a valores CSS - ACTUALIZADO con nuevos colores
     const colorMap: Record<string, string> = {
       'bg-red-500': '#ef4444',
       'bg-blue-500': '#3b82f6',
@@ -256,7 +256,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos superpuestos - ACTUALIZADO con mapeo de colores que incluye "extracción" */}
+          {/* Símbolos superpuestos - ACTUALIZADO con mapeo de colores ampliado */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
@@ -266,12 +266,13 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                 const symbol = getStateSymbol(symbolState);
                 const config = TOOTH_STATE_COLORS[symbolState];
                 
-                // Mapear colores de Tailwind a valores CSS - ACTUALIZADO con "extracción"
+                // Mapear colores de Tailwind a valores CSS - ACTUALIZADO con nuevos estados
                 const colorMap: Record<string, string> = {
                   'bg-red-500': '#ef4444',
                   'bg-yellow-500': '#eab308',
                   'bg-blue-500': '#3b82f6',
                   'bg-green-500': '#22c55e',
+                  'bg-orange-500': '#f97316',
                   'bg-purple-600': '#9333ea'
                 };
                 
