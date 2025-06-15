@@ -1,3 +1,4 @@
+
 import { ToothState } from '@/store/odontoStore';
 
 // Configuración de colores por estado dental
@@ -64,10 +65,22 @@ export const TOOTH_NUMBERS = {
     lowerRight: [85, 84, 83, 82, 81]
   },
   mixed: {
-    upperRight: [18, 17, 16, 55, 54, 53, 52, 51],
-    upperLeft: [61, 62, 63, 64, 65, 26, 27, 28],
-    lowerLeft: [71, 72, 73, 74, 75, 36, 37, 38],
-    lowerRight: [48, 47, 46, 85, 84, 83, 82, 81]
+    upperRight: {
+      permanent: [18, 17, 16],
+      deciduous: [55, 54, 53, 52, 51]
+    },
+    upperLeft: {
+      permanent: [26, 27, 28],
+      deciduous: [61, 62, 63, 64, 65]
+    },
+    lowerLeft: {
+      permanent: [36, 37, 38],
+      deciduous: [71, 72, 73, 74, 75]
+    },
+    lowerRight: {
+      permanent: [48, 47, 46],
+      deciduous: [85, 84, 83, 82, 81]
+    }
   }
 } as const;
 
