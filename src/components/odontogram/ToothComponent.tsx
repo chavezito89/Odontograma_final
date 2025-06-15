@@ -71,10 +71,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         
         {/* Fila media con Mesial, Vestibular y Distal */}
         <div className="absolute top-4 left-0 right-0 h-8 flex">
-          {/* Cara Mesial (Izquierda) */}
+          {/* Cara Mesial (Izquierda) - 30% del ancho */}
           <div 
             className={cn(
-              "w-2 h-full cursor-pointer hover:opacity-80 transition-all",
+              "w-[30%] h-full cursor-pointer hover:opacity-80 transition-all",
               "border-l border-t border-b border-gray-400",
               getFaceColor('mesial')
             )}
@@ -82,10 +82,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             title="Cara Mesial"
           />
           
-          {/* Cara Vestibular (Centro) - Con el número */}
+          {/* Cara Vestibular (Centro) - 40% del ancho */}
           <div 
             className={cn(
-              "flex-1 h-full cursor-pointer hover:opacity-80 transition-all",
+              "w-[40%] h-full cursor-pointer hover:opacity-80 transition-all",
               "border border-gray-400 flex items-center justify-center",
               getFaceColor('vestibular')
             )}
@@ -95,10 +95,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             <span className="text-xs font-bold text-gray-800 select-none">{displayNumber}</span>
           </div>
           
-          {/* Cara Distal (Derecha) */}
+          {/* Cara Distal (Derecha) - 30% del ancho */}
           <div 
             className={cn(
-              "w-2 h-full cursor-pointer hover:opacity-80 transition-all",
+              "w-[30%] h-full cursor-pointer hover:opacity-80 transition-all",
               "border-r border-t border-b border-gray-400",
               getFaceColor('distal')
             )}
