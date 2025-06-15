@@ -1,23 +1,10 @@
-
 import React from 'react';
 import { useOdontoStore, TabType, DentitionType, NumberingSystem } from '@/store/odontoStore';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RotateCcw, User, Settings, Activity, Calendar } from 'lucide-react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@/components/ui/sidebar';
-
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 const ControlSidebar: React.FC = () => {
   const {
     currentTab,
@@ -30,7 +17,6 @@ const ControlSidebar: React.FC = () => {
     setSelectedPatientId,
     resetOdontogram
   } = useOdontoStore();
-
   const handlePatientChange = (value: string) => {
     if (value === 'new') {
       const newPatientId = `patient-${Date.now()}`;
@@ -39,9 +25,7 @@ const ControlSidebar: React.FC = () => {
       setSelectedPatientId(value);
     }
   };
-
-  return (
-    <Sidebar>
+  return <Sidebar>
       <SidebarHeader>
         <div className="p-4">
           <h2 className="text-lg font-semibold text-gray-800">Panel de Control</h2>
@@ -65,11 +49,9 @@ const ControlSidebar: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="new">+ Nuevo Paciente</SelectItem>
                   <SelectItem value="patient-demo">Paciente Demo</SelectItem>
-                  {selectedPatientId && selectedPatientId !== 'patient-demo' && (
-                    <SelectItem value={selectedPatientId}>
+                  {selectedPatientId && selectedPatientId !== 'patient-demo' && <SelectItem value={selectedPatientId}>
                       Paciente Actual ({selectedPatientId.split('-')[1]})
-                    </SelectItem>
-                  )}
+                    </SelectItem>}
                 </SelectContent>
               </Select>
             </div>
@@ -84,7 +66,7 @@ const ControlSidebar: React.FC = () => {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="px-3">
-              <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as TabType)}>
+              <Tabs value={currentTab} onValueChange={value => setCurrentTab(value as TabType)}>
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="diagnosis">Diagnóstico</TabsTrigger>
                   <TabsTrigger value="treatment">Tratamiento</TabsTrigger>
@@ -107,10 +89,7 @@ const ControlSidebar: React.FC = () => {
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
                     Tipo de Dentición
                   </label>
-                  <Select 
-                    value={dentitionType} 
-                    onValueChange={(value) => setDentitionType(value as DentitionType)}
-                  >
+                  <Select value={dentitionType} onValueChange={value => setDentitionType(value as DentitionType)}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
@@ -128,10 +107,7 @@ const ControlSidebar: React.FC = () => {
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
                     Sistema de Numeración
                   </label>
-                  <Select 
-                    value={numberingSystem} 
-                    onValueChange={(value) => setNumberingSystem(value as NumberingSystem)}
-                  >
+                  <Select value={numberingSystem} onValueChange={value => setNumberingSystem(value as NumberingSystem)}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
@@ -151,13 +127,7 @@ const ControlSidebar: React.FC = () => {
           <SidebarGroupLabel>Acciones</SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="px-3 py-2">
-              <Button
-                onClick={resetOdontogram}
-                variant="outline"
-                size="sm"
-                className="w-full text-red-600 border-red-200 hover:bg-red-50"
-                disabled={!selectedPatientId}
-              >
+              <Button onClick={resetOdontogram} variant="outline" size="sm" className="w-full text-red-600 border-red-200 hover:bg-red-50" disabled={!selectedPatientId}>
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Reiniciar Odontograma
               </Button>
@@ -168,18 +138,13 @@ const ControlSidebar: React.FC = () => {
 
       <SidebarFooter>
         <div className="p-4 space-y-2">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Calendar className="w-4 h-4" />
-            <span>{new Date().toLocaleDateString('es-ES')}</span>
-          </div>
+          
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Activity className="w-4 h-4" />
             <span>Sistema Activo</span>
           </div>
         </div>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>;
 };
-
 export default ControlSidebar;
