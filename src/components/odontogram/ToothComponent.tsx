@@ -47,87 +47,115 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
     return TOOTH_STATE_COLORS[faceState].bg;
   };
 
+  // Renderizar símbolo según el estado principal del diente
+  const renderToothSymbol = () => {
+    const mainState = toothData?.state || 'healthy';
+    
+    switch (mainState) {
+      case 'caries':
+        return <div className="w-3 h-3 bg-red-500 rounded-full mx-auto" />;
+      case 'restoration':
+        return <div className="w-3 h-3 bg-blue-500 mx-auto" />;
+      case 'crown':
+        return <div className="w-4 h-2 bg-yellow-500 rounded-t-full mx-auto" />;
+      case 'endodontics':
+        return <div className="w-1 h-4 bg-purple-500 mx-auto" />;
+      case 'extraction':
+        return <div className="text-red-500 font-bold text-lg mx-auto">✗</div>;
+      case 'implant':
+        return <div className="w-2 h-4 bg-green-500 mx-auto rounded-sm" />;
+      case 'missing':
+        return <div className="text-gray-400 font-bold text-lg mx-auto">○</div>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={cn("relative group", className)}>
-      {/* Contenedor principal del diente */}
+      {/* Estructura del diente estilo tradicional */}
       <div
         className={cn(
-          "relative w-20 h-24 cursor-pointer transition-all duration-300",
+          "relative w-16 h-20 cursor-pointer transition-all duration-300",
           "hover:scale-105",
           isSelected ? "ring-2 ring-blue-500 ring-offset-2" : ""
         )}
         onClick={handleToothClick}
       >
-        {/* Estructura del diente con 5 caras */}
-        <div className="relative w-full h-full border-2 border-gray-400 bg-white rounded-sm">
+        {/* Corona del diente */}
+        <div className="relative w-full h-12 bg-white border-2 border-gray-400 rounded-t-lg">
           
-          {/* Cara Mesial (Superior) */}
+          {/* Cara Mesial (superior) */}
           <div 
             className={cn(
-              "absolute cursor-pointer transition-all duration-200 hover:brightness-90",
-              "w-full h-6 top-0 left-0 border-b border-gray-300",
+              "absolute w-full h-3 top-0 left-0 cursor-pointer transition-colors duration-200",
+              "hover:brightness-90 rounded-t-lg",
               getFaceColor('mesial')
             )}
             onClick={(e) => handleFaceClick('mesial', e)}
             title="Cara Mesial"
           />
           
-          {/* Sección media con 3 caras */}
-          <div className="absolute top-6 left-0 w-full h-12 flex">
-            
-            {/* Cara Vestibular (Izquierda) */}
+          {/* Caras laterales y oclusal */}
+          <div className="absolute top-3 left-0 w-full h-6 flex">
+            {/* Cara Vestibular (izquierda) */}
             <div 
               className={cn(
-                "cursor-pointer transition-all duration-200 hover:brightness-90",
-                "w-1/4 h-full border-r border-gray-300",
+                "w-3 h-full cursor-pointer transition-colors duration-200",
+                "hover:brightness-90",
                 getFaceColor('vestibular')
               )}
               onClick={(e) => handleFaceClick('vestibular', e)}
               title="Cara Vestibular"
             />
             
-            {/* Cara Oclusal (Centro) */}
+            {/* Cara Oclusal (centro) */}
             <div 
               className={cn(
-                "cursor-pointer transition-all duration-200 hover:brightness-90",
-                "w-1/2 h-full flex items-center justify-center border-r border-gray-300",
+                "flex-1 h-full cursor-pointer transition-colors duration-200",
+                "hover:brightness-90 flex flex-col items-center justify-center",
                 getFaceColor('oclusal')
               )}
               onClick={(e) => handleFaceClick('oclusal', e)}
               title="Cara Oclusal"
             >
-              <span className={cn(
-                "text-sm font-bold select-none",
-                "text-gray-800"
-              )}>
+              {/* Número del diente */}
+              <span className="text-xs font-bold text-gray-800 mb-1">
                 {displayNumber}
               </span>
+              
+              {/* Símbolo del estado */}
+              {renderToothSymbol()}
             </div>
             
-            {/* Cara Lingual (Derecha) */}
+            {/* Cara Lingual (derecha) */}
             <div 
               className={cn(
-                "cursor-pointer transition-all duration-200 hover:brightness-90",
-                "w-1/4 h-full",
+                "w-3 h-full cursor-pointer transition-colors duration-200",
+                "hover:brightness-90",
                 getFaceColor('lingual')
               )}
               onClick={(e) => handleFaceClick('lingual', e)}
               title="Cara Lingual"
             />
-            
           </div>
           
-          {/* Cara Distal (Inferior) */}
+          {/* Cara Distal (inferior de la corona) */}
           <div 
             className={cn(
-              "absolute cursor-pointer transition-all duration-200 hover:brightness-90",
-              "w-full h-6 bottom-0 left-0 border-t border-gray-300",
+              "absolute w-full h-3 bottom-0 left-0 cursor-pointer transition-colors duration-200",
+              "hover:brightness-90",
               getFaceColor('distal')
             )}
             onClick={(e) => handleFaceClick('distal', e)}
             title="Cara Distal"
           />
-          
+        </div>
+        
+        {/* Raíces del diente */}
+        <div className="w-full h-8 flex justify-center">
+          <div className="w-2 h-full bg-gray-200 border border-gray-400"></div>
+          <div className="w-2 h-full bg-gray-200 border border-gray-400 ml-2"></div>
         </div>
       </div>
       
