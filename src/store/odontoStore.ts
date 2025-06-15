@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -180,7 +181,7 @@ export const useOdontoStore = create<OdontoState>()(
       // Estado inicial
       currentTab: 'diagnosis',
       dentitionType: 'permanent',
-      numberingSystem: 'fdi',
+      numberingSystem: 'universal',
       selectedPatientId: null,
       patientData: {},
       selectedTooth: null,
