@@ -83,19 +83,24 @@ export const TOOTH_NUMBERS = {
   }
 } as const;
 
-// Conversión FDI a Universal
+// Conversión FDI a Universal - Corregido según estándar
 export const FDI_TO_UNIVERSAL: Record<number, string | number> = {
-  // Permanentes superiores
+  // Permanentes superiores - cuadrante 1 (superior derecho)
   18: 1, 17: 2, 16: 3, 15: 4, 14: 5, 13: 6, 12: 7, 11: 8,
+  // Permanentes superiores - cuadrante 2 (superior izquierdo)  
   21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16,
-  // Permanentes inferiores
-  48: 32, 47: 31, 46: 30, 45: 29, 44: 28, 43: 27, 42: 26, 41: 25,
+  // Permanentes inferiores - cuadrante 3 (inferior izquierdo)
   31: 24, 32: 23, 33: 22, 34: 21, 35: 20, 36: 19, 37: 18, 38: 17,
-  // Deciduos
+  // Permanentes inferiores - cuadrante 4 (inferior derecho)
+  41: 25, 42: 26, 43: 27, 44: 28, 45: 29, 46: 30, 47: 31, 48: 32,
+  // Deciduos superiores - cuadrante 5 (superior derecho)
   55: 'A', 54: 'B', 53: 'C', 52: 'D', 51: 'E',
+  // Deciduos superiores - cuadrante 6 (superior izquierdo)
   61: 'F', 62: 'G', 63: 'H', 64: 'I', 65: 'J',
-  75: 'K', 74: 'L', 73: 'M', 72: 'N', 71: 'O',
-  85: 'P', 84: 'Q', 83: 'R', 82: 'S', 81: 'T'
+  // Deciduos inferiores - cuadrante 7 (inferior izquierdo)
+  71: 'O', 72: 'N', 73: 'M', 74: 'L', 75: 'K',
+  // Deciduos inferiores - cuadrante 8 (inferior derecho)
+  81: 'T', 82: 'S', 83: 'R', 84: 'Q', 85: 'P'
 };
 
 // Obtener el nombre del cuadrante
