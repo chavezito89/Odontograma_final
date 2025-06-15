@@ -1,22 +1,26 @@
+
 import React from 'react';
 import { useOdontoStore, TabType, DentitionType, NumberingSystem } from '@/store/odontoStore';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, User, Settings, Activity, Calendar } from 'lucide-react';
+import { RotateCcw, User, Settings, Activity, Calendar, Download } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+
 const ControlSidebar: React.FC = () => {
   const {
     currentTab,
     dentitionType,
     numberingSystem,
     selectedPatientId,
+    patientData,
     setCurrentTab,
     setDentitionType,
     setNumberingSystem,
     setSelectedPatientId,
     resetOdontogram
   } = useOdontoStore();
+
   const handlePatientChange = (value: string) => {
     if (value === 'new') {
       const newPatientId = `patient-${Date.now()}`;
@@ -25,6 +29,35 @@ const ControlSidebar: React.FC = () => {
       setSelectedPatientId(value);
     }
   };
+
+  const handleExportData = () => {
+    if (!selectedPatientId) return;
+
+    const patientInfo = patientData[selectedPatientId];
+    if (!patientInfo) return;
+
+    const exportData = {
+      patientId: selectedPatientId,
+      exportDate: new Date().toISOString(),
+      dentitionType,
+      numberingSystem,
+      diagnosis: patientInfo.diagnosis || {},
+      treatment: patientInfo.treatment || {}
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `odontograma-${selectedPatientId}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return <Sidebar>
       <SidebarHeader>
         <div className="p-4">
@@ -126,10 +159,15 @@ const ControlSidebar: React.FC = () => {
         <SidebarGroup>
           <SidebarGroupLabel>Acciones</SidebarGroupLabel>
           <SidebarGroupContent>
-            <div className="px-3 py-2">
+            <div className="px-3 py-2 space-y-2">
               <Button onClick={resetOdontogram} variant="outline" size="sm" className="w-full text-red-600 border-red-200 hover:bg-red-50" disabled={!selectedPatientId}>
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Reiniciar Odontograma
+              </Button>
+              
+              <Button onClick={handleExportData} variant="outline" size="sm" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50" disabled={!selectedPatientId}>
+                <Download className="w-4 h-4 mr-2" />
+                Exportar JSON
               </Button>
             </div>
           </SidebarGroupContent>
@@ -147,4 +185,5 @@ const ControlSidebar: React.FC = () => {
       </SidebarFooter>
     </Sidebar>;
 };
+
 export default ControlSidebar;
