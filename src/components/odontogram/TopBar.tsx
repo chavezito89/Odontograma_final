@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Smile } from 'lucide-react';
+import { Stethoscope } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
 const TopBar: React.FC = () => {
@@ -11,7 +12,7 @@ const TopBar: React.FC = () => {
           <div className="flex items-center space-x-4">
             <SidebarTrigger />
             <div className="flex items-center space-x-2">
-              <Smile className="w-8 h-8 text-blue-600" />
+              <Stethoscope className="w-8 h-8 text-blue-600" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Odontograma Digital</h1>
                 <p className="text-sm text-gray-600">Sistema de diagnóstico dental profesional</p>
