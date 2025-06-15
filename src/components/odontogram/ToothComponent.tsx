@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { TOOTH_STATE_COLORS, getDisplayNumber, isFullToothState, isSymbolState, getStateSymbol } from '@/utils/toothUtils';
@@ -73,13 +72,70 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
       : "polygon(100% 0%, 100% 100%, 50% 50%)"; // derecha
   };
   
-  // Verificar si hay un diente adyacente que también es parte del puente
+  // Función para obtener el número del diente adyacente según el cuadrante
+  const getAdjacentToothNumber = (direction: 'left' | 'right'): number | null => {
+    const quadrant = Math.floor(toothNumber / 10);
+    const position = toothNumber % 10;
+    
+    // Para cuadrantes derechos (1, 4, 5, 8): 
+    // - "derecha" significa número menor (hacia el centro)
+    // - "izquierda" significa número mayor (hacia afuera)
+    if (quadrant === 1 || quadrant === 4 || quadrant === 5 || quadrant === 8) {
+      if (direction === 'right') {
+        // Hacia el centro (número menor)
+        if (position > 1) {
+          return toothNumber - 1;
+        }
+        // Si estamos en posición 1, verificar si hay cuadrante adyacente
+        if (quadrant === 1) return 21; // Superior derecho -> Superior izquierdo
+        if (quadrant === 4) return 31; // Inferior derecho -> Inferior izquierdo
+        if (quadrant === 5) return 61; // Deciduo superior derecho -> Deciduo superior izquierdo
+        if (quadrant === 8) return 71; // Deciduo inferior derecho -> Deciduo inferior izquierdo
+        return null;
+      } else {
+        // Hacia afuera (número mayor)
+        const maxPosition = (quadrant === 5 || quadrant === 6 || quadrant === 7 || quadrant === 8) ? 5 : 8;
+        if (position < maxPosition) {
+          return toothNumber + 1;
+        }
+        return null;
+      }
+    }
+    
+    // Para cuadrantes izquierdos (2, 3, 6, 7):
+    // - "derecha" significa número mayor (hacia afuera)
+    // - "izquierda" significa número menor (hacia el centro)
+    else {
+      if (direction === 'right') {
+        // Hacia afuera (número mayor)
+        const maxPosition = (quadrant === 6 || quadrant === 7) ? 5 : 8;
+        if (position < maxPosition) {
+          return toothNumber + 1;
+        }
+        return null;
+      } else {
+        // Hacia el centro (número menor)
+        if (position > 1) {
+          return toothNumber - 1;
+        }
+        // Si estamos en posición 1, verificar si hay cuadrante adyacente
+        if (quadrant === 2) return 11; // Superior izquierdo -> Superior derecho
+        if (quadrant === 3) return 41; // Inferior izquierdo -> Inferior derecho
+        if (quadrant === 6) return 51; // Deciduo superior izquierdo -> Deciduo superior derecho
+        if (quadrant === 7) return 81; // Deciduo inferior izquierdo -> Deciduo inferior derecho
+        return null;
+      }
+    }
+  };
+  
+  // Verificar si hay un diente adyacente que también es parte del puente - CORREGIDO
   const hasAdjacentBridgeTooth = (direction: 'left' | 'right'): boolean => {
     if (!toothData?.bridgeInfo?.bridgeId) return false;
     
-    const adjacentNumber = direction === 'right' ? toothNumber + 1 : toothNumber - 1;
-    const adjacentTooth = odontogram[adjacentNumber];
+    const adjacentNumber = getAdjacentToothNumber(direction);
+    if (adjacentNumber === null) return false;
     
+    const adjacentTooth = odontogram[adjacentNumber];
     return adjacentTooth?.bridgeInfo?.bridgeId === toothData.bridgeInfo.bridgeId;
   };
   
