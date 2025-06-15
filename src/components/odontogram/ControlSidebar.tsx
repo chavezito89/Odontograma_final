@@ -4,11 +4,10 @@ import { useOdontoStore, TabType, DentitionType, NumberingSystem } from '@/store
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, User, Settings, Activity, Calendar } from 'lucide-react';
+import { RotateCcw, User, Settings, Activity } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -165,19 +164,6 @@ const ControlSidebar: React.FC = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter>
-        <div className="p-4 space-y-2">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Calendar className="w-4 h-4" />
-            <span>{new Date().toLocaleDateString('es-ES')}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Activity className="w-4 h-4" />
-            <span>Sistema Activo</span>
-          </div>
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 };
