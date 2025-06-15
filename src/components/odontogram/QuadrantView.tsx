@@ -33,18 +33,18 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
     }
   };
 
-  // Render mixed dentition with two rows
+  // Render mixed dentition with two rows - deciduous on top, permanent below
   const renderMixedDentition = () => {
     const mixedData = TOOTH_NUMBERS.mixed[quadrant];
     
     return (
       <div className="space-y-2">
-        {/* Permanent teeth row */}
+        {/* Deciduous teeth row (top) */}
         <div className={cn(
           "flex gap-1 justify-center items-end",
           getFlexDirection(quadrant)
         )}>
-          {mixedData.permanent.map((toothNumber) => (
+          {mixedData.deciduous.map((toothNumber) => (
             <ToothComponent
               key={toothNumber}
               toothNumber={toothNumber}
@@ -53,12 +53,12 @@ const QuadrantView: React.FC<QuadrantViewProps> = ({ quadrant, className }) => {
           ))}
         </div>
         
-        {/* Deciduous teeth row */}
+        {/* Permanent teeth row (bottom) */}
         <div className={cn(
           "flex gap-1 justify-center items-end",
           getFlexDirection(quadrant)
         )}>
-          {mixedData.deciduous.map((toothNumber) => (
+          {mixedData.permanent.map((toothNumber) => (
             <ToothComponent
               key={toothNumber}
               toothNumber={toothNumber}
