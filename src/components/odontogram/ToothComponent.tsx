@@ -49,10 +49,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
 
   return (
     <div className={cn("relative group", className)}>
-      {/* Contenedor principal del diente */}
+      {/* Contenedor principal del diente - rectángulo simple */}
       <div
         className={cn(
-          "relative w-16 h-16 cursor-pointer transition-all duration-200",
+          "relative w-20 h-16 cursor-pointer transition-all duration-200",
           "border-2 border-gray-400 bg-white hover:shadow-md",
           isSelected ? "ring-2 ring-blue-500 ring-offset-1" : ""
         )}
@@ -61,7 +61,7 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         {/* Cara Oclusal (Superior) */}
         <div 
           className={cn(
-            "absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-4 cursor-pointer hover:opacity-80 transition-opacity border border-gray-400",
+            "absolute top-0 left-1/4 right-1/4 h-3 cursor-pointer hover:opacity-80 transition-opacity",
             getFaceColor('oclusal')
           )}
           onClick={(e) => handleFaceClick('oclusal', e)}
@@ -71,29 +71,17 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         {/* Cara Mesial (Izquierda) */}
         <div 
           className={cn(
-            "absolute left-0 top-1/2 transform -translate-y-1/2 w-4 h-8 cursor-pointer hover:opacity-80 transition-opacity border border-gray-400",
+            "absolute left-0 top-1/4 bottom-1/4 w-3 cursor-pointer hover:opacity-80 transition-opacity",
             getFaceColor('mesial')
           )}
           onClick={(e) => handleFaceClick('mesial', e)}
           title="Cara Mesial"
         />
         
-        {/* Cara Vestibular (Centro) - Aquí va el número */}
-        <div 
-          className={cn(
-            "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 cursor-pointer hover:opacity-80 transition-opacity border border-gray-400 flex items-center justify-center",
-            getFaceColor('vestibular')
-          )}
-          onClick={(e) => handleFaceClick('vestibular', e)}
-          title="Cara Vestibular"
-        >
-          <span className="text-xs font-bold text-gray-800">{displayNumber}</span>
-        </div>
-        
         {/* Cara Distal (Derecha) */}
         <div 
           className={cn(
-            "absolute right-0 top-1/2 transform -translate-y-1/2 w-4 h-8 cursor-pointer hover:opacity-80 transition-opacity border border-gray-400",
+            "absolute right-0 top-1/4 bottom-1/4 w-3 cursor-pointer hover:opacity-80 transition-opacity",
             getFaceColor('distal')
           )}
           onClick={(e) => handleFaceClick('distal', e)}
@@ -103,12 +91,24 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
         {/* Cara Lingual (Inferior) */}
         <div 
           className={cn(
-            "absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-4 cursor-pointer hover:opacity-80 transition-opacity border border-gray-400",
+            "absolute bottom-0 left-1/4 right-1/4 h-3 cursor-pointer hover:opacity-80 transition-opacity",
             getFaceColor('lingual')
           )}
           onClick={(e) => handleFaceClick('lingual', e)}
           title="Cara Lingual"
         />
+        
+        {/* Cara Vestibular (Centro) - Área central con el número */}
+        <div 
+          className={cn(
+            "absolute top-3 bottom-3 left-3 right-3 cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center",
+            getFaceColor('vestibular')
+          )}
+          onClick={(e) => handleFaceClick('vestibular', e)}
+          title="Cara Vestibular"
+        >
+          <span className="text-sm font-bold text-gray-800 select-none">{displayNumber}</span>
+        </div>
       </div>
       
       {/* Indicador de estado seleccionado */}
