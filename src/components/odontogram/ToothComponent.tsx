@@ -245,44 +245,6 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
   return (
     <>
       <div className={cn("relative group flex flex-col items-center", className)}>
-        {/* Líneas continuas del puente - POSICIÓN AJUSTADA más arriba y más anchas */}
-        {(isBridgeIntermediate || isBridgePilar) && (
-          <>
-            {/* Línea hacia la izquierda */}
-            {hasAdjacentBridgeTooth('left') && (
-              <div 
-                className="absolute -left-4 w-8 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
-                style={{ 
-                  top: '40%',
-                  transform: 'translateY(-50%)' 
-                }}
-              />
-            )}
-            
-            {/* Línea hacia la derecha */}
-            {hasAdjacentBridgeTooth('right') && (
-              <div 
-                className="absolute -right-4 w-8 h-1 bg-purple-600 z-30 rounded-full shadow-sm"
-                style={{ 
-                  top: '40%',
-                  transform: 'translateY(-50%)' 
-                }}
-              />
-            )}
-            
-            {/* Línea central para dientes intermedios */}
-            {isBridgeIntermediate && (
-              <div 
-                className="absolute left-1/2 w-full h-1 bg-purple-600 z-20 rounded-full shadow-sm"
-                style={{ 
-                  top: '40%',
-                  transform: 'translate(-50%, -50%)' 
-                }}
-              />
-            )}
-          </>
-        )}
-        
         {/* Diente con forma cuadrada dividida en 5 secciones */}
         <div
           className={cn(
@@ -380,10 +342,10 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos e íconos superpuestos - FIXED: Removed !isBridgeIntermediate condition */}
+          {/* Símbolos e íconos superpuestos - z-index reducido para que las líneas del puente aparezcan encima */}
           {hasSymbols && toothData?.symbolStates && (
             <div 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
               style={{ lineHeight: '1' }}
             >
               {toothData.symbolStates.map((symbolState, index) => {
@@ -490,6 +452,44 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
                  title={isBridgeIntermediate ? "Diente intermedio del puente" : hasSymbols ? "Estado con símbolos" : "Estado completo del diente"} />
           ))}
         </div>
+        
+        {/* Líneas continuas del puente - POSICIÓN AJUSTADA con z-index más alto */}
+        {(isBridgeIntermediate || isBridgePilar) && (
+          <>
+            {/* Línea hacia la izquierda */}
+            {hasAdjacentBridgeTooth('left') && (
+              <div 
+                className="absolute -left-4 w-8 h-1 bg-purple-600 z-40 rounded-full shadow-sm"
+                style={{ 
+                  top: '40%',
+                  transform: 'translateY(-50%)' 
+                }}
+              />
+            )}
+            
+            {/* Línea hacia la derecha */}
+            {hasAdjacentBridgeTooth('right') && (
+              <div 
+                className="absolute -right-4 w-8 h-1 bg-purple-600 z-40 rounded-full shadow-sm"
+                style={{ 
+                  top: '40%',
+                  transform: 'translateY(-50%)' 
+                }}
+              />
+            )}
+            
+            {/* Línea central para dientes intermedios */}
+            {isBridgeIntermediate && (
+              <div 
+                className="absolute left-1/2 w-full h-1 bg-purple-600 z-30 rounded-full shadow-sm"
+                style={{ 
+                  top: '40%',
+                  transform: 'translate(-50%, -50%)' 
+                }}
+              />
+            )}
+          </>
+        )}
         
         {/* Diálogo de notas para estado "otro" - ACTUALIZADO con handlers específicos */}
         <ToothNotesDialog
