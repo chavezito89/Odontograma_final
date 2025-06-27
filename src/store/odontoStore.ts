@@ -220,32 +220,29 @@ export const useOdontoStore = create<OdontoState>()(
           const newPatientData = { ...prev.patientData };
           const currentData = newPatientData[selectedPatientId]?.[currentTab] || {};
           
-          // Configurar primer pilar - MANTENER estado existente
+          // Configurar primer pilar
           const firstPilarTooth = currentData[firstPilar] || createInitialTooth(firstPilar);
           currentData[firstPilar] = {
             ...firstPilarTooth,
-            // Preservar el estado existente del diente
             symbolStates: [...(firstPilarTooth.symbolStates || []), 'puente'],
             bridgeInfo: { bridgeId, isPilar: true, isIntermediate: false },
             lastModified: new Date()
           };
           
-          // Configurar segundo pilar - MANTENER estado existente
+          // Configurar segundo pilar
           const secondPilarTooth = currentData[secondPilar] || createInitialTooth(secondPilar);
           currentData[secondPilar] = {
             ...secondPilarTooth,
-            // Preservar el estado existente del diente
             symbolStates: [...(secondPilarTooth.symbolStates || []), 'puente'],
             bridgeInfo: { bridgeId, isPilar: true, isIntermediate: false },
             lastModified: new Date()
           };
           
-          // Configurar dientes intermedios - MANTENER estado existente
+          // Configurar dientes intermedios
           intermediateTeeth.forEach(toothNumber => {
             const intermediateTooth = currentData[toothNumber] || createInitialTooth(toothNumber);
             currentData[toothNumber] = {
               ...intermediateTooth,
-              // Preservar el estado existente del diente intermedio
               bridgeInfo: { bridgeId, isPilar: false, isIntermediate: true },
               lastModified: new Date()
             };
