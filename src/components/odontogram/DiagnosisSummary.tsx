@@ -3,7 +3,7 @@ import { useOdontoStore, ToothState, ToothFace } from '@/store/odontoStore';
 import { getDisplayNumber, TOOTH_STATE_COLORS, isSymbolState } from '@/utils/toothUtils';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Edit } from 'lucide-react';
+import { Edit, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BridgeEntry {
@@ -39,6 +39,86 @@ const DiagnosisSummary: React.FC = () => {
   const [editText, setEditText] = useState('');
 
   const odontogram = getCurrentOdontogram();
+
+  // Función para exportar JSON
+  const exportToJSON = () => {
+    const summaryEntries = getSummaryEntries();
+    const exportData = {
+      type: currentTab,
+      timestamp: new Date().toISOString(),
+      numberingSystem,
+      data: summaryEntries.map(entry => {
+        if (entry.type === 'bridge') {
+          return {
+            type: 'bridge',
+            bridgeId: entry.bridgeId,
+            range: entry.range,
+            displayRange: entry.displayRange,
+            description: `Dientes ${entry.displayRange}: ${TOOTH_STATE_COLORS.puente.label}`
+          };
+        } else {
+          const entries: string[] = [];
+
+          // Agregar estado principal
+          if (entry.states.mainState && !isSymbolState(entry.states.mainState)) {
+            entries.push(TOOTH_STATE_COLORS[entry.states.mainState].label);
+          }
+
+          // Agregar estados símbolo
+          if (entry.states.symbolStates.length > 0) {
+            entry.states.symbolStates.forEach(symbolState => {
+              if (symbolState === 'otro' && entry.notes) {
+                entries.push(entry.notes);
+              } else {
+                entries.push(TOOTH_STATE_COLORS[symbolState].label);
+              }
+            });
+          }
+
+          // Agregar estados por caras
+          if (entry.states.faceStates.length > 0) {
+            const stateGroups: Partial<Record<ToothState, ToothFace[]>> = {};
+            entry.states.faceStates.forEach(({ face, state }) => {
+              if (!stateGroups[state]) {
+                stateGroups[state] = [];
+              }
+              stateGroups[state]!.push(face);
+            });
+
+            Object.entries(stateGroups).forEach(([state, faces]) => {
+              if (faces) {
+                const faceNames = faces.map(formatFaceName).join(', ');
+                entries.push(`${TOOTH_STATE_COLORS[state as ToothState].label} en ${faceNames}`);
+              }
+            });
+          }
+
+          const toothData = odontogram[entry.toothNumber];
+          const customNotes = toothData?.notes && !entry.states.symbolStates.includes('otro') ? toothData.notes : '';
+
+          return {
+            type: 'tooth',
+            toothNumber: entry.toothNumber,
+            displayNumber: entry.displayNumber,
+            states: entry.states,
+            description: `Diente ${entry.displayNumber}: ${entries.join(' • ')}${customNotes ? ` • ${customNotes}` : ''}`,
+            notes: entry.notes || customNotes
+          };
+        }
+      })
+    };
+
+    const jsonString = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${currentTab === 'diagnosis' ? 'diagnostico' : 'tratamiento'}_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   // Procesar puentes del odontograma
   const processBridges = (): BridgeEntry[] => {
@@ -327,9 +407,22 @@ const DiagnosisSummary: React.FC = () => {
 
   return (
     <div className="w-full mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">
-        Resumen del {tabTitle}
-      </h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-semibold text-gray-800">
+          Resumen del {tabTitle}
+        </h3>
+        
+        {summaryEntries.length > 0 && (
+          <Button
+            onClick={exportToJSON}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+            size="sm"
+          >
+            <Download className="h-4 w-4" />
+            Exportar JSON
+          </Button>
+        )}
+      </div>
       
       {summaryEntries.length === 0 ? (
         <div className="text-center py-8">
