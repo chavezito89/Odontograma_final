@@ -380,8 +380,8 @@ const ToothComponent: React.FC<ToothComponentProps> = ({ toothNumber, className 
             />
           </div>
           
-          {/* Símbolos e íconos superpuestos - ACTUALIZADO para incluir íconos SVG */}
-          {hasSymbols && toothData?.symbolStates && !isBridgeIntermediate && (
+          {/* Símbolos e íconos superpuestos - FIXED: Removed !isBridgeIntermediate condition */}
+          {hasSymbols && toothData?.symbolStates && (
             <div 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
               style={{ lineHeight: '1' }}
